@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+cd .. \
+  && ./docker-compose exec laravel_php ./artisan $@

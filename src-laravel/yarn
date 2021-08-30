@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+mkdir -p $HOME/.cache/yarn
+mkdir -p $HOME/.yarn
+touch $HOME/.yarnrc
+
+docker run --rm -ti \
+  -u $UID \
+  -v $PWD/src:/app \
+  -v /etc/passwd:/etc/passwd \
+  -v $HOME/.yarnrc:$HOME/.yarnrc \
+  -v $HOME/.cache/yarn:$HOME/.cache/yarn \
+  -v $HOME/.yarn:$HOME/.yarn \
+  -w /app \
+  node:16-buster yarn $@
+

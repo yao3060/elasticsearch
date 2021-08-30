@@ -1,0 +1,19 @@
+#!/bin/sh
+
+echo "Waiting for MySQL server to start accepting queries..."
+while [ 0 ]; do
+    result=$(./artisan db:isready)
+    sleep 1
+
+    if [[ "$result" = "true" ]]; then
+        break
+    fi
+done
+
+# run database migrations and seeders
+./artisan migrate --force
+./artisan db:seed
+
+# set storage ownership to www-data
+# it's possible that above commands caused an error and this might create a log file as the root user
+chown -R www-data /var/www/html/storage

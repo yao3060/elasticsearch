@@ -1,0 +1,46 @@
+version: '2.3'
+
+services:
+  laravel_nginx:
+    build:
+      context: .
+      dockerfile: ./src-laravel/.docker/Dockerfile
+      target: nginx
+    restart: "no"
+    volumes:
+      - ./src-laravel/src/public:/var/www/html/public:delegated
+
+  laravel_php:
+    build:
+      context: .
+      dockerfile: ./src-laravel/.docker/Dockerfile
+      target: php
+      extra_hosts:
+        - codeload.github.com:192.30.255.121
+    restart: "no"
+    user: ${DOCKER_HOST_UID}:www-data
+    environment:
+      - APP_DEBUG=true
+    volumes:
+      - ./src-laravel/src:/var/www/html:delegated
+      - ./src-laravel/src/storage:/var/www/html/storage
+      - ~/.composer:/.composer
+    command: sh -c "composer install && php-fpm"
+
+  laravel_db:
+    restart: "no"
+    volumes:
+      - ./src-laravel/transfer:/docker-entrypoint-initdb.d:delegated
+
+  laravel_cache:
+    restart: "no"
+
+  laravel_buildbox:
+    image: node:16-buster
+    container_name: ${COMPOSE_PROJECT_NAME}_laravel_buildbox
+    env_file: .env
+    working_dir: /project
+    user: node
+    volumes:
+      - ./src-laravel/src:/project:delegated
+    command: sh -c "yarn && yarn run watch-poll"
