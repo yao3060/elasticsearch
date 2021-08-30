@@ -1,4 +1,4 @@
-version: '2.3'
+version: "2.3"
 
 services:
   laravel_nginx:
@@ -34,13 +34,3 @@ services:
 
   laravel_cache:
     restart: "no"
-
-  laravel_buildbox:
-    image: node:16-buster
-    container_name: ${COMPOSE_PROJECT_NAME}_laravel_buildbox
-    env_file: .env
-    working_dir: /project
-    user: node
-    volumes:
-      - ./src-laravel/src:/project:delegated
-    command: sh -c "yarn && yarn run watch-poll"

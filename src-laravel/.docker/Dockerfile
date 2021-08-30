@@ -1,26 +1,13 @@
-FROM node:16-buster as node
-COPY ./src-laravel/src/package.json ./src-laravel/src/yarn.lock /app/
-WORKDIR /app
-RUN yarn
-
-# laravel-mix checks if it can find ./artisan in which case it sets publicPath = 'public'
-COPY ./src-laravel/src/webpack.mix.js ./src-laravel/src/webpack.config.js ./src-laravel/src/artisan /app/
-COPY ./src-laravel/src/resources /app/resources
-COPY ./src-laravel/src/public /app/public
-RUN yarn run production
-
-
 FROM nginx:1.19-alpine as nginx
 # copy NGINX configuration to image
 COPY ./src-laravel/.docker/nginx/etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
 COPY ./src-laravel/.docker/nginx/etc/nginx/snippets/cors /etc/nginx/snippets/cors
 
 # copy src/public folder to NGINX
-COPY --from=node /app/public /var/www/html/public
+COPY ./src-laravel/src/public /var/www/html/public
 
 # set folder permissions
 RUN find /var/www/html -type d -exec chmod 755 {} \;
-
 
 
 FROM composer:2 as composer
@@ -64,7 +51,6 @@ COPY ./src-laravel/.docker/php/usr/local/etc/php-fpm.d/ /usr/local/etc/php-fpm.d
 # copy source code to image
 COPY --from=composer /app/vendor /var/www/html/vendor
 COPY --from=composer /usr/bin/composer /usr/bin/composer
-COPY --from=node /app/public /var/www/html/public
 COPY ./src-laravel/src /var/www/html
 
 RUN /usr/bin/composer dump-autoload
