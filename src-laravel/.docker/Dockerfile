@@ -57,9 +57,9 @@ RUN /usr/bin/composer dump-autoload
 
 
 # Run this after copy source to image instead of /start
-RUN touch /var/www/html/storage/logs/laravel.log /var/www/html/bootstrap/cache/services.php && \
-    chown -R :www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
-    chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache && \
+RUN touch /var/www/html/storage/logs/lumen.log && \
+    chown -R :www-data /var/www/html/storage && \
+    chmod -R 775 /var/www/html/storage && \
     chmod +x /var/www/html/artisan
 
 # copy start script to image

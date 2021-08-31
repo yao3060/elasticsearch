@@ -32,5 +32,24 @@ services:
     volumes:
       - ./src-laravel/transfer:/docker-entrypoint-initdb.d:delegated
 
+  # elasticsearch:
+  #   image: elasticsearch:7.9.3
+  #   restart: always
+  #   environment:
+  #     - discovery.type=single-node
+  #     - bootstrap.memory_lock=true
+  #     - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   volumes:
+  #     - ./src-laravel/src/storage/elasticsearch:/usr/share/elasticsearch/data
+  #   logging:
+  #     driver: "json-file"
+  #     options:
+  #       max-size: "10k"
+  #       max-file: "10"
+
   laravel_cache:
     restart: "no"
