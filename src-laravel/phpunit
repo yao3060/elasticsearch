@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-COMPOSER_CONTAINER="$(docker ps -q -f NAME=laravel_composer)"
-docker exec -ti $COMPOSER_CONTAINER sh -c "./phpunit $*"
