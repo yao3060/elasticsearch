@@ -16,4 +16,23 @@ fi
 
 source .env
 
-docker-compose up
+SKIP_INSTALL=0
+NO_DEV=
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --skip-install)
+            SKIP_INSTALL=1
+            shift
+            ;;
+        --no-dev)
+            NO_DEV='--no-dev'
+            shift
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+echo "start modules"
+./docker-compose $NO_DEV up $@
