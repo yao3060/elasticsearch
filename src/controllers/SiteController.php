@@ -61,6 +61,9 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        if (!Yii::$app->cache->get('test')) {
+            Yii::$app->cache->set('test', time());
+        }
         return $this->render('index');
     }
 
