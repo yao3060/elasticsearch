@@ -2,14 +2,14 @@ version: "2.3"
 
 services:
   laravel_nginx:
-    image: ${CONTAINER_REGISTRY}/${PROJECT}_${ENVIRONMENT}_laravel_nginx:${VERSION}
+    # image: ${CONTAINER_REGISTRY}/${PROJECT}_${ENVIRONMENT}_laravel_nginx:${VERSION}
     container_name: ${COMPOSE_PROJECT_NAME}_laravel_nginx
     restart: always
     ports:
       - "${LARAVEL_HTTP_PORT}:80"
 
   laravel_php:
-    image: ${CONTAINER_REGISTRY}/${PROJECT}_${ENVIRONMENT}_laravel_php:${VERSION}
+    # image: ${CONTAINER_REGISTRY}/${PROJECT}_${ENVIRONMENT}_laravel_php:${VERSION}
     container_name: ${COMPOSE_PROJECT_NAME}_laravel_php
     restart: always
     env_file: .env
