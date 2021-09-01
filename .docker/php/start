@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Put init process as background
+/init 2>&1 &
+
+# start php-fpm
+php-fpm
