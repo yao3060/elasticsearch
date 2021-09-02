@@ -9,6 +9,8 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\ES\Picture;
+use app\queries\ES\PictureSearchQuery;
 
 class SiteController extends Controller
 {
@@ -61,10 +63,9 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        if (!Yii::$app->cache->get('test')) {
-            Yii::$app->cache->set('test', time());
-        }
-        return $this->render('index');
+        $data = (new Picture)
+            ->search(new PictureSearchQuery('red', 2, [], [], [], 100));
+        return json_encode($data);
     }
 
     /**

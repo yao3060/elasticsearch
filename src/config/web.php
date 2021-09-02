@@ -27,6 +27,15 @@ $config = [
                 'database' => 0,
             ]
         ],
+        'elasticsearch' => [
+            'class' => 'yii\elasticsearch\Connection',
+            'nodes' => [
+                ['http_address' => getenv('ELASTIC_HOST')],
+            ],
+            // set autodetectCluster to false if you don't want to auto detect nodes
+            // 'autodetectCluster' => false,
+            'dslVersion' => 5, // default is 5
+        ],
         'user' => [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
