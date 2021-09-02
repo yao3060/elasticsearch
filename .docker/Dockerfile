@@ -25,9 +25,13 @@ RUN if [ "$APP_ENV" = "local" ]; then { \
 # add phpredis to php-available-exts (install in the next step)
 ENV PHPREDIS_VERSION 5.3.4
 
+COPY .docker/php/ext /var/www/html
 RUN mkdir -p /usr/src/php/ext/redis \
-  && curl -L https://github.com/phpredis/phpredis/archive/$PHPREDIS_VERSION.tar.gz | tar xvz -C /usr/src/php/ext/redis --strip 1 \
-  && echo 'redis' >> /usr/src/php-available-exts
+  && tar -xf phpredis-${PHPREDIS_VERSION}.tar.gz -C /usr/src/php/ext/redis --strip 1 \
+  # && curl -L https://github.com/phpredis/phpredis/archive/$PHPREDIS_VERSION.tar.gz | tar xvz -C /usr/src/php/ext/redis --strip 1 \
+  && echo 'redis' >> /usr/src/php-available-exts \
+  && rm -f phpredis-${PHPREDIS_VERSION}.tar.gz
+
 
 # update mirror url base on location ( Global or CN )
 RUN sed -i "/dl-cdn.alpinelinux.org/s/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g" /etc/apk/repositories && cat /etc/apk/repositories
