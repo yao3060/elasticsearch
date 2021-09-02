@@ -10,7 +10,7 @@ COPY ./src/web /var/www/html/web
 # set folder permissions
 RUN find /var/www/html -type d -exec chmod 755 {} \;
 
-FROM php:7.4-fpm-alpine as php
+FROM php:8-fpm-alpine as php
 
 ARG APP_ENV
 RUN if [ "$APP_ENV" = "local" ]; then apk add --no-cache $PHPIZE_DEPS sqlite && pecl install xdebug && docker-php-ext-enable xdebug; fi
