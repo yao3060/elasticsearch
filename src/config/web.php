@@ -2,6 +2,7 @@
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
+$routes = require __DIR__ . '/routes.php';
 
 $config = [
     'id' => 'basic',
@@ -60,30 +61,21 @@ $config = [
             ],
         ],
         'db' => $db,
-        'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'rules' => [
-                'PUT  v1/logs/<id:\d+>' => 'log/update',
-                'POST v1/logs' => 'log/create',
-                'GET  v1/logs' => 'log/index',
-
-            ],
-        ],
+        'urlManager' => $routes,
         'session' => [
-            'name'=>'IPSSESSION',
+            'name' => 'IPSSESSION',
             'class' => 'yii\redis\Session',
             'redis' => [
                 'hostname' => getenv('SESSION_HOSTNAME'),
                 'port' => 6379,
                 'database' => 0,
-                'password'=>getenv('SESSION_PASSWORD'),
+                'password' => getenv('SESSION_PASSWORD'),
             ],
-            'timeout' => 3600*24,
+            'timeout' => 3600 * 24,
             'cookieParams' => [
-                "domain"=>".zzy_web.com",
+                "domain" => ".zzy_web.com",
                 'httpOnly' => false,
-                'lifetime' => 3600*24*7,
+                'lifetime' => 3600 * 24 * 7,
             ]
         ],
         'redis0' => [
@@ -91,42 +83,42 @@ $config = [
             'hostname' => getenv('REDIS_HOSTNAME'),
             'port' => 6379,
             'database' => getenv('REDIS_DATABASE0'),
-            'password'=>getenv('REDIS_PASSWORD'),
+            'password' => getenv('REDIS_PASSWORD'),
         ],
         'redis' => [
             'class' => 'yii\redis\Connection',
             'hostname' => getenv('REDIS_HOSTNAME'),
             'port' => 6379,
             'database' => getenv('REDIS_DATABASE2'),
-            'password'=>getenv('REDIS_PASSWORD'),
+            'password' => getenv('REDIS_PASSWORD'),
         ],
         'redis2' => [
             'class' => 'yii\redis\Connection',
             'hostname' => getenv('REDIS_HOSTNAME'),
             'port' => 6379,
             'database' => getenv('REDIS_DATABASE2'),
-            'password'=>getenv('REDIS_PASSWORD'),
+            'password' => getenv('REDIS_PASSWORD'),
         ],
         'redis4' => [
             'class' => 'yii\redis\Connection',
             'hostname' => getenv('REDIS_HOSTNAME'),
             'port' => 6379,
             'database' => getenv('REDIS_DATABASE4'),
-            'password'=>getenv('REDIS_PASSWORD'),
+            'password' => getenv('REDIS_PASSWORD'),
         ],
         'redis5' => [
             'class' => 'yii\redis\Connection',
             'hostname' => getenv('REDIS_HOSTNAME'),
             'port' => 6379,
             'database' => getenv('REDIS_DATABASE5'),
-            'password'=>getenv('REDIS_PASSWORD'),
+            'password' => getenv('REDIS_PASSWORD'),
         ],
         'redis6' => [
             'class' => 'yii\redis\Connection',
             'hostname' => getenv('REDIS_HOSTNAME'),
             'port' => 6379,
             'database' => getenv('REDIS_DATABASE6'),
-            'password'=>getenv('REDIS_PASSWORD'),
+            'password' => getenv('REDIS_PASSWORD'),
         ],
         'redis7' => [
             'class' => 'yii\redis\Connection',
