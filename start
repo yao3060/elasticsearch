@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 set -aeuo pipefail
 
 if [ ! $(which git-lfs) ]; then
