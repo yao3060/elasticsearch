@@ -8,27 +8,27 @@ use app\interfaces\ES\QueryBuilderInterface;
 class AssetSearchQuery implements QueryBuilderInterface
 {
     //搜索所需要参数
-    private $keyword;
+    public $key_word;
     public $page;
     public $pageSize;
-    private $tag_id;
-    private $isZb;
+    public $sceneId;
+    public $isZb;
     public $sort = 'DESC';
-    private $use_count;
+    public $use_count;
 
     function __construct(
-        $keyword = 0,
+        $key_word = 0,
         $page = 1,
         $pageSize = 40,
-        $tag_id = [],
+        $sceneId = 0,
         $isZb = 0,
-        $sort = [],
-        $use_count = []
+        $sort = 'DESC',
+        $use_count = 0
     ) {
-        $this->keyword = $keyword;
+        $this->key_word = $key_word;
         $this->page = $page;
         $this->pageSize = $pageSize;
-        $this->tag_id = $tag_id;
+        $this->sceneId = $sceneId;
         $this->isZb = $isZb;
         $this->sort = $sort;
         $this->use_count = $use_count;

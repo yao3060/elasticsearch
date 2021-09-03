@@ -15,8 +15,13 @@ class Asset extends BaseModel
     public function search(QueryBuilderInterface $query): array
     {
         $is_zb = 1;
-        //$redis_key = "ES_asset2:" . date('Y-m-d') . ":{$keyword}_{$page}_" . implode('-', $scene_id) . "_{$pagesize}_{$is_zb}_{$sort}_{$use_count}";
-        //$return = Tools::getRedis(self::$redis_db, $redis_key);
+        $sceneId = $query->sceneId ? $query->sceneId : [];
+        if (!is_array($sceneId)) {
+            $sceneId = [$sceneId];
+        }
+        $redis_key = "ES_asset2:" . date('Y-m-d') . ":{$query->key_word}_{$query->page}_" . implode('-', $sceneId) . "_{$query->pageSize}_{$query->isZb}_{$query->sort}_{$query->use_count}";
+        $return = Tools::getRedis(self::$redis_db, $redis_key);
+        var_dump($return);exit();
         return [
             'data' => [], // self::find()->query($query)->all(),
             'query' => $query->query(),

@@ -13,7 +13,7 @@ class AssetController extends Controller
     public function actionIndex()
     {
         $data = (new Asset())
-            ->search(new AssetSearchQuery('red', 2, [], [], [], 100));
+            ->search(new AssetSearchQuery('red', 1, 40, [], 1, 100));
         $this->response->headers->set('X-Total', 1000);
         return $this->asJson($data);
     }
