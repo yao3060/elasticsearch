@@ -2,10 +2,9 @@
 
 namespace app\controllers;
 
-use yii\rest\Controller;
 use yii\web\Request;
 
-class LogController extends Controller
+class LogController extends BaseController
 {
     /**
      * @api {get} /v1/logs Request Logs
@@ -17,15 +16,22 @@ class LogController extends Controller
      */
     public function actionIndex(Request $request)
     {
-        $data = [
-            'params' => $request->get(),
-            'user_id' =>  $request->headers->get('X-UserId'),
-            'roles' =>  $request->headers->get('X-Roles'),
-            'token'  => $request->headers->get('Authorization'),
-            'total' => 1000
-        ];
-        $this->response->headers->set('X-Total', 1000);
-        return $this->asJson($data);
+        $code = 'readable_response_code';
+        $message = 'Response Message';
+        try {
+            $data = ['response data'];
+            $statusCode = 200;
+        } catch (\Throwable $th) {
+            $statusCode = 500;
+            $code = 'a_readable_error_code';
+            $message = $th->getMessage();
+            $data = YII_DEBUG ? explode("\n", $th->getTraceAsString()) : [];
+        }
+
+        return $this->response($code, $message, $data, $statusCode, [
+            'X-Total' => 100,
+            'X-UserId' => 199
+        ]);
     }
 
     public function actionCreate(Request $request)
