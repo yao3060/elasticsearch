@@ -6,7 +6,7 @@
 namespace app\controllers;
 use app\models\ES\Asset;
 use app\queries\ES\AssetSearchQuery;
-use yii\web\Controller;
+use yii\rest\Controller;
 
 class AssetController extends Controller
 {
@@ -14,6 +14,7 @@ class AssetController extends Controller
     {
         $data = (new Asset())
             ->search(new AssetSearchQuery('red', 2, [], [], [], 100));
-        return json_encode($data);
+        $this->response->headers->set('X-Total', 1000);
+        return $this->asJson($data);
     }
 }
