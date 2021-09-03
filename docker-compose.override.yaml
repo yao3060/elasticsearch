@@ -40,7 +40,37 @@ services:
       - ./transfer:/docker-entrypoint-initdb.d:delegated
 
   cache:
-    restart: "no"
+    image: redis:5.0-alpine
+    container_name: ${COMPOSE_PROJECT_NAME}_cache
+    restart: always
+    expose:
+      - "6379"
 
   elasticsearch:
-    restart: "no"
+    image: elasticsearch:5.6.3-alpine
+    restart: always
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10k"
+        max-file: "10"
+
+  phpredisadmin:
+    image: erikdubbelboer/phpredisadmin
+    environment:
+      - REDIS_1_HOST=cache
+      - REDIS_1_PORT=6379
+    depends_on:
+      - cache
+    ports:
+      - "8082:80"
