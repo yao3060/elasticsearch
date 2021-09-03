@@ -41,3 +41,6 @@ services:
 
   cache:
     restart: "no"
+
+  elasticsearch:
+    restart: "no"

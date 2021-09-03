@@ -64,11 +64,10 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                [
-                    'class' => 'yii\rest\UrlRule',
-                    'prefix' => 'es/v1',
-                    'controller' => 'log'
-                ],
+                'PUT  v1/logs/<id:\d+>' => 'log/update',
+                'POST v1/logs' => 'log/create',
+                'GET  v1/logs' => 'log/index',
+
             ],
         ],
     ],
