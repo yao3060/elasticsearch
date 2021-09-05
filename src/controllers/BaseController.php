@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\interfaces\ResponseInterface;
 use yii\rest\Controller;
 
 class BaseController extends Controller
@@ -16,25 +17,21 @@ class BaseController extends Controller
      * @param array|null $headers
      * @return \yii\web\Response
      */
-    public function response(
-        string $code = '',
-        string $message = '',
-        array $data,
-        int $status = 200,
-        ?array $headers = null
-    ) {
-        $this->response->setStatusCode($status);
+    public function response(ResponseInterface $response)
+    {
 
-        if ($headers) {
-            array_walk($headers, function ($value, $key) {
+        $this->response->setStatusCode($response->get('status'));
+
+        if (count($response->headers)) {
+            array_walk($response->headers, function ($value, $key) {
                 $this->response->headers->set($key, $value);
             });
         }
 
         return $this->asJson([
-            'code' => $code,
-            'message' => $message,
-            'data' => $data
+            'code' => $response->get('code'),
+            'message' => $response->get('message'),
+            'data' => $response->get('data')
         ]);
     }
 }

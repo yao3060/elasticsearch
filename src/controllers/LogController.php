@@ -2,7 +2,12 @@
 
 namespace app\controllers;
 
+
+use yii\base\DynamicModel;
+use yii\base\UnknownPropertyException;
 use yii\web\Request;
+use app\components\Response;
+use app\helpers\StringHelper;
 
 class LogController extends BaseController
 {
@@ -16,22 +21,38 @@ class LogController extends BaseController
      */
     public function actionIndex(Request $request)
     {
-        $code = 'readable_response_code';
-        $message = 'Response Message';
+        $response = new Response();
+
         try {
-            $data = ['response data'];
-            $statusCode = 200;
+            $model = DynamicModel::validateData($request->get(), [
+                [['name', 'email'], 'string', 'max' => 128],
+                ['email', 'email'],
+            ]);
+
+
+            $response->status(200);
+            $response->code('readable_response_code');
+            $response->message('Response Message');
+            $response->data($model->getAttributes());
+        } catch (UnknownPropertyException $e) {
+
+            $response->status(500);
+            $response->code(StringHelper::snake($e->getName()));
+            $response->message(str_replace('yii\\base\\DynamicModel::', '', $e->getMessage()));
+            $response->data([]);
+            $response->headers([
+                'X-Total' => 100,
+                'X-UserId' => 199
+            ]);
         } catch (\Throwable $th) {
-            $statusCode = 500;
-            $code = 'a_readable_error_code';
-            $message = $th->getMessage();
-            $data = YII_DEBUG ? explode("\n", $th->getTraceAsString()) : [];
+
+            $response->status(500);
+            $response->code('a_readable_error_code');
+            $response->message($e->getMessage());
+            $response->data(YII_DEBUG ? explode("\n", $th->getTraceAsString()) : []);
         }
 
-        return $this->response($code, $message, $data, $statusCode, [
-            'X-Total' => 100,
-            'X-UserId' => 199
-        ]);
+        return $this->response($response);
     }
 
     public function actionCreate(Request $request)

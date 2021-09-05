@@ -1,0 +1,12 @@
+@BASE_URL = http://localhost:8081
+
+
+### Get Logs
+POST {{BASE_URL}}/v1/logs HTTP/1.1
+content-type: application/json
+
+{
+    "name": "hanmaker",
+    "email": "hanmaker@app.com",
+    "age": 11
+}
