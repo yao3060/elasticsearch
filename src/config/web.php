@@ -38,7 +38,7 @@ $config = [
             'dslVersion' => 5, // default is 5
         ],
         'user' => [
-            'identityClass' => 'app\models\User',
+            'identityClass' => 'app\models\GenericUser',
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [
