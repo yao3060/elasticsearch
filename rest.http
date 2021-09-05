@@ -4,7 +4,8 @@
 ### Get Logs
 POST {{BASE_URL}}/v1/logs HTTP/1.1
 content-type: application/json
-Authenticate: Basic app_id:app_secret
+# username:password
+Authenticate: Basic dXNlcm5hbWU6cGFzc3dvcmQ=  
 
 {
     "name": "hanmaker",

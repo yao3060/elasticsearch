@@ -31,16 +31,18 @@ class GenericUser implements \yii\web\IdentityInterface
 
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        if (self::getInstance()->attributes['access_token'] === $token) {
-            return new static(self::getInstance()->attributes);
-        }
 
-        return null;
+        // if (self::getInstance()->attributes['access_token'] === $token) {
+        //     return new static(self::getInstance()->attributes);
+        // }
+
+        return self::getInstance()->attributes;
     }
 
     public static function findIdentity($id)
     {
-        return self::getInstance()->attributes;
+        // just ignore the $id param here
+        return new static(self::getInstance()->attributes);
     }
 
     public function getId()

@@ -2,15 +2,37 @@
 
 namespace app\controllers;
 
-
+use Yii;
 use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
 use yii\web\Request;
 use app\components\Response;
 use app\helpers\StringHelper;
+use yii\filters\auth\HttpBasicAuth;
 
 class LogController extends BaseController
 {
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['authenticator'] = [
+            'class' => HttpBasicAuth::class,
+            'auth' => [$this, 'auth'],
+        ];
+        return $behaviors;
+    }
+
+    public function auth($username, $password)
+    {
+        return new \app\models\GenericUser([
+            'id' => '101',
+            'username' => $username,
+            'password' => $password,
+            'auth_key' => 'test101key',
+            'access_token' => '101-token',
+        ]);
+    }
+
     /**
      * @api {get} /v1/logs Request Logs
      * @apiName GetLogs
@@ -33,7 +55,10 @@ class LogController extends BaseController
             $response->status(200);
             $response->code('readable_response_code');
             $response->message('Response Message');
-            $response->data($model->getAttributes());
+            $response->data(array_merge(
+                $model->getAttributes(),
+                ['user' => Yii::$app->user->identity]
+            ));
         } catch (UnknownPropertyException $e) {
 
             $response->status(500);

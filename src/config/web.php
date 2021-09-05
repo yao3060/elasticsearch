@@ -38,7 +38,7 @@ $config = [
             'dslVersion' => 5, // default is 5
         ],
         'user' => [
-            'identityClass' => 'app\models\GenericUser',
+            'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [
@@ -62,22 +62,7 @@ $config = [
         ],
         'db' => $db,
         'urlManager' => $routes,
-        'session' => [
-            'name' => 'IPSSESSION',
-            'class' => 'yii\redis\Session',
-            'redis' => [
-                'hostname' => getenv('SESSION_HOSTNAME'),
-                'port' => 6379,
-                'database' => 0,
-                'password' => getenv('SESSION_PASSWORD'),
-            ],
-            'timeout' => 3600 * 24,
-            'cookieParams' => [
-                "domain" => ".zzy_web.com",
-                'httpOnly' => false,
-                'lifetime' => 3600 * 24 * 7,
-            ]
-        ],
+
         'redis0' => [
             'class' => 'yii\redis\Connection',
             'hostname' => getenv('REDIS_HOSTNAME'),
