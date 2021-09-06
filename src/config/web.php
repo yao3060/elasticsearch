@@ -37,6 +37,18 @@ $config = [
             // 'autodetectCluster' => false,
             'dslVersion' => 5, // default is 5
         ],
+        'elasticsearch_color' => [
+            'class' => 'yii\elasticsearch\Connection',
+            'nodes' => [
+                ['http_address' => getenv('ELASTIC_COLOR_HOST')],
+            ],
+        ],
+        'elasticsearch_search_keyword' => [
+            'class' => 'yii\elasticsearch\Connection',
+            'nodes' => [
+                ['http_address' => getenv('ELASTIC_KEYWORD_HOST')],
+            ],
+        ],
         'user' => [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
