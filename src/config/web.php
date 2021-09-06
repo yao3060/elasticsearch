@@ -74,6 +74,14 @@ $config = [
         'db' => $db,
         'urlManager' => $routes,
 
+        'redis_search' => [
+            'class' => 'yii\redis\Connection',
+            'hostname' => 'r-uf6an0ba8tty6e8v03.redis.rds.aliyuncs.com',
+            'port' => 6379,
+            'database' => 0,
+            'password' => getenv('REDIS_PASSWORD'),
+        ],
+
         'redis0' => [
             'class' => 'yii\redis\Connection',
             'hostname' => getenv('REDIS_HOSTNAME'),

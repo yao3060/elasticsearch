@@ -12,15 +12,15 @@ use yii\filters\auth\HttpBasicAuth;
 
 class LogController extends BaseController
 {
-    public function behaviors()
-    {
-        $behaviors = parent::behaviors();
-        $behaviors['authenticator'] = [
-            'class' => HttpBasicAuth::class,
-            'auth' => [$this, 'auth'],
-        ];
-        return $behaviors;
-    }
+    // public function behaviors()
+    // {
+    //     $behaviors = parent::behaviors();
+    //     $behaviors['authenticator'] = [
+    //         'class' => HttpBasicAuth::class,
+    //         'auth' => [$this, 'auth'],
+    //     ];
+    //     return $behaviors;
+    // }
 
     public function auth($username, $password)
     {
@@ -47,16 +47,20 @@ class LogController extends BaseController
 
         try {
             $model = DynamicModel::validateData($request->get(), [
-                [['name', 'email'], 'string', 'max' => 128],
+                [['name', 'email'], 'string'],
                 ['email', 'email'],
             ]);
-
+            var_dump($model->hasErrors());
 
             $response->status(200);
             $response->code('readable_response_code');
             $response->message('Response Message');
             $response->data(array_merge(
                 $model->getAttributes(),
+                [
+                    'error' => $model->hasErrors(),
+                    'data' => $model->errors
+                ],
                 ['user' => Yii::$app->user->identity]
             ));
         } catch (UnknownPropertyException $e) {
