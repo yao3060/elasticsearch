@@ -151,7 +151,7 @@ class TemplateSearchQuery implements QueryBuilderInterface
         $this->elasticsearchColor = $params['elasticsearchColor'] ?? '';
     }
 
-    public function makeRedisKey($classId)
+    public function getRedisKey()
     {
         $redisKey = "ES_template12-23:";
         if ($this->fuzzy == 1) {
@@ -161,7 +161,7 @@ class TemplateSearchQuery implements QueryBuilderInterface
         $implodeKeyArr = [
             $this->keywords, $this->page, $this->kid1, $this->kid2, $this->sortType,
             $this->tagId, $this->isZb, $this->pageSize,
-            $this->ratio, $classId, $this->size, $this->use
+            $this->ratio, $this->classId, $this->size, $this->use
         ];
 
         $redisKey .= ":" . implode('_', $implodeKeyArr);
@@ -244,7 +244,9 @@ class TemplateSearchQuery implements QueryBuilderInterface
             ['31_23_0_', '31_23_0_', '32_27_326_'],
             $classId);
 
-        $redisKey = $this->makeRedisKey($classId);
+        $this->classId = $classId;
+
+        $redisKey = $this->getRedisKey();
 
         $offset = $this->makeOffset();
 

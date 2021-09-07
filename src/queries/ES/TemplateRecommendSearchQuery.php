@@ -59,7 +59,7 @@ class TemplateRecommendSearchQuery implements QueryBuilderInterface
      * implode redis key
      * @return string
      */
-    public function makeRedisKey()
+    public function getRedisKey()
     {
         $implodeKeys = [
             $this->keywords, $this->page, $this->pageSize,
@@ -72,7 +72,7 @@ class TemplateRecommendSearchQuery implements QueryBuilderInterface
     public function query(): array
     {
 
-        $key = $this->makeRedisKey();
+        $key = $this->getRedisKey();
 
         $return = Tools::getRedis(Template::$redis_db, $key);
 
