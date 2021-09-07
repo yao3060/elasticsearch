@@ -5,4 +5,4 @@
 GET {{BASE_URL}}/v1/logs?name=hanmaker&email=email@email.com&age=11 HTTP/1.1
 content-type: application/json
 # username:password
-# Authenticate: Basic dXNlcm5hbWU6cGFzc3dvcmQ=
+Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=
