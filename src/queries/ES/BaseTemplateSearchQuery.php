@@ -102,7 +102,7 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
             }
         } else {
             if ($this->kid1 == 1) {
-                $query['bool']['must_not'][]['terms']['class_id'] = ['437', '760', '290', '810', '902'];
+                $this->query['bool']['must_not'][]['terms']['class_id'] = ['437', '760', '290', '810', '902'];
             }
         }
 

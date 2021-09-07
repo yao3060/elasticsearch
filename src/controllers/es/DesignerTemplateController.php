@@ -19,11 +19,16 @@ class DesignerTemplateController extends BaseController
                 pageSize: $request->get('page_size', 40),
                 kid1: $request->get('kid1', 0),
                 kid2: $request->get('kid2', 0),
-                templateInfo: ['picId' => 1, 'templ_attr' => 2, 'type' => 'a'],
-                ratio: null,
-                sortType: 'default'
+                templateInfo: ['picId' => 1, 'templ_attr' => 4, 'type' => 'a', 'settlement_level' => 1],
+                templateTypes: $request->get('template_type', []),
+                ratio: $request->get('ratio'),
+                sortType: $request->get('sort_type', 'default'),
+                isZb: $request->get('is_zb', 0),
+                classId: $request->get('class_id', 0),
+                tagId: $request->get('tag_id', 0)
             )
         );
-        return $items;
+
+        return json_encode($items);
     }
 }

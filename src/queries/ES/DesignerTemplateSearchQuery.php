@@ -105,6 +105,7 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
         }
 
         // $redisKey:主图厨房用具_156_301_default_0_1_10000__0_0_0_0_0_0_0_0_4_1
+
         $redisKey = sprintf(
             $redisKey . ':%s_%d_%d_%s_%s_%d_%d_%s_%s_%d_%d_%d',
             $this->keyword,

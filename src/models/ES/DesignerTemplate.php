@@ -31,7 +31,9 @@ class DesignerTemplate extends BaseModel
             }
 
             if (!$return || !$return['total'] || Tools::isReturnSource() || $query->update == 1) {
-                if ($query->color) {
+
+                if (!empty($query->color)) {
+
                     $info =  (new Query())->from('818ps_pic', '818ps_pic')
                         ->source(['templ_id'])
                         ->query($query->query())
@@ -64,7 +66,6 @@ class DesignerTemplate extends BaseModel
             $return['ids'] = [];
             $return['score'] = [];
         }
-
 
         // if (!IpsAuthority::check(IOS_ALBUM_USER)) {
         //   Tools::setRedis(self::$redis_db, $redis_key, $return, 86400 + rand(-3600, 3600));
