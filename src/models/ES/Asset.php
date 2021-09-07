@@ -13,12 +13,24 @@ class Asset extends BaseModel
     /**
      * @param QueryBuilderInterface $query
      * @return array 2021-09-03
+     * return ['hit','ids','score'] 命中数,命中id,模板id=>分数
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $sceneId = is_array($query->sceneId)?$query->sceneId:[];
-        $redisKey = sprintf('ES_asset2:%s:%s_%d_%s_%d_%d_%d_%d',date('Y-m-d'), $query->keyword, $query->page,implode('-', $sceneId),$query->pageSize,$query->isZb,$query->sort,$query->useCount);
+        $sceneId = is_array($query->sceneId) ? $query->sceneId : [];
+        $redisKey = sprintf(
+            'ES_asset2:%s:%s_%d_%s_%d_%d_%d_%d',
+            date('Y-m-d'),
+            $query->keyword,
+            $query->page,
+            implode('-', $sceneId),
+            $query->pageSize,
+            $query->isZb,
+            $query->sort,
+            $query->useCount
+        );
         $return = Tools::getRedis($this->redisDb, $redisKey);
+        $pageSize = $query->pageSize;
         if (!$return || !$return['hit']) {
             unset($return);
             if ($query->keyword) {
@@ -28,8 +40,8 @@ class Asset extends BaseModel
                 $newQuery['bool']['must'][]['terms']['scene_id'] = $sceneId;
             }
             $newQuery['bool']['filter'][]['term']['kid_1'] = 1;
-            if ($query->page * $query->pageSize > 10000) {
-                $pageSize = $query->page*$query->pageSize - 10000;
+            if ($query->page * $pageSize > 10000) {
+                $pageSize = $query->page * $pageSize - 10000;
             }
 
             if ($query->sort === 'bytime') {
@@ -47,16 +59,16 @@ class Asset extends BaseModel
                         $newQuery['bool']['filter'][]['range']['use_count']['lt'] = $useInfo['top1_count'];
                         break;
                 }
-            }else{
+            } else {
                 $useInfo = '';
             }
             try {
                 $info = self::find()
-                    ->source(['id','use_count'])
+                    ->source(['id', 'use_count'])
                     ->query($newQuery)
                     ->orderBy($sortBy)
-                    ->offset(( $query->page - 1) * $query->pageSize)
-                    ->limit($query->pageSize)
+                    ->offset(($query->page - 1) * $pageSize)
+                    ->limit($pageSize)
                     ->createCommand()
                     ->search([], ['track_scores' => true])['hits'];
             } catch (\exception $e) {
@@ -83,6 +95,7 @@ class Asset extends BaseModel
         return $return;
     }
     //推荐搜索
+
     public function recommendSearch(QueryBuilderInterface $query): array
     {
         if ($query->keyword) {
@@ -106,15 +119,16 @@ class Asset extends BaseModel
         $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
         foreach ($info['hits'] as $value) {
             $return['ids'][] = $value['_id'];
-            if (isset( $value['sort'])){
+            if (isset($value['sort'])) {
                 $return['score'][$value['_id']] = $value['sort'][0];
-            }else{
+            } else {
                 $return['score'][$value['_id']] = 0;
             }
         }
         return $return;
     }
-    public static function saveRecord($fields = []) {
+    public static function saveRecord($fields = [])
+    {
         if (!$fields['id']) return false;
         $info = self::findOne($fields['id']);
         if (!$info) {
@@ -142,7 +156,8 @@ class Asset extends BaseModel
         $info->scene_id = $scene;
         $info->save();
     }
-    public static function queryKeyword($keyword, $is_or = false) {
+    public static function queryKeyword($keyword, $is_or = false)
+    {
         $operator = $is_or ? 'or' : 'and';
         $query['bool']['must'][]['multi_match'] = [
             'query' => $keyword,
@@ -152,10 +167,12 @@ class Asset extends BaseModel
         ];
         return $query;
     }
-    public static function sortByTime() {
+    public static function sortByTime()
+    {
         return 'created desc';
     }
-    public static function sortDefault() {
+    public static function sortDefault()
+    {
         //        $source = "doc['pr'].value-doc['man_pr'].value+doc['man_pr_add'].value";
         $source = "doc['pr'].value+(int)(_score*10)";
         $sort['_script'] = [
@@ -168,60 +185,18 @@ class Asset extends BaseModel
         ];
         return $sort;
     }
-    public static function sortByHot() {
+    public static function sortByHot()
+    {
         return 'edit desc';
     }
 
-    public static function index() {
+    public static function index()
+    {
         return 'asset2';
     }
 
-    public static function type() {
+    public static function type()
+    {
         return 'list';
-    }
-
-    public function attributes() {
-        return ['id', 'title', 'description', 'created', 'kid_1', 'kid_2', 'kid_3', 'pr', 'man_pr', 'man_pr_add', 'width', 'height', 'ratio', 'scene_id', 'is_zb','use_count'];
-    }
-
-    public static function mapping() {
-        return [
-            static::type() => [
-                "dynamic" => false,
-                'properties' => [
-                    'id' => ['type' => 'integer', 'include_in_all' => false],
-                    'title' => ['type' => 'text', 'analyzer' => "ik_smart", 'include_in_all' => true],
-                    'description' => ['type' => 'text', 'analyzer' => "ik_smart", 'include_in_all' => true],
-                    'created' => ['type' => 'date', "format" => "yyy-MM-dd HH:mm:ss||yyyy-MM-dd", 'include_in_all' => false],
-                    'kid_1' => ['type' => 'integer', 'include_in_all' => false],
-                    'kid_2' => ['type' => 'integer', 'include_in_all' => false],
-                    'kid_3' => ['type' => 'integer', 'include_in_all' => false],
-                    'pr' => ['type' => 'long', 'include_in_all' => false],
-                    'man_pr' => ['type' => 'long', 'include_in_all' => false],
-                    'man_pr_add' => ['type' => 'long', 'include_in_all' => false],
-                    'width' => ['type' => 'integer', 'include_in_all' => false],
-                    'height' => ['type' => 'integer', 'include_in_all' => false],
-                    'ratio' => ['type' => 'short', 'include_in_all' => false],
-                    'scene_id' => ['type' => 'short', 'include_in_all' => false],
-                    'is_zb' => ['type' => 'short', 'include_in_all' => false],
-                    'use_count' => ['type' => 'integer', 'include_in_all' => false],
-                ]
-            ],
-        ];
-    }
-
-    /**
-     * Set (update) mappings for this model
-     */
-    public static function updateMapping() {
-        $db = static::getDb();
-        $command = $db->createCommand();
-        $command->setMapping(static::index(), static::type(), static::mapping());
-    }
-
-    public static function getMapping() {
-        $db = static::getDb();
-        $command = $db->createCommand();
-        return $command->getMapping(static::index(), static::type(), static::mapping());
     }
 }

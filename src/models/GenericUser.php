@@ -31,12 +31,9 @@ class GenericUser implements \yii\web\IdentityInterface
 
     public static function findIdentityByAccessToken($token, $type = null)
     {
-
-        // if (self::getInstance()->attributes['access_token'] === $token) {
-        //     return new static(self::getInstance()->attributes);
-        // }
-
-        return self::getInstance()->attributes;
+        if (self::getInstance()->attributes['accessToken'] === $token) {
+            return new static(self::getInstance()->attributes);
+        }
     }
 
     public static function findIdentity($id)
@@ -52,11 +49,16 @@ class GenericUser implements \yii\web\IdentityInterface
 
     public function getAuthKey()
     {
-        return $this->attributes['auth_key'];
+        return $this->attributes['authKey'];
     }
 
     public function validateAuthKey($authKey)
     {
-        return $this->attributes['auth_key'] === $authKey;
+        return $this->attributes['authKey'] === $authKey;
+    }
+
+    public function toArray()
+    {
+        return $this->attributes;
     }
 }

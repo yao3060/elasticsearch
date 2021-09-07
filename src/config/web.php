@@ -42,6 +42,12 @@ $config = [
                 ['http_address' => getenv('ELASTIC_COLOR_HOST')],
             ],
         ],
+        'elasticsearch_second' => [
+            'class' => 'yii\elasticsearch\Connection',
+            'nodes' => [
+                ['http_address' => getenv('ELASTIC_SECOND_HOST')],
+            ],
+        ],
         'elasticsearch_search_keyword' => [
             'class' => 'yii\elasticsearch\Connection',
             'nodes' => [
@@ -50,7 +56,9 @@ $config = [
         ],
         'user' => [
             'identityClass' => 'app\models\User',
-            'enableAutoLogin' => true,
+            'enableAutoLogin' => false,
+            'enableSession' => false,
+            'loginUrl' => null
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
