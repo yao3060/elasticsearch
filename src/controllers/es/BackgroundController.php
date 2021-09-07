@@ -3,7 +3,7 @@
 /**
  * 重构ES,background搜索方法
  */
-namespace app\controllers;
+namespace app\controllers\es;
 use app\models\ES\Background;
 use app\queries\ES\BackGroundSearchQuery;
 use yii\rest\Controller;

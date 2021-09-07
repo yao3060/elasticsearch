@@ -3,7 +3,7 @@
 /**
  * 重构ES,Asset搜索方法
  */
-namespace app\controllers;
+namespace app\controllers\es;
 use app\models\ES\Asset;
 use app\queries\ES\AssetSearchQuery;
 use yii\rest\Controller;
