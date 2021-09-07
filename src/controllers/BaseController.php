@@ -2,11 +2,18 @@
 
 namespace app\controllers;
 
+use app\components\IpsAuthority;
 use app\interfaces\ResponseInterface;
 use yii\rest\Controller;
 
 class BaseController extends Controller
 {
+    public function init()
+    {
+        parent::init();
+        IpsAuthority::definedAuth(); // 初始化权限变量
+    }
+
     /**
      * common response function
      *
