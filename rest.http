@@ -2,13 +2,7 @@
 
 
 ### Get Logs
-POST {{BASE_URL}}/v1/logs HTTP/1.1
+GET {{BASE_URL}}/v1/logs?name=hanmaker&email=email@email.com&age=11 HTTP/1.1
 content-type: application/json
 # username:password
-Authenticate: Basic dXNlcm5hbWU6cGFzc3dvcmQ=  
-
-{
-    "name": "hanmaker",
-    "email": "hanmaker@app.com",
-    "age": 11
-}
+Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=

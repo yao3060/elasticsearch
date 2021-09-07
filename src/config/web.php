@@ -36,9 +36,23 @@ $config = [
             // 'autodetectCluster' => false,
             'dslVersion' => 5, // default is 5
         ],
+        'elasticsearch_color' => [
+            'class' => 'yii\elasticsearch\Connection',
+            'nodes' => [
+                ['http_address' => getenv('ELASTIC_COLOR_HOST')],
+            ],
+        ],
+        'elasticsearch_search_keyword' => [
+            'class' => 'yii\elasticsearch\Connection',
+            'nodes' => [
+                ['http_address' => getenv('ELASTIC_KEYWORD_HOST')],
+            ],
+        ],
         'user' => [
             'identityClass' => 'app\models\User',
-            'enableAutoLogin' => true,
+            'enableAutoLogin' => false,
+            'enableSession' => false,
+            'loginUrl' => null
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -61,6 +75,14 @@ $config = [
         ],
         'db' => $db,
         'urlManager' => $routes,
+
+        'redis_search' => [
+            'class' => 'yii\redis\Connection',
+            'hostname' => 'r-uf6an0ba8tty6e8v03.redis.rds.aliyuncs.com',
+            'port' => 6379,
+            'database' => 0,
+            'password' => getenv('REDIS_PASSWORD'),
+        ],
 
         'redis0' => [
             'class' => 'yii\redis\Connection',

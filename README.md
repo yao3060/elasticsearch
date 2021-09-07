@@ -47,38 +47,89 @@ http://gitlab.818ps.com/ips/elasticsearch/-/wikis/HTTP-Status-Code
 
 ## Routes
 
-```
-ESTemplate	        (公共模版)               /818ps/v1/templates
-# ESTemplateNew	    (用于替换公共模版)        /818ps/v2/templates
-ESTemplateSecond	  (设计师模板，二次设计)     /818ps/v3/templates
-ESTemplateExcerpt	  (获取片段视频)
-ESTemplateSinglePage(PPT模板单页分类筛选)     /
+## Templates
 
-ESBackground	      (背景图片)
+```
+[ ] ESTemplate	          (公共模版)               /818ps/v1/templates
+[ ] ESTemplateSecond	  (设计师模板，二次设计)     /818ps/v1/designer-templates
+[ ] ESTemplateSinglePage  (PPT模板单页分类筛选)     /818ps/v1/ppt-templates
+[ ] ESTemplateExcerpt	  (片段视频)               /818ps/v1/video-templates
+```
+
+## Video
+
+```
+[ ] ESVideoE            (视频元素)                 /818ps/v1/video-elements
+[ ] ESBgVideo	          (背景视频)                   /818ps/v1/video-backgrounds
+[ ] ESVideoLottie	(1)                             /818ps/v1/videos/lottie
+[ ] ESVideoLottieWord	(1)                         /818ps/v1/videos/lottie-words
+```
+
+## 素材
+
+```
+ESAsset                   (素材)                  /818ps/v1/assets
+ESGifAsset	          (GIF)                  /818ps/v1/gif-assets
+ESRtAsset	          (富文本元素)             /818ps/v1/rich-editor-assets
+ESBackground	          (背景图片)               /818ps/v1/backgrounds
+ESPicture	          (图片素材)               /818ps/v1/pictures
+ESVideoAudio	          (试听素材)               /818ps/v1/audiovisuals
+ESGroupWord	          (组合字)                /818ps/v1/group-words
+ESSvg	                  (获取SVG)               /818ps/v1/svgs
+```
+
+## 关键词 ​
+
+```
+ESSearchWord	        (关键词​)                 /818ps/v1/search-keywords
+ESSearchWordNew	        (更新关键词​)              /818ps/v1/search-keywords
+ESBanWords	        (敏感词)                 /818ps/v1/sensitive-words
+ESH5BanWords	        (敏感词)                 /818ps/v1/h5-sensitive-words
+
+ESSeoSearchWord	                (seo词库中 相关搜索词)       /818ps/v1/seo-keywords
+ESSeoSearchWordAsset	        (seo词库相关推荐)           /818ps/v1/seo-keyword-assets
+ESSeoDetailKeywordForTitle	(通过标题搜索关键词​)         /818ps/v1/seo-title-keywords
+ESSeoNewPage	(2)                               /818ps/v1/seo/
+ESSeoLinkWord	(1)                               /818ps/v1/seo/
+```
+
+## 裁剪
+
+```
+ESContainer	        (裁剪)                   /818ps/v1/containers
+```
+
+```
+[ ] ESTemplate	        (公共模版)               /818ps/v1/templates
+[ ] ESTemplateSecond	  (设计师模板，二次设计)     /818ps/v1/designer-templates
+[ ] ESTemplateSinglePage(PPT模板单页分类筛选)     /818ps/v1/ppt-templates
+[ ] ESTemplateExcerpt	  (片段视频)               /818ps/v1/video-templates
+ESVideoE            (视频元素)               /818ps/v1/video-elements
+ESBgVideo	          (背景视频)               /818ps/v1/video-backgrounds
+
 ESAsset             (素材)                  /818ps/v1/assets
+ESBackground	      (背景图片)               /818ps/v1/backgrounds
 ESPicture	          (图片素材)               /818ps/v1/pictures
 ESVideoAudio	      (试听素材)               /818ps/v1/audiovisuals
-
-ESSearchWord	      (问苏企)                 /818ps/v1/search-words
-ESSearchWordNew	    (问苏企)                 /818ps/v1/search-words
-ESVideoE            (视频元素)               /818ps/v1/video-elements
-ESBgVideo	          (背景视频)               /818ps/v1/background-videos
+ESGroupWord	        (组合字)                 /818ps/v1/group-words
 
 ESContainer	        (裁剪)                   /818ps/v1/containers
 
-ESGroupWord	        (组合字)                 /818ps/v1/group-words
-ESBanWords	        (5)                     /818ps/v1/ban-words
-ESH5BanWords	      (1)                     /818ps/v1/h5/ban-words
 
-ESSeoSearchWord	    (搜索模块搜索词)          /818ps/v1/seo/search-words
-ESSeoSearchWordAsset	(4)                   /818ps/v1/seo/search-words/assets
-ESSeoDetailKeywordForTitle	(3)             /
-ESSeoNewPage	(2)                           /818ps/v1/seo/
-ESSeoLinkWord	(1)                           /818ps/v1/seo/
+ESSearchWord	      (关键词​)                 /818ps/v1/search-keywords
+ESSearchWordNew	    (更新关键词​)              /818ps/v1/search-keywords
+ESBanWords	        (敏感词)                 /818ps/v1/sensitive-words
+ESH5BanWords	      (敏感词)                 /818ps/v1/h5-sensitive-words
+
+ESSeoSearchWord	    (seo词库中 相关搜索词)         /818ps/v1/seo-keywords
+ESSeoSearchWordAsset	(seo词库相关推荐)           /818ps/v1/seo-keywords/assets
+ESSeoDetailKeywordForTitle	(通过标题搜索关键词​)   /818ps/v1/seo/
+ESSeoNewPage	(2)                               /818ps/v1/seo/
+ESSeoLinkWord	(1)                               /818ps/v1/seo/
 
 ESSvg	(3)                                   /818ps/v1/svgs
 ESGifAsset	(2)                             /818ps/v1/gif/assets
-ESRtAsset	(1)                               /818ps/v1/rt/assets
+ESRtAsset	(1)                               /818ps/v1/rich-editor/assets
 ESVideoLottie	(1)                           /818ps/v1/videos/lottie
 ESVideoLottieWord	(1)                       /818ps/v1/videos/lottie-words
 ```

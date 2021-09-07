@@ -8,30 +8,9 @@ use yii\base\UnknownPropertyException;
 use yii\web\Request;
 use app\components\Response;
 use app\helpers\StringHelper;
-use yii\filters\auth\HttpBasicAuth;
 
 class LogController extends BaseController
 {
-    public function behaviors()
-    {
-        $behaviors = parent::behaviors();
-        $behaviors['authenticator'] = [
-            'class' => HttpBasicAuth::class,
-            'auth' => [$this, 'auth'],
-        ];
-        return $behaviors;
-    }
-
-    public function auth($username, $password)
-    {
-        return new \app\models\GenericUser([
-            'id' => '101',
-            'username' => $username,
-            'password' => $password,
-            'auth_key' => 'test101key',
-            'access_token' => '101-token',
-        ]);
-    }
 
     /**
      * @api {get} /v1/logs Request Logs
@@ -43,41 +22,46 @@ class LogController extends BaseController
      */
     public function actionIndex(Request $request)
     {
-        $response = new Response();
+
+
 
         try {
             $model = DynamicModel::validateData($request->get(), [
-                [['name', 'email'], 'string', 'max' => 128],
+                [['name', 'email'], 'string'],
                 ['email', 'email'],
             ]);
+            if ($model->hasErrors()) {
+                return  $this->response(new Response('422', '422', $model->errors));
+            }
 
-
-            $response->status(200);
-            $response->code('readable_response_code');
-            $response->message('Response Message');
-            $response->data(array_merge(
-                $model->getAttributes(),
-                ['user' => Yii::$app->user->identity]
+            // code here...
+            return $this->response(new Response(
+                'readable_response_code',
+                'Response Message',
+                array_merge($model->getAttributes(), [
+                    'user' => Yii::$app->user->identity
+                ]),
+                200
             ));
         } catch (UnknownPropertyException $e) {
-
-            $response->status(500);
-            $response->code(StringHelper::snake($e->getName()));
-            $response->message(str_replace('yii\\base\\DynamicModel::', '', $e->getMessage()));
-            $response->data([]);
-            $response->headers([
-                'X-Total' => 100,
-                'X-UserId' => 199
-            ]);
+            return  $this->response(new Response(
+                StringHelper::snake($e->getName()),
+                str_replace('yii\\base\\DynamicModel::', '', $e->getMessage()),
+                [],
+                422,
+                [
+                    'X-Total' => 100,
+                    'X-UserId' => 199
+                ]
+            ));
         } catch (\Throwable $th) {
-
+            $response = new Response();
             $response->status(500);
             $response->code('a_readable_error_code');
             $response->message($e->getMessage());
             $response->data(YII_DEBUG ? explode("\n", $th->getTraceAsString()) : []);
+            return $this->response($response);
         }
-
-        return $this->response($response);
     }
 
     public function actionCreate(Request $request)

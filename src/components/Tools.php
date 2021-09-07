@@ -2964,4 +2964,43 @@ class Tools
         return $result;
     }
 
+    /**
+     * 是否回源
+     * @param int $prep
+     * @return bool
+     */
+    public static function isReturnSource($prep = 0)
+    {
+        // 12336807 龙雨洁
+        $uids = [41, 2626047, 1582045, 4867228, 3837014, 2936030, 9667287];
+//        2626047 朱天会
+//        1582045 殷龙龙
+//        4867228 何丽
+//        3837014 丁胜男
+//        9667287 储召琴
+        //true 是控制台程序运行
+        if (Yii::$app->id == 'basic-console') {
+            $uid = 0;
+        } else {
+            $uid = Yii::$app->user->id;
+        }
+        if (($prep == 1 || $_GET['prep'] == 1) && in_array($uid, $uids)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 缓存是否回源
+     * @param int $prep
+     * @return bool
+     */
+    public static function isReturnSourceVisitor($prep = 0)
+    {
+        if (($prep == 1 || $_GET['prep'] == 1)) {
+            return true;
+        }
+        return false;
+    }
+
 }

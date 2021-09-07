@@ -11,5 +11,6 @@ return [
         'POST v1/asset/recommend-search' => 'asset/recommend-search',
         'POST v1/asset/save-record' => 'asset/save-record',
         'POST v1/background/search' => 'background/search',
+        'GET  v1/svgs' => 'es/svg/index',
     ],
 ];
