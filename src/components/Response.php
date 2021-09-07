@@ -7,13 +7,24 @@ use app\interfaces\ResponseInterface;
 
 class Response implements ResponseInterface
 {
+    public string $code = '';
+    public string $message = '';
+    public array $data = [];
+    public int $status = 200;
+    public array $headers = [];
+
     function __construct(
-        public string $code = '',
-        public string $message = '',
-        public array $data = [],
-        public int $status = 200,
-        public array $headers = []
+        string $code = '',
+        string $message = '',
+        array $data = [],
+        int $status = 200,
+        array $headers = []
     ) {
+        $this->code = $code;
+        $this->message = $message;
+        $this->data = $data;
+        $this->status = $status;
+        $this->headers = $headers;
     }
 
     public function status(int $status = 200)
