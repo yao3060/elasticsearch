@@ -41,4 +41,8 @@ class PictureSearchQuery implements QueryBuilderInterface
     {
         return ['my', 'query'];
     }
+
+    public function getRedisKey()
+    {
+    }
 }
