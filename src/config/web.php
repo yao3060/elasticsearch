@@ -4,9 +4,11 @@ $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 $routes = require __DIR__ . '/routes.php';
 $config = [
-    'id' => 'basic',
+    'id' => 'ips-elasticsearch',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'language' => 'zh-CN',
+    'timeZone' => 'Asia/Shanghai',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -75,7 +77,7 @@ $config = [
             'targets' => [
                 [
                     'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
+                    'levels' => ['error', 'info', 'warning'],
                 ],
             ],
         ],
@@ -178,7 +180,7 @@ if (YII_ENV_DEV) {
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
         // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
+        'allowedIPs' => ['127.0.0.1', '::1', '192.168.154.*', '192.168.18.*', '192.168.239.*', '192.168.159.*'],
     ];
 }
 
