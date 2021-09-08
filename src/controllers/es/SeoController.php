@@ -10,11 +10,11 @@ use app\models\ES\Seo;
 use app\queries\ES\SeoSearchQuery;
 use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
-use yii\rest\Controller;
+use app\controllers\BaseController;
 use Yii;
 use yii\web\Request;
 
-class SeoController extends Controller
+class SeoController extends BaseController
 {
     public function actionSearch(Request $request)
     {
@@ -45,7 +45,7 @@ class SeoController extends Controller
                 500
             );
         }
-        return $this->asJson($response);
+        return $this->response($response);
     }
     public function actionSeoSearch(Request $request)
     {
@@ -76,6 +76,6 @@ class SeoController extends Controller
                 500
             );
         }
-        return $this->asJson($response);
+        return $this->response($response);
     }
 }

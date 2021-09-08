@@ -130,7 +130,7 @@ class Background extends BaseModel
     }
 
     public static function index() {
-        return 'asset2';
+        return 'background2';
     }
 
     public static function type() {
