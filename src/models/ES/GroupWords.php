@@ -89,6 +89,34 @@ class GroupWords extends BaseModel
         }
         return $return;
     }
+    //推荐搜索
+    public function recommendSearch(QueryBuilderInterface $query): array
+    {
+        if ($query->keyword) {
+            $newQuery = $this->queryKeyword($query->keyword, true);
+        }
+        $sort = $this->sortDefault();
+        try {
+            $info = self::find()
+                ->source(['id'])
+                ->query($newQuery)
+                ->orderBy($sort)
+                ->offset(($query->page - 1) * $query->pageSize)
+                ->limit($query->pageSize)
+                ->createCommand()
+                ->search([], ['track_scores' => true])['hits'];
+        } catch (\exception $e) {
+            $info['hit'] = 0;
+            $info['ids'] = [];
+            $info['score'] = [];
+        }
+        $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
+        foreach ($info['hits'] as $value) {
+            $return['ids'][] = $value['_id'];
+            $return['score'][$value['_id']] = $value['sort'][0];
+        }
+        return $return;
+    }
     public static function queryKeyword($keyword, $is_or = false) {
         $operator = $is_or ? 'or' : 'and';
         $query['bool']['must'][]['multi_match'] = [
@@ -98,6 +126,18 @@ class GroupWords extends BaseModel
             "operator" => $operator
         ];
         return $query;
+    }
+    public static function sortDefault() {
+        $source = "doc['pr'].value+(int)(_score*10)";
+        $sort['_script'] = [
+            'type' => 'number',
+            'script' => [
+                "lang" => "painless",
+                "source" => $source
+            ],
+            'order' => 'desc'
+        ];
+        return $sort;
     }
 
 
