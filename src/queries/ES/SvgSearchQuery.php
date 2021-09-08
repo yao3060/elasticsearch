@@ -4,6 +4,7 @@
 namespace app\queries\ES;
 
 use app\interfaces\ES\QueryBuilderInterface;
+use Yii;
 
 class SvgSearchQuery implements QueryBuilderInterface
 {
@@ -24,6 +25,7 @@ class SvgSearchQuery implements QueryBuilderInterface
         if (!empty($this->kid2)) {
             $this->query['bool']['must'][]['terms']['kid_2'] = $this->kid2;
         }
+        Yii::info($this->query);
         return $this->query;
     }
 
@@ -42,5 +44,10 @@ class SvgSearchQuery implements QueryBuilderInterface
             'type' => 'most_fields',
             "operator" => $operator
         ];
+    }
+
+    public function getRedisKey()
+    {
+        return '';
     }
 }
