@@ -1,24 +1,21 @@
 <?php
 
 /**
- * 重构ES,background搜索方法
+ * 重构ES,Asset搜索方法
  */
 namespace app\controllers\es;
 use app\components\Response;
 use app\helpers\StringHelper;
-use app\models\ES\Background;
-use app\queries\ES\BackGroundSearchQuery;
+use app\models\ES\GroupWords;
+use app\queries\ES\GroupWordsSearchQuery;
 use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
 use app\controllers\BaseController;
 use Yii;
 use yii\web\Request;
 
-class BackgroundController extends BaseController
+class GroupWordsController extends BaseController
 {
-    /**
-     * @return \yii\web\Response
-     */
     public function actionSearch(Request $request)
     {
         $data = $request->get();
@@ -29,11 +26,10 @@ class BackgroundController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new Background())
-                    ->search(new BackGroundSearchQuery($data['keyword'], $data['page'], $data['pageSize'],
-                        $data['sceneId'] ?? 0,$data['isZb'] ?? 0,$data['sort'] ?? 0,$data['useCount'] ?? 0,$data['kid'] ?? 0,
-                        $data['ratioId'] ?? 0,$data['class'] ?? 0 ,$data['isBg'] ?? 0));
-                $response = new Response('get_list', 'Get List', $data);
+                $data = (new GroupWords())
+                    ->search(new GroupWordsSearchQuery($data['keyword'], $data['page'], $data['pageSize'],$data['search'],
+                        $data['searchAll']));
+                $response = new Response('get_groupWords_list', 'groupWordsList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(
@@ -52,4 +48,5 @@ class BackgroundController extends BaseController
         }
         return $this->response($response);
     }
+
 }

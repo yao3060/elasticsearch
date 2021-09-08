@@ -10,15 +10,14 @@ use app\models\ES\Asset;
 use app\queries\ES\AssetSearchQuery;
 use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
-use yii\rest\Controller;
+use app\controllers\BaseController;
 use Yii;
 use yii\web\Request;
 
-class AssetController extends Controller
+class AssetController extends BaseController
 {
     public function actionSearch(Request $request)
     {
-
         $data = $request->get();
         try {
             $model = DynamicModel::validateData($data, [
@@ -47,7 +46,7 @@ class AssetController extends Controller
                 500
             );
         }
-        return $this->asJson($response);
+        return $this->response($response);
     }
     public function actionRecommendSearch(Request $request)
     {
@@ -78,7 +77,7 @@ class AssetController extends Controller
                 500
             );
         }
-        return $this->asJson($response);
+        return $this->response($response);
     }
     public function actionSaveRecord()
     {
@@ -86,6 +85,6 @@ class AssetController extends Controller
         $data = (new Asset())
             ->saveRecord($data);
         $this->response->headers->set('X-Total', 1000);
-        return $this->asJson($data);
+        return $this->response($data);
     }
 }
