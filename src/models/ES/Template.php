@@ -461,7 +461,7 @@ class Template extends BaseModel
 //                ],
 //                'required'
 //            ],
-            [['keywords'], 'string'],
+            [['keyword'], 'string'],
 //            [
 //                [
 //                    'kid1', 'kid2', 'tagId', 'ratio', 'page', 'pageSize', 'classId', 'fuzzy', 'templateType', 'width', 'height',
@@ -476,7 +476,7 @@ class Template extends BaseModel
     public function recommendRules()
     {
         return [
-            [['keywords'], 'string']
+            [['keyword'], 'string']
         ];
     }
 }

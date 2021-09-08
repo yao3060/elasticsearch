@@ -48,7 +48,7 @@ class TemplateRecommendSearchQuery implements QueryBuilderInterface
 
     public function __construct($params)
     {
-        $this->keywords = $params['keywords'] ?? 0;
+        $this->keywords = $params['keyword'] ?? 0;
         $this->page = $params['page'] ?? 1;
         $this->pageSize = $params['page_size'] ?? 40;
         $this->templateType = $params['template_type'] ?? null;

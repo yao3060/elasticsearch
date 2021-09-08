@@ -129,10 +129,10 @@ class TemplateSearchQuery implements QueryBuilderInterface
 
     public function __construct($params)
     {
-        $this->keywords = $params['keywords'] ?? null;
+        $this->keywords = $params['keyword'] ?? null;
         $this->kid1 = $params['kid1'] ?? 0;
         $this->kid2 = $params['kid2'] ?? 0;
-        $this->sortType = $params['sortType'] ?: 'default';
+        $this->sortType = $params['sortType'] ?? 'default';
         $this->tagId = $params['tagId'] ?? 0;
         $this->isZb = $params['isZb'] ?? 1;
         $this->page = $params['page'] ?? 1;
