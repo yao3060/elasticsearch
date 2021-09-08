@@ -8,17 +8,17 @@ use app\interfaces\ES\QueryBuilderInterface;
 class BackGroundSearchQuery implements QueryBuilderInterface
 {
     //搜索所需要参数
-    public $keyword;
-    public $page;
-    public $pageSize;
-    public $sceneId;
-    public $isZb;
-    public $sort = 'DESC';
-    public $useCount;
-    public $kid;
-    public $ratioId;
-    public $class;
-    public $isBg;
+    public string $keyword;
+    public int $page;
+    public int $pageSize;
+    public string $sceneId;
+    public int $isZb;
+    public string $sort;
+    public int $useCount;
+    public string $kid;
+    public int $ratioId;
+    public int $class;
+    public int $isBg;
     function __construct(
         $keyword = 0,
         $page = 1,
@@ -47,5 +47,9 @@ class BackGroundSearchQuery implements QueryBuilderInterface
     public function query():array
     {
         return ['my', 'query'];
+    }
+    public function getRedisKey()
+    {
+        // TODO: Implement getRedisKey() method.
     }
 }
