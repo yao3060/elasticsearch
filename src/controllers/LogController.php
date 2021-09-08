@@ -17,21 +17,27 @@ class LogController extends BaseController
      * @apiName GetLogs
      * @apiGroup Logs
      *
-     * @apiParam {Number} [page=1]          Current Page
-     * @apiParam {Number} [per_page=10]     Page Size
+     * @apiParamExample {json} Request-Example:
+     *  {
+     *      "name": "admin",
+     *      "email": "test@app.com",
+     *      "age": 100
+     *  }
      */
     public function actionIndex(Request $request)
     {
-
-
-
         try {
-            $model = DynamicModel::validateData($request->get(), [
-                [['name', 'email'], 'string'],
+            $model = DynamicModel::validateData($request->getBodyParams(), [
+                ['name', 'string'],
                 ['email', 'email'],
+                ['age', 'integer', 'min' => 10, 'max' => 20],
             ]);
             if ($model->hasErrors()) {
-                return  $this->response(new Response('422', '422', $model->errors));
+                return  $this->response(new Response(
+                    'unprocessable_entity',
+                    'Unprocessable Entity',
+                    $model->errors
+                ));
             }
 
             // code here...
