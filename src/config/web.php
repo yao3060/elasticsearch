@@ -92,6 +92,14 @@ $config = [
             'password' => getenv('REDIS_PASSWORD'),
         ],
 
+        'redis_monitor' => [
+            'class' => 'yii\redis\Connection',
+            'hostname' => getenv('REDIS_SEARCH_HOSTNAME'),
+            'port' => 6379,
+            'database' => getenv('REDIS_DATABASE2'),
+            'password' => getenv('REDIS_PASSWORD'),
+        ],
+
         'redis0' => [
             'class' => 'yii\redis\Connection',
             'hostname' => getenv('REDIS_HOSTNAME'),

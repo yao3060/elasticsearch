@@ -3003,4 +3003,21 @@ class Tools
         return false;
     }
 
+    /**
+     * 获取真实ip
+     * @return array|false|mixed|string
+     */
+    public static function getClientIP()
+    {
+        global $ip;
+        if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])){
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        }elseif (getenv("REMOTE_ADDR")) {
+            $ip = getenv("REMOTE_ADDR");
+        } else {
+            $ip = "Unknow";
+        }
+        return $ip;
+    }
+
 }
