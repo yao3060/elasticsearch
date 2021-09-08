@@ -7,14 +7,14 @@ use app\interfaces\ES\QueryBuilderInterface;
 
 class AssetSearchQuery implements QueryBuilderInterface
 {
-    //搜索所需要参数
-    public $keyword;
-    public $page;
-    public $pageSize;
-    public $sceneId;
-    public $isZb;
-    public $sort = 'DESC';
-    public $useCount;
+    //搜索所需 要参数
+    public string $keyword;
+    public int $page;
+    public int $pageSize;
+    public int $sceneId;
+    public int $isZb;
+    public string $sort;
+    public int $useCount;
 
     function __construct(
         $keyword = 0,
@@ -37,5 +37,9 @@ class AssetSearchQuery implements QueryBuilderInterface
     public function query():array
     {
         return ['my', 'query'];
+    }
+    public function getRedisKey()
+    {
+        // TODO: Implement getRedisKey() method.
     }
 }

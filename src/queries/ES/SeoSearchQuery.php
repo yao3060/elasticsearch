@@ -8,8 +8,8 @@ use app\interfaces\ES\QueryBuilderInterface;
 class SeoSearchQuery implements QueryBuilderInterface
 {
     //搜索所需要参数
-    public $keyword;
-    public $pageSize;
+    public string $keyword;
+    public int $pageSize;
     function __construct(
         $keyword = 0,
         $pageSize = 11
@@ -20,5 +20,9 @@ class SeoSearchQuery implements QueryBuilderInterface
     public function query():array
     {
         return ['my', 'query'];
+    }
+    public function getRedisKey()
+    {
+        // TODO: Implement getRedisKey() method.
     }
 }

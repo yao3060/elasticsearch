@@ -7,31 +7,38 @@ use app\interfaces\ES\QueryBuilderInterface;
 
 class PictureSearchQuery implements QueryBuilderInterface
 {
-    public $page;
-    public $pageSize;
-    public $sort = 'DESC';
-
-    private $kid2;
-    private $sceneId;
-    private $ratioId;
-    private $isZb;
-    private $vipPic;
-
+    /**
+     * @var string|int|mixed 关键字
+     */
+    public string $keyword;
+    /**
+     * @var int|mixed 页码
+     */
+    public int $page;
+    /**
+     * @var int|mixed 每页数量
+     */
+    public int $pageSize;
+    public array | string $sceneId;
+    public int $isZb;
+    public array | string $kid;
+    public int  $vipPic;
+    public int $ratioId;
     function __construct(
         $keyword = 0,
         $page = 1,
-        $kid2 = [],
-        $sceneId = [],
-        $ratioId = [],
         $pageSize = 40,
-        $isZb = 0,
-        $vipPic = 0
+        $sceneId = [],
+        $isZb = 1,
+        $kid = [],
+        $vipPic = 0,
+        $ratioId = []
     ) {
         $this->keyword = $keyword;
         $this->page = $page;
-        $this->kid2 = $kid2;
-        $this->scene_id = $sceneId;
-        $this->ratio_id = $ratioId;
+        $this->kid = $kid;
+        $this->sceneId = $sceneId;
+        $this->ratioId = $ratioId;
         $this->pageSize = $pageSize;
         $this->isZb = $isZb;
         $this->vipPic = $vipPic;
@@ -44,5 +51,6 @@ class PictureSearchQuery implements QueryBuilderInterface
 
     public function getRedisKey()
     {
+        // TODO: Implement getRedisKey() method.
     }
 }

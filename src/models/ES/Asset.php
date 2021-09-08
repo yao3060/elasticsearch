@@ -95,7 +95,6 @@ class Asset extends BaseModel
         return $return;
     }
     //推荐搜索
-
     public function recommendSearch(QueryBuilderInterface $query): array
     {
         if ($query->keyword) {
@@ -184,10 +183,6 @@ class Asset extends BaseModel
             'order' => 'desc'
         ];
         return $sort;
-    }
-    public static function sortByHot()
-    {
-        return 'edit desc';
     }
 
     public static function index()

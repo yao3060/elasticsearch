@@ -4,28 +4,81 @@
  * 重构ES,Asset搜索方法
  */
 namespace app\controllers\es;
+use app\components\Response;
+use app\helpers\StringHelper;
 use app\models\ES\Asset;
 use app\queries\ES\AssetSearchQuery;
+use yii\base\DynamicModel;
+use yii\base\UnknownPropertyException;
 use yii\rest\Controller;
 use Yii;
+use yii\web\Request;
 
 class AssetController extends Controller
 {
-    public function actionSearch()
+    public function actionSearch(Request $request)
     {
-        $data = Yii::$app->request->post();
-        $data = (new Asset())
-            ->search(new AssetSearchQuery($data['keyword'], $data['page'], $data['pageSize'],$data['sceneId'],$data['isZb'],$data['sort'],$data['useCount']));
-        $this->response->headers->set('X-Total', 1000);
-        return $this->asJson($data);
+
+        $data = $request->get();
+        try {
+            $model = DynamicModel::validateData($data, [
+                ['keyword', 'required']
+            ]);
+            if ($model->hasErrors()) {
+                $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
+            } else {
+                $data = (new Asset())
+                    ->search(new AssetSearchQuery($data['keyword'], $data['page'], $data['pageSize'],$data['sceneId'],
+                        $data['isZb'],$data['sort'],$data['useCount']));
+                $response = new Response('get_asset_list', 'assetList', $data);
+            }
+        } catch (UnknownPropertyException $e) {
+            $response = new Response(
+                StringHelper::snake($e->getName()),
+                str_replace('yii\\base\\DynamicModel::', '', $e->getMessage()),
+                [],
+                422
+            );
+        } catch (\Throwable $th) {
+            $response = new Response(
+                'a_readable_error_code',
+                $th->getMessage(),
+                YII_DEBUG ? explode("\n", $th->getTraceAsString()) : [],
+                500
+            );
+        }
+        return $this->asJson($response);
     }
-    public function actionRecommendSearch()
+    public function actionRecommendSearch(Request $request)
     {
-        $data = Yii::$app->request->post();
-        $data = (new Asset())
-            ->recommendSearch(new AssetSearchQuery($data['keyword'], $data['page'], $data['pageSize']));
-        $this->response->headers->set('X-Total', 1000);
-        return $this->asJson($data);
+        $data = $request->get();
+        try {
+            $model = DynamicModel::validateData($data, [
+                ['keyword', 'required']
+            ]);
+            if ($model->hasErrors()) {
+                $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
+            } else {
+                $data = (new Asset())
+                    ->recommendSearch(new AssetSearchQuery($data['keyword'], $data['page'], $data['pageSize']));
+                $response = new Response('get_Recommend_list', 'Get List', $data);
+            }
+        } catch (UnknownPropertyException $e) {
+            $response = new Response(
+                StringHelper::snake($e->getName()),
+                str_replace('yii\\base\\DynamicModel::', '', $e->getMessage()),
+                [],
+                422
+            );
+        } catch (\Throwable $th) {
+            $response = new Response(
+                'a_readable_error_code',
+                $th->getMessage(),
+                YII_DEBUG ? explode("\n", $th->getTraceAsString()) : [],
+                500
+            );
+        }
+        return $this->asJson($response);
     }
     public function actionSaveRecord()
     {
