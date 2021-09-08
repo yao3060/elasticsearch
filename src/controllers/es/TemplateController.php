@@ -1,4 +1,5 @@
 <?php
+
 namespace app\controllers\es;
 
 use app\components\Response;
@@ -8,7 +9,6 @@ use app\models\ES\Template;
 use app\queries\ES\TemplateRecommendSearchQuery;
 use app\queries\ES\TemplateSearchQuery;
 use yii\base\DynamicModel;
-use yii\base\Exception;
 use yii\base\UnknownPropertyException;
 use yii\web\Request;
 
@@ -21,115 +21,88 @@ class TemplateController extends BaseController
      */
     public function actionSearch(Request $request)
     {
-        $response = new Response();
-
         try {
 
             $template = new Template();
 
-            // 验证
-            $validate = DynamicModel::validateData($request->get(), $template->rules());
+            $validate = DynamicModel::validateData($request->getBodyParams(), $template->rules());
 
             if ($validate->hasErrors()) {
-                throw new Exception($validate->errors);
+                return $this->response(new Response(
+                    'validate params error',
+                    'Validate Params Error',
+                    $validate->errors,
+                    422));
             }
 
             $search = $template->search(new TemplateSearchQuery($validate->getAttributes()));
-            $response->code('es_template_search');
-            $response->message('ESTemplate Search');
-            $response->data($search);
 
-        } catch(UnknownPropertyException $unknownException) {
-
-            $response->status(422);
-            $response->code(StringHelper::snake($unknownException->getName()));
-            $response->message(StringHelper::replaceModelName($unknownException->getMessage()));
-
-        } catch (\Throwable $throwable) {
-
-            $response->status(500);
-            $response->code('Internal Server Error');
-            $response->message($throwable->getMessage());
-            $response->data(YII_DEBUG ?  explode("\n", $throwable->getTraceAsString()) : []);
-
-        }
-
-        return $this->response($response);
-    }
-
-    /**
-     * 保存模板
-     * @param Request $request
-     */
-    public function actionStore(Request $request)
-    {
-        $response = new Response();
-
-        try {
-
-            Template::saveRecord(['id' => 3225970]);
+            $response = new Response('es_template_search', 'ESTemplate Search', $search);
 
         } catch (UnknownPropertyException $unknownException) {
 
-            $response->status(422);
-            $response->code(StringHelper::snake($unknownException->getName()));
-            $response->message(StringHelper::replaceModelName($unknownException->getMessage()));
+            $response = new Response(
+                StringHelper::snake($unknownException->getName()),
+                StringHelper::replaceModelName($unknownException->getMessage()),
+                [],
+                422);
 
         } catch (\Throwable $throwable) {
 
-            $response->status(500);
-            $response->code('Internal Server Error');
-            $response->message($throwable->getMessage());
-            $response->data(YII_DEBUG ?  explode("\n", $throwable->getTraceAsString()) : []);
+            $response = new Response(
+                'Internal Server Error',
+                $throwable->getMessage(),
+                YII_DEBUG ? explode("\n", $throwable->getTraceAsString()) : [],
+                500);
 
         }
-
-        $response->data([
-            'mason' => 1
-        ]);
 
         return $this->response($response);
     }
 
     /**
-     * 搜索模板
+     * 搜索推荐模板
      * @param Request $request
      * @return \yii\web\Response
      */
     public function actionRecommendSearch(Request $request)
     {
-        $response = new Response();
-
         try {
 
             $template = new Template();
 
-            $validate = DynamicModel::validateData($request->get(), $template->recommendRules());
+            $validate = DynamicModel::validateData($request->getBodyParams(), $template->recommendRules());
 
             if ($validate->hasErrors()) {
-                throw new Exception($validate->errors);
+                return $this->response(new Response(
+                    'validate_param_errors',
+                    'Validate Param Errors',
+                    $validate->errors,
+                    422));
             }
 
             $recommendSearch = $template->recommendSearch(new TemplateRecommendSearchQuery($validate->getAttributes()));
 
-            $response->code('es_template_commend_search');
-
-            $response->message('ESTemplate Commend Search');
-
-            $response->data($recommendSearch);
+            $response = new Response(
+                'es_template_commend_search',
+                'ESTemplate Commend Search',
+                $recommendSearch);
 
         } catch (UnknownPropertyException $unknownException) {
 
-            $response->status(422);
-            $response->code(StringHelper::snake($unknownException->getName()));
-            $response->message(StringHelper::replaceModelName($unknownException->getMessage()));
+            $response = new Response(
+                StringHelper::snake($unknownException->getName()),
+                StringHelper::replaceModelName($unknownException->getMessage()),
+                [],
+                422);
 
         } catch (\Throwable $throwable) {
 
-            $response->status(500);
-            $response->code('Internal Server Error');
-            $response->message($throwable->getMessage());
-            $response->data(YII_DEBUG ?  explode("\n", $throwable->getTraceAsString()) : []);
+            $response = new Response(
+                'Internal Server Error',
+                $throwable->getMessage(),
+                YII_DEBUG ? explode("\n", $throwable->getTraceAsString()) : [],
+                500);
 
         }
 

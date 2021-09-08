@@ -15,8 +15,8 @@ return [
         'GET  v1/designer-templates' => 'es/designer-template/index',
         'POST v1/seo/search' => 'es/seo/search',
         'POST v1/seo/seo-search' => 'es/seo/seo-search',
-        'GET  v1/templates' => 'es/template/search',
-        'POST v1/templates' => 'es/template/store',
-        'GET  v1/templates/recommends' => 'es/template/recommend-search'
+        'GET  v1/templates' => 'es/template/search', // 模板搜索
+        'GET  v1/templates/recommends' => 'es/template/recommend-search', // 推荐模板搜索
+        'POST  v1/sensitive/word/validate' => 'es/sensitive-word/validate', // 违禁词验证
     ],
 ];
