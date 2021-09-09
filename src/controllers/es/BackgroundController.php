@@ -30,7 +30,7 @@ class BackgroundController extends BaseController
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $data = (new Background())
-                    ->search(new BackGroundSearchQuery($data['keyword'], $data['page'], $data['pageSize'],
+                    ->search(new BackGroundSearchQuery($data['keyword'], $data['page'] ?? 1, $data['pageSize'] ?? 40,
                         $data['sceneId'] ?? 0,$data['isZb'] ?? 0,$data['sort'] ?? 0,$data['useCount'] ?? 0,$data['kid'] ?? 0,
                         $data['ratioId'] ?? 0,$data['class'] ?? 0 ,$data['isBg'] ?? 0));
                 $response = new Response('get_list', 'Get List', $data);
