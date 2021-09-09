@@ -17,30 +17,22 @@ class BackgroundVideo extends BaseModel
         ];
     }
 
-    public static function queryKeyword($keyword, $is_or = false)
-    {
-        $operator = $is_or ? 'or' : 'and';
-        $query['bool']['must'][]['multi_match'] = [
-            'query' => $keyword,
-            'fields' => ["title^5", "description^1"],
-            'type' => 'most_fields',
-            "operator" => $operator
-        ];
-        return $query;
-    }
-
+    /**
+     * 搜索背景视频
+     * @param QueryBuilderInterface $query
+     * @return array
+     */
     public function search(QueryBuilderInterface $query): array
     {
         $return = Tools::getRedis(self::$redis_db, $query->getRedisKey());
 
-//        if (!$return || Tools::isReturnSource()) {
-        if (!$return) {
+        if (!$return || Tools::isReturnSource()) {
             unset($return);
 
             try {
                 $info = self::find()
                     ->source(['id'])
-                    ->query($query)
+                    ->query($query->query())
                     ->orderBy($query->sort)
                     ->offset(($query->page - 1) * $query->pageSize)
                     ->limit($query->pageSize)

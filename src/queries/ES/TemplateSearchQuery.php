@@ -9,162 +9,55 @@ use app\models\ES\Template;
 
 class TemplateSearchQuery extends BaseTemplateSearchQuery
 {
-    /**
-     * 搜索关键词
-     * @var string|mixed
-     */
-    public $keyword;
-
-    /**
-     * 一级版式
-     * @var int|string|mixed
-     */
-    public $kid1;
-
-    /**
-     * 二级版式
-     * @var int|string|mixed
-     */
-    public int|string $kid2;
-
-    /**
-     * 排序  byyesday：昨日热门 ；bymonth：热门下载；bytime：最新上传
-     * @var string|mixed
-     */
-    public string $sortType = 'default';
-
-    /**
-     * 风格
-     * @var int|string|mixed
-     */
-    public int|string $tagId = 0;
-
-    /**
-     * 是否可商用   >= 1 可商用
-     * @var bool|mixed
-     */
-    public int $isZb = 1;
-
-    /**
-     * 页数
-     * @var int|string|mixed
-     */
-    public int|string $page = 1;
-
-    /**
-     * 每页条数
-     * @var int|string|mixed
-     */
-    public int|string $pageSize = 35;
-
-    /**
-     * 版式  null：全部 1：横图；2：竖图；0：方图
-     */
-    public $ratio = 0;
-
-    /**
-     * 分类
-     * @var int|string|mixed
-     */
-    public int|string $classId = 0;
-
-    /**
-     * true：强制回源
-     * @var bool|mixed
-     */
-    public int $update = 0;
-
-    /**
-     * 【已废弃】
-     * @var int|string|mixed
-     */
-    public int|string $size = 0;
-
-    /**
-     * 1：关键词（有交集）就会出现   但会降低性能  实测 3个词速度降低50%  8个词速度降低87.5%
-     * @var int|string|mixed
-     */
-    public int|string $fuzzy = 0;
-
-    /**
-     * 模板类型 1.普通模板；2.GIF模板 3.ppt模板 4.视频模板 5.H5模板 & 长页H5
-     * @var array|int[]|mixed
-     */
-    public array $templateTypes = [1, 2];
-
-    /**
-     * 颜色
-     * @var array|mixed
-     */
-    public array $color = [];
-
-    public $elasticsearchColor;
-
-    /**
-     * 【已废弃】
-     * @var bool|mixed
-     */
-    public int $use = 0;
-
-    /**
-     * 宽度
-     * @var int|string|mixed
-     */
-    public int|string $width = 0;
-
-    /**
-     * 高度
-     * @var int|string|mixed
-     */
-    public int|string $height = 0;
-
-    /**
-     * 0：class查询规则（包含）才能出现  1：class查询规则（有交集）就会出现
-     * @var int|string|mixed
-     */
-    public int|string $classIntersectionSearch = 0;
-
-    public $sortClassId;
-
-    public $sort;
-
-    public $offset;
-
-    protected $query = [];
-
-    public function __construct($params)
+    public function __construct(
+        public $keyword = null,
+        public $page = 1,
+        public $kid1 = 0,
+        public $kid2 = 0,
+        public $sortType = 'default',
+        public $tagId = 0,
+        public $isZb = 1,
+        public $pageSize = 35,
+        public $ratio = null,
+        public $classId = 0,
+        public $update = 0,
+        public $size = 0,
+        public $fuzzy = 0,
+        public $templateTypes = [1, 2],
+        public $use = 0,
+        public $color = [],
+        public $width = 0,
+        public $height = 0,
+        public $classIntersectionSearch = 0,
+        public $elasticsearchColor = '',
+        public $sortClassId,
+        public $offset,
+        protected $query = []
+    )
     {
-        $this->keyword = $params['keyword'] ?? null; // 防止不传值报错
-        $this->kid1 = $params['kid1'] ?? 0;
-        $this->kid2 = $params['kid2'] ?? 0;
-        $this->sortType = $params['sort_type'] ?? 'default';
-        $this->tagId = $params['tag_id'] ?? 0;
-        $this->isZb = $params['is_zb'] ?? 1;
-        $this->page = $params['page'] ?? 1;
-        $this->pageSize = $params['page_size'] ?? 35;
-        $this->ratio = $params['ratio'] ?? null;
-        $this->classId = $params['class_id'] ?? 0;
-        $this->update = $params['update'] ?? 0;
-        $this->size = $params['size'] ?? 0;
-        $this->fuzzy = $params['fuzzy'] ?? 0;
-        $this->templateTypess = $params['template_type'] ?? [1, 2];
-        $this->color = $params['color'] ?? [];
-        $this->use = $params['user'] ?? 0;
-        $this->width = $params['width'] ?? 0;
-        $this->height = $params['height'] ?? 0;
-        $this->classIntersectionSearch = $params['class_intersection_search'] ?? 0;
-        $this->elasticsearchColor = $params['elasticsearch_color'] ?? '';
+
     }
 
     /**
-     * 重新赋值
+     * deassign
      */
     public function beforeAssignment()
     {
-        $this->keyword = $this->keyword ?: null; // 防止为空
+        $this->sortType = $this->sortType ?: 'default';
+        $this->keyword = strlen($this->keyword) > 0 ? $this->keyword : null; // 防止为空
+        $this->kid1 = $this->kid1 ? $this->kid1 : 0;
+        $this->kid2 = $this->kid2 ? $this->kid2 : 0;
         $this->kid2 = $this->kid2 < 5000 ? $this->kid2 : 0;
-        $this->classId = $this->classId ?: '0_0_0_0';
+        $this->tagId = $this->tagId ? $this->tagId : 0;
+        $this->isZb = $this->isZb ? $this->isZb : 1;
+        $this->ratio = ($this->ratio != null && is_numeric($this->ratio)) ? $this->ratio : null;
+        $this->classId = $this->classId ? $this->classId : '0_0_0_0';
+        $this->classId = $this->classId != 'undefined' ? $this->classId : '0_0_0_0';
         $this->sortClassId = $this->classId;
+        $this->size = $this->size ? $this->size : 0;
+        $this->use = $this->use ? $this->use : 0;
+        $this->width = $this->width ? $this->width : 0;
+        $this->height = $this->height ? $this->height : 0;
 
         if ($this->keyword == null && !$this->tagId && $this->ratio <= 0 && ($this->classId == '0_0_0_0' || $this->classId == '0_0_0')) {
             //用于排序的class_id但不影响过滤项 影响全局排序的特殊class_id为-1
@@ -177,6 +70,9 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
             $this->classId);
     }
 
+    /**
+     * joint redis key
+     */
     public function getRedisKey()
     {
         $this->beforeAssignment();
@@ -216,6 +112,9 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
         return $redisKey;
     }
 
+    /**
+     * query offset
+     */
     public function queryOffset()
     {
         if ($this->page * $this->pageSize > 10000) {
@@ -227,6 +126,9 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
         return $offset;
     }
 
+    /**
+     * query class_ids
+     */
     public function queryClassIds()
     {
         if ($this->classId) {
@@ -262,25 +164,37 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
                 $this->query['bool']['must_not'][]['terms']['class_id'] = ['437', '760', '290', '810', '902'];
             }
         }
+
         return $this;
     }
 
+    /**
+     * query width
+     */
     public function queryWidth()
     {
         if (!empty($this->width)) {
             $this->query['bool']['filter'][]['match']['width'] = $this->width;
         }
+
         return $this;
     }
 
+    /**
+     * query height
+     */
     public function queryHeight()
     {
         if (!empty($this->width)) {
             $this->query['bool']['filter'][]['match']['width'] = $this->width;
         }
+
         return $this;
     }
 
+    /**
+     * query sort type
+     */
     public function querySortType()
     {
         switch ($this->sortType) {
@@ -306,9 +220,13 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
                 $this->sort = Template::sortDefault($this->keyword, $this->sortClassId);
                 break;
         }
+
         return $this;
     }
 
+    /**
+     * query color
+     */
     public function queryColor()
     {
         list($colorRange, $colorParams) = self::formatColor(array_column($this->color, 'color'), array_column($this->color, 'weight'));
@@ -346,6 +264,9 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
         ];
     }
 
+    /**
+     * return query
+     */
     public function query(): array
     {
         $this->offset = $this->queryOffset();
@@ -363,7 +284,7 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
 
         //颜色搜索
         if ($this->color) {
-            return $this->queryColor();
+            return $this->formatColor(array_column($this->color, 'color'), array_column($this->color, 'weight'));
         }
 
         return $this->query;

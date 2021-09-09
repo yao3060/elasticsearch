@@ -3,28 +3,20 @@
 
 namespace app\queries\ES;
 
-
-use app\components\Tools;
-use app\models\ES\Template;
+use app\models\ES\SensitiveWord;
 
 class SensitiveWordSearchQuery extends BaseTemplateSearchQuery
 {
-    public $keyword;
 
-    public function __construct($params)
+    public function __construct(
+        public $keyword = ''
+    )
     {
-        $this->keyword = $params['keyword'] ?? '';
     }
 
     public function query(): array
     {
-        $redisKey = $this->getRedisKey();
-        $isBanWord = Tools::getRedis(6, $redisKey);
-        if (!$isBanWord) {
-            $isBanWord = Template::queryKeyword($this->keyword);
-        }
-
-        return $isBanWord;
+        return SensitiveWord::queryWord($this->keyword);
     }
 
     public function getRedisKey()

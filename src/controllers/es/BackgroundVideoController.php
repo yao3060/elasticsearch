@@ -25,7 +25,14 @@ class BackgroundVideoController extends BaseController
                 return new Response('validate param errors', 'Validate Param Errors', [], 422);
             };
 
-            $search = (new BackgroundVideo())->search(new BackgroundVideoQuery($validate->getAttributes()));
+            $validateAttributes = $validate->getAttributes();
+            $search = (new BackgroundVideo())->search(new BackgroundVideoQuery(
+                keyword: $validateAttributes['keyword'] ?? 0,
+                classId: $validateAttributes['class_id'] ?? [],
+                page: $validateAttributes['page'] ?? 1,
+                pageSize: $validateAttributes['page_size'] ?? 40,
+                ratio: $validateAttributes['ratio'] ?? 0
+            ));
 
             $response = new Response('background_video_search', 'Background Video Search', $search);
 

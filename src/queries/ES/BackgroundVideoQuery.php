@@ -5,23 +5,16 @@ namespace app\queries\ES;
 
 class BackgroundVideoQuery extends BaseTemplateSearchQuery
 {
-    public $keyword;
-    public $classId;
-    public $page;
-    public $pageSize;
-    public $ratio;
-    public $sort;
-    protected $query = [];
-
     public function __construct(
-        $params
+        public $keyword = 0,
+        public $classId = [],
+        public $page = 1,
+        public $pageSize = 1,
+        public $ratio = 0,
+        public $sort,
+        protected $query = []
     )
     {
-        $this->keyword = $params['keyword'] ?? 0;
-        $this->classId = $params['class_id'] ?? [];
-        $this->page = $params['page'] ?? 1;
-        $this->pageSize = $params['page_size'] ?? 40;
-        $this->ratio = $params['ratio'] ?? 0;
     }
 
     public function getRedisKey()
@@ -75,11 +68,9 @@ class BackgroundVideoQuery extends BaseTemplateSearchQuery
 
     public function query(): array
     {
-        $redisKey = $this->getRedisKey();
-
         $this->sortByTime();
         $this->queryKeyword()->queryClassIds()->queryRatio();
 
-        return ['redis' => $redisKey];
+        return $this->query;
     }
 }

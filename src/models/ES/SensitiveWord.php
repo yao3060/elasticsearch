@@ -3,6 +3,7 @@
 
 namespace app\models\ES;
 
+use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
 use yii\base\Exception;
 
@@ -78,31 +79,33 @@ class SensitiveWord extends BaseModel
 
     public function search(QueryBuilderInterface $query): array
     {
-        $searchQuery = self::queryWord($query->keyword);
-        $returnQuery = $query->query();
-
-        try {
-            $find = self::find()
-                ->source(['word'])
-                ->query($searchQuery)
-                ->createCommand()
-                ->search()['hits'];
-            if ($find['total'] <= 0) {
-//                Tools::setRedis(6, $query->getRedisKey(), $query->query(), 86400 * 7);
-                $returnQuery['flag'] = false;
-            }
-            foreach ($find['hits'] as &$item) {
-                $item['_source']['word'] = str_replace(" ", '', $item['_source']['word']);
-                if (strstr($query->keyword, $item['_source']['word'])) {
-                    $returnQuery['flag'] = true;
+        $redisKey = $query->getRedisKey();
+        $validateSensitiveWord = Tools::getRedis(6, $redisKey);
+        if (!$validateSensitiveWord || Tools::isReturnSource()) {
+            $validateSensitiveWord['flag'] = false;
+            try {
+                $find = self::find()
+                    ->source(['word'])
+                    ->query($query)
+                    ->createCommand()
+                    ->search()['hits'];
+                if ($find['total'] <= 0) {
+                    Tools::setRedis(6, $query->getRedisKey(), $validateSensitiveWord, 86400 * 7);
+                    $validateSensitiveWord['flag'] = false;
                 }
+                foreach ($find['hits'] as &$item) {
+                    $item['_source']['word'] = str_replace(" ", '', $item['_source']['word']);
+                    if (strstr($query->keyword, $item['_source']['word'])) {
+                        $validateSensitiveWord['flag'] = true;
+                    }
+                }
+                Tools::setRedis(6, $query->getRedisKey(), $validateSensitiveWord, 86400 * 7);
+            } catch (Exception $exception) {
+
             }
-//            Tools::setRedis(6, $query->getRedisKey(), $returnQuery, 86400 * 7);
-        } catch (\exception $e) {
-            throw new Exception($e->getMessage());
         }
 
-        return $returnQuery;
+        return $validateSensitiveWord;
     }
 
     public static function validateRules()

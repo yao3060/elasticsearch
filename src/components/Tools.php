@@ -2984,7 +2984,7 @@ class Tools
         } else {
             $uid = Yii::$app->user->id;
         }
-        if (($prep == 1 || $_GET['prep'] == 1) && in_array($uid, $uids)) {
+        if (($prep == 1 || isset($_GET['prep']) && $_GET['prep'] == 1) && in_array($uid, $uids)) {
             return true;
         }
         return false;
@@ -2997,7 +2997,7 @@ class Tools
      */
     public static function isReturnSourceVisitor($prep = 0)
     {
-        if (($prep == 1 || $_GET['prep'] == 1)) {
+        if (($prep == 1 || isset($_GET['prep']) && $_GET['prep'] == 1)) {
             return true;
         }
         return false;
