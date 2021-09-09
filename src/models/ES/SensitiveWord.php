@@ -86,7 +86,7 @@ class SensitiveWord extends BaseModel
             try {
                 $find = self::find()
                     ->source(['word'])
-                    ->query($query)
+                    ->query($query->query())
                     ->createCommand()
                     ->search()['hits'];
                 if ($find['total'] <= 0) {
