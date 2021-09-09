@@ -18,6 +18,7 @@ return [
         'GET  v1/groups' => 'es/group-words/search',
         'GET  v1/groups/recommends' => 'es/group-words/recommend-search',
         'GET  v1/videos' => 'es/video-audio/search',
+        'GET  v1/searchs/word' => 'es/search-word/search',
 
         //H
         'GET  v1/designer-templates' => 'es/designer-template/index',

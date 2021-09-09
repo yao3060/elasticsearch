@@ -1,7 +1,7 @@
 <?php
 
 /**
- * 重构ES,Asset搜索方法
+ * 重构ES,GroupWords搜索方法
  */
 namespace app\controllers\es;
 use app\components\Response;
@@ -27,8 +27,8 @@ class GroupWordsController extends BaseController
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $data = (new GroupWords())
-                    ->search(new GroupWordsSearchQuery($data['keyword'], $data['page'], $data['pageSize'],$data['search'],
-                        $data['searchAll']));
+                    ->search(new GroupWordsSearchQuery($data['keyword'], $data['page'] ?? 1, $data['pageSize'] ?? 40,$data['search'] ?? 0,
+                        $data['searchAll'] ?? 0));
                 $response = new Response('get_groupWords_list', 'groupWordsList', $data);
             }
         } catch (UnknownPropertyException $e) {
