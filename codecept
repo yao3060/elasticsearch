@@ -10,14 +10,12 @@ source .env
 
 NETWORK=$(basename "$PWD")_${ENVIRONMENT}_default
 
-echo $NETWORK
+./docker-compose exec php ./vendor/bin/codecept $@
 
-# ./docker-compose exec php ./vendor/bin/codecept $@
-
-docker run --rm  -ti \
-  -u $UID \
-  --env-file .env \
-  --net $NETWORK \
-  -v $PWD/src:/app \
-  -v ~/.composer-docker/cache:/root/.composer/cache:delegated \
-  yiisoftware/yii2-php:7.4-apache bash -c "service apache2 start && curl --header 'Content-Type: application/json' http://localhost/v1/logs > runtime/logs.html"
+# docker run --rm  -ti \
+#   -u $UID \
+#   --env-file .env \
+#   --net $NETWORK \
+#   -v $PWD/src:/app \
+#   -v ~/.composer-docker/cache:/root/.composer/cache:delegated \
+#   yiisoftware/yii2-php:7.4-apache bash -c "service apache2 start && curl --header 'Content-Type: application/json' http://localhost/v1/logs > runtime/logs.html"

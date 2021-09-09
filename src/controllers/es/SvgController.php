@@ -27,6 +27,7 @@ class SvgController extends BaseController
                 $items = (new Svg)->search(new SvgSearchQuery(
                     keyword: $request->get('keyword', ''),
                     kid2: $request->get('kid2', []),
+                    page: $request->get('page', 1),
                     pageSize: $request->get('page_size', 40)
                 ));
                 $response = new Response('get_svg_list', 'Get Svg List', $items);

@@ -21,7 +21,7 @@ class SvgSearchQuery implements QueryBuilderInterface
 
     public function query(): array
     {
-        $this->queryKeyword($this->keyword);
+        $this->queryKeyword();
         if (!empty($this->kid2)) {
             $this->query['bool']['must'][]['terms']['kid_2'] = $this->kid2;
         }
@@ -36,10 +36,10 @@ class SvgSearchQuery implements QueryBuilderInterface
      * @param Enum $operator="and,or"
      * @return void
      */
-    public function queryKeyword($keyword, $operator = 'and')
+    public function queryKeyword($operator = 'and')
     {
         $this->query['bool']['must'][]['multi_match'] = [
-            'query' => $keyword,
+            'query' => $this->keyword,
             'fields' => ["title^5", "description^1"],
             'type' => 'most_fields',
             "operator" => $operator
@@ -48,6 +48,13 @@ class SvgSearchQuery implements QueryBuilderInterface
 
     public function getRedisKey()
     {
-        return '';
+        return sprintf(
+            'ES_svg2:%s:%s_%d_%s_%d',
+            date('Y-m-d'),
+            $this->keyword,
+            $this->page,
+            implode('-', $this->kid2),
+            $this->pageSize
+        );
     }
 }

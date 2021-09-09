@@ -2,6 +2,7 @@
 
 namespace app\models\ES;
 
+use app\components\IpsAuthority;
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
 
@@ -11,19 +12,11 @@ class Svg extends BaseModel
 
     public function search(QueryBuilderInterface $query): array
     {
-        $redisKey = sprintf(
-            'ES_svg2:%s:%s_%d_%s_%d',
-            date('Y-m-d'),
-            $query->keyword,
-            $query->page,
-            implode('-', $query->kid2),
-            $query->pageSize
-        );
+        $redisKey = $query->getRedisKey();
 
         $return = Tools::getRedis(self::REDIS_DB, $redisKey);
 
-        // !$return || Tools::isReturnSource() || IpsAuthority::check(DESIGNER_USER)
-        if (!$return) {
+        if (!$return || Tools::isReturnSource() || IpsAuthority::check(DESIGNER_USER)) {
             $return = [];
             try {
                 $info = self::find()
