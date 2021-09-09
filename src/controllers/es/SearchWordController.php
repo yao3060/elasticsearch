@@ -1,20 +1,22 @@
 <?php
 
 /**
- * 重构ES,Asset搜索方法
+ * 重构ES,searchWord搜索方法
  */
 namespace app\controllers\es;
 use app\components\Response;
 use app\helpers\StringHelper;
-use app\models\ES\Asset;
-use app\queries\ES\AssetSearchQuery;
+use app\models\ES\GroupWords;
+use app\models\ES\SearchWord;
+use app\queries\ES\GroupWordsSearchQuery;
+use app\queries\ES\SearchWordSearchQuery;
 use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
 use app\controllers\BaseController;
 use Yii;
 use yii\web\Request;
 
-class AssetController extends BaseController
+class SearchWordController extends BaseController
 {
     public function actionSearch(Request $request)
     {
@@ -26,10 +28,9 @@ class AssetController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new Asset())
-                    ->search(new AssetSearchQuery($data['keyword'], $data['page'] ?? 1, $data['pageSize'] ?? 40,$data['sceneId'] ?? 0,
-                        $data['isZb'] ?? 0,$data['sort'] ?? 0,$data['useCount'] ?? 0));
-                $response = new Response('get_asset_list', 'assetList', $data);
+                $data = (new SearchWord())
+                    ->search(new SearchWordSearchQuery($data['keyword'], $data['page'] ?? 1, $data['pageSize'] ?? 40,$data['type'] ?? 1));
+                $response = new Response('get_SearchWord_list', 'SearchWordsList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(
@@ -58,9 +59,9 @@ class AssetController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new Asset())
-                    ->recommendSearch(new AssetSearchQuery($data['keyword'], $data['page'], $data['pageSize']));
-                $response = new Response('get_Recommend_list', 'Get List', $data);
+                $data = (new GroupWords())
+                    ->recommendSearch(new GroupWordsSearchQuery($data['keyword'], $data['page'], $data['pageSize']));
+                $response = new Response('get_Group_Recommend_list', 'Group_Recommend_List', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(
@@ -79,12 +80,5 @@ class AssetController extends BaseController
         }
         return $this->response($response);
     }
-    public function actionSaveRecord()
-    {
-        $data = Yii::$app->request->post();
-        $data = (new Asset())
-            ->saveRecord($data);
-        $this->response->headers->set('X-Total', 1000);
-        return $this->response($data);
-    }
+
 }

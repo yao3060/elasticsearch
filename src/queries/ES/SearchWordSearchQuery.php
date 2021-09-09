@@ -5,7 +5,7 @@ namespace app\queries\ES;
 
 use app\interfaces\ES\QueryBuilderInterface;
 
-class PictureSearchQuery implements QueryBuilderInterface
+class SearchWordSearchQuery implements QueryBuilderInterface
 {
     /**
      * @var string|int|mixed 关键字
@@ -19,29 +19,17 @@ class PictureSearchQuery implements QueryBuilderInterface
      * @var int|mixed 每页数量
      */
     public int $pageSize;
-    public array | string $sceneId;
-    public int $isZb;
-    public array | string $kid;
-    public int  $vipPic;
-    public int $ratioId;
+    public int $type;
     function __construct(
         $keyword = 0,
         $page = 1,
         $pageSize = 40,
-        $sceneId = [],
-        $isZb = 1,
-        $kid = [],
-        $vipPic = 0,
-        $ratioId = 0
+        $type = 1
     ) {
         $this->keyword = $keyword;
         $this->page = $page;
-        $this->kid = $kid;
-        $this->sceneId = $sceneId;
-        $this->ratioId = $ratioId;
         $this->pageSize = $pageSize;
-        $this->isZb = $isZb;
-        $this->vipPic = $vipPic;
+        $this->type = $type;
     }
 
     public function query(): array

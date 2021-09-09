@@ -1,4 +1,21 @@
 #!/usr/bin/env bash
 set -aeuo pipefail
 
+# create the dotenv file if it doesn't exist
+if [ ! -f .env ]; then
+  cp .env.default .env
+fi
+
+source .env
+
+NETWORK=$(basename "$PWD")_${ENVIRONMENT}_default
+
 ./docker-compose exec php ./vendor/bin/codecept $@
+
+# docker run --rm  -ti \
+#   -u $UID \
+#   --env-file .env \
+#   --net $NETWORK \
+#   -v $PWD/src:/app \
+#   -v ~/.composer-docker/cache:/root/.composer/cache:delegated \
+#   yiisoftware/yii2-php:7.4-apache bash -c "service apache2 start && curl --header 'Content-Type: application/json' http://localhost/v1/logs > runtime/logs.html"
