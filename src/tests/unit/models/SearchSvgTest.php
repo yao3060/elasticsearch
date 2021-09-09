@@ -29,54 +29,62 @@ class SearchSvgTest extends \Codeception\Test\Unit
     {
     }
 
-    // tests
-    public function testSearchSVG()
-    {
+    protected function prepareData(
+        $keyword = 0,
+        $page = 1,
+        $kid2 = [],
+        $pageSize = 50,
+        $prod_api_uri = ''
+    ) {
         $items = (new Svg)->search(new SvgSearchQuery(
-            keyword: 0,
-            page: 1,
-            kid2: [],
-            pageSize: 50
+            keyword: $keyword,
+            page: $page,
+            kid2: $kid2,
+            pageSize: $pageSize
         ));
 
         /**@var \GuzzleHttp\Psr7\Response $response */
-        $response = $this->http->request(
-            'GET',
-            'https://818ps.com/apiv2/search-asset-svg?p=1&k2=0&word=&pageSize=50'
-        );
+        $response = $this->http->request('GET', $prod_api_uri);
 
         $content = json_decode($response->getBody()->getContents());
         $ids = ArrayHelper::getColumn($content->msg, 'id');
         sort($ids);
 
+        // remove empty elements
+        $ids = array_filter($ids, fn ($id) => !is_null($id) && $id !== '');
+
         $myIds = $items['ids'];
         sort($myIds);
 
-        $this->assertEquals(join(',', $ids), join(',', $myIds));
+        return [
+            'dev' => join(',', $myIds),
+            'prod' => join(',', $ids)
+        ];
+    }
+
+    // tests
+    public function testSearchSVG()
+    {
+        $data = $this->prepareData(
+            0,
+            1,
+            [],
+            50,
+            'http://818ps.com/apiv2/search-asset-svg?p=1&k2=0&word=&pageSize=50'
+        );
+
+        $this->assertEquals($data['dev'], $data['prod']);
     }
 
     public function testSearchSVGHeart()
     {
-        $items = (new Svg)->search(new SvgSearchQuery(
-            keyword: '心',
-            page: 1,
-            kid2: [],
-            pageSize: 50
-        ));
-
-        /**@var \GuzzleHttp\Psr7\Response $response */
-        $response = $this->http->request(
-            'GET',
-            'https://818ps.com/apiv2/search-asset-svg?p=1&k2=0&word=%E5%BF%83&pageSize=50'
+        $data = $this->prepareData(
+            '心',
+            1,
+            [],
+            50,
+            'http://818ps.com/apiv2/search-asset-svg?p=1&k2=0&word=%E5%BF%83&pageSize=50'
         );
-
-        $content = json_decode($response->getBody()->getContents());
-        $ids = ArrayHelper::getColumn($content->msg, 'id');
-        sort($ids);
-
-        $myIds = $items['ids'];
-        sort($myIds);
-
-        $this->assertEquals(join(',', $ids), join(',', $myIds));
+        $this->assertEquals($data['dev'], $data['prod']);
     }
 }
