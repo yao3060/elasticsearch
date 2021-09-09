@@ -1,5 +1,5 @@
 <?php
-namespace app\service\designers;
+namespace app\services\designers;
 
 use app\components\Tools;
 use app\models\DesignerRecommendAssetTag;

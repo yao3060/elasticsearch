@@ -32,7 +32,7 @@ class PictureSearchQuery implements QueryBuilderInterface
         $isZb = 1,
         $kid = [],
         $vipPic = 0,
-        $ratioId = []
+        $ratioId = 0
     ) {
         $this->keyword = $keyword;
         $this->page = $page;

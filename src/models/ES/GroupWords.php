@@ -4,7 +4,7 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
-use app\service\designers\DesignerRecommendAssetTagService;
+use app\services\designers\DesignerRecommendAssetTagService;
 
 class GroupWords extends BaseModel
 {

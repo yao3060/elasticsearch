@@ -12,7 +12,7 @@ class SeoSearchQuery implements QueryBuilderInterface
     public int $pageSize;
     function __construct(
         $keyword = 0,
-        $pageSize = 11
+        $pageSize = 40
     ) {
         $this->keyword = $keyword;
         $this->pageSize = $pageSize;
