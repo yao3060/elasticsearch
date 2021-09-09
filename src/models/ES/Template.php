@@ -5,6 +5,7 @@ namespace app\models\ES;
 use app\components\IpsAuthority;
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
+use app\models\ESTemplate;
 use app\models\Templtaglink;
 use app\models\Test;
 use Yii;
@@ -140,117 +141,150 @@ class Template extends BaseModel
             , 'week_web_dl', 'month_web_dl', 'total_web_dl', 'width', 'height'];
     }
 
+    /**
+     * 搜索
+     * @param QueryBuilderInterface $query
+     * @return array
+     */
     public function search(QueryBuilderInterface $query): array
     {
-        $costInfo = [];
-        $costInfo['created'] = date('Y-m-d H:i:s', time());
-        $esStartTime = microtime(true);
-        $err = 0;
+        $redisKey = $query->getRedisKey();
 
-        $returnQuery = $query->query();
+        $return = [];
 
-        if ($returnQuery['return']) {
-            return $returnQuery['return'];
+        $reStartTime = microtime(true);
+        if (!IpsAuthority::check(IOS_ALBUM_USER)) {
+            $return = Tools::getRedis(self::$redis_db, $redisKey);
         }
 
-        try {
-            if ($query->color) {
-                $flg = '_col';
-                $info = (new Query())->from('818ps_pic', '818ps_pic')
-                    ->source(['templ_id'])
-                    ->query($returnQuery['query'])
-                    ->offset($returnQuery['offset'])
-                    ->limit($query->pageSize)
-                    ->createCommand($query->elasticsearchColor)
-                    ->search(['timeout' => '5s'], ['track_scores' => true])['hits'];
-            } else {
-                $flg = '';
-                $info = self::find()
-                    ->source(['temple_id'])
-                    ->query($returnQuery['query'])
-                    ->orderBy($returnQuery['sort'])
-                    ->offset($returnQuery['offset'])
-                    ->limit($query->pageSize)
-                    ->createCommand()
-                    ->search(['timeout' => '5s'], ['track_scores' => true])['hits'];
+        $redisStat['st'] = (int)((microtime(true) - $reStartTime) * 1000);
+        $dbt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+        $caller = isset($dbt[1]['function']) ? $dbt[1]['function'] : null;
+        $redisStat['key'] = 'ES_template12-23:' . $caller . ($query->fuzzy == 1 ? 1 : null);
+        $redisStat['hit'] = 1;
+
+//        if (!$return || Tools::isReturnSource() || $update == 1) {
+        if (!$return || $query->update == 1) {
+            // 把回源从不命中中去除
+            if (!$return || !$return['total']) {
+                $redisStat['hit'] = 0;
             }
-            $costInfo['err'] = 0;
-        } catch (\Exception $exception) {
-            $err = 1;
-            Test::sqltest('searchKeywordFalse', $exception->getMessage(), $query->keywords);
-            $info['hit'] = 0;
-            $info['total'] = -1;
-            $info['ids'] = [];
-            $info['score'] = [];
-            $costInfo['err'] = 1;
-        }
-
-        $esQueryTime = microtime(true) - $esStartTime;
-        $costInfo['cost_time'] = $esQueryTime;
-        $ip = Tools::getClientIP();
-        $costInfo['name'] = 'Template' . $flg . $ip . $returnQuery['redisKey'];
-        $info_redis = 'redis_search';
-        Yii::$app->$info_redis->Rpush('ES_query_time:query_time', json_encode($costInfo));
-
-        $return['total'] = $info['total'];
-        $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
-        foreach ($info['hits'] as $value) {
-            $return['ids'][] = $value['_id'];
-            $return['score'][$value['_id']] = $value['sort'][0];
-        }
-
-        if (!IpsAuthority::check(IOS_ALBUM_USER) && $err == 0) {
-            $expire_time = $info['total'] == 0 ? 7200 + rand(0, 3600) : 126000 + rand(-3600, 7200);
-            $res = Tools::setRedis(self::$redis_db, $returnQuery['redisKey'], $return, $expire_time); // 35小时过期
-            if (!$res) {
-                Test::sqltest('setsearchKeywordRedis', $res, $returnQuery['redisKey']);
+            $reStartTime = microtime(true);
+//            Yii::$app->redis9->incr("search_return_source_incr");
+            if ($query->keyword != null) {
+                $query = self::queryKeyword($query->keyword, $query->fuzzy);
             }
+            unset($return);
+            $costInfo = [];
+            $costInfo['created'] = date('Y-m-d H:i:s', time());
+            $esStartTime = microtime(true);
+            $err = 0;
+            try {
+                if (!empty($query->color)) {
+                    $flg = '_col';
+                    $info = (new Query())->from('818ps_pic', '818ps_pic')
+                        ->source(['templ_id'])
+                        ->query($query->query())
+                        ->offset($query->offset)
+                        ->limit($query->pageSize)
+                        ->createCommand($query->elasticsearchColor)
+                        ->search(['timeout' => '5s'], ['track_scores' => true])['hits'];
+                } else {
+                    $flg = '';
+                    $info = self::find()
+                        ->source(['temple_id'])
+                        ->query($query->query())
+                        ->orderBy($query->sort)
+                        ->offset($query->offset)
+                        ->limit($query->pageSize)
+                        ->createCommand()
+                        ->search(['timeout' => '5s'], ['track_scores' => true])['hits'];
+                }
+                $costInfo['err'] = 0;
+            } catch (\exception $e) {
+                $err = 1;
+                Test::sqltest('searchKeywordFalse', $e->getMessage(), $query->keyword);
+                $info['hit'] = 0;
+                $info['total'] = -1;
+                $info['ids'] = [];
+                $info['score'] = [];
+                $costInfo['err'] = 1;
+            }
+
+            $esQueryTime = microtime(true) - $esStartTime;
+            $costInfo['cost_time'] = $esQueryTime;
+            $ip = Tools::getClientIP();
+            $costInfo['name'] = 'Template' . $flg . $ip . $query->getRedisKey();
+            $info_redis = 'redis_search';
+//            Yii::$app->$info_redis->Rpush('ES_query_time:query_time', json_encode($costInfo));
+
+            $return['total'] = $info['total'];
+            $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
+            foreach ($info['hits'] as $value) {
+                $return['ids'][] = $value['_id'];
+                $return['score'][$value['_id']] = $value['sort'][0];
+            }
+            if (!IpsAuthority::check(IOS_ALBUM_USER) && $err == 0) {
+                $expireTime = $info['total'] == 0 ? 7200 + rand(0, 3600) : 126000 + rand(-3600, 7200);
+//                $res = Tools::setRedis(self::$redis_db, $query->getRedisKey(), $return, $expireTime); // 35小时过期
+//                if (!$res) {
+//                    Test::sqltest('setsearchKeywordRedis', $res, $query->getRedisKey());
+//                }
+            }
+            $redisStat['pt'] = (int)((microtime(true) - $reStartTime) * 1000);
         }
 
-        $redis_stat['pt'] = (int)((microtime(true) - $returnQuery['reStartTime']) * 1000);
-        $redis_stat['created'] = date('Y-m-d H:i:s', time());
-        Yii::$app->redis_monitor->Rpush('redis_stat:', json_encode($redis_stat));
+        $redisStat['created'] = date('Y-m-d H:i:s', time());
+//        Yii::$app->redis_monitor->Rpush('redis_stat:', json_encode($redisStat));
 
         return $return;
     }
 
+    /**
+     * 推荐搜索
+     * @param QueryBuilderInterface $query
+     * @return array
+     */
     public function recommendSearch(QueryBuilderInterface $query): array
     {
-        $costInfo = [];
-        $esStartTime = microtime(true);
-        $returnQuery = $query->query();
-        try {
-            $info = Template::find()
-                ->source(['temple_id'])
-                ->query($returnQuery['query'])
-                //                ->orderBy($sort)
-                ->offset(($query->page - 1) * $query->pageSize)
-                ->limit($query->pageSize)
-                ->createCommand()
-                ->search(['timeout' => '5s'], ['track_scores' => true])['hits'];
+        $redisKey = $query->getRedisKey();
+        $return = Tools::getRedis(self::$redis_db, $redisKey);
+
+        if (empty($return) || Tools::isReturnSource()) {
+            $costInfo = [];
+            $esStartTime = microtime(true);
+            try {
+                $info = self::find()
+                    ->source(['temple_id'])
+                    ->query($query->query())
+                    //                ->orderBy($sort)
+                    ->offset(($query->page - 1) * $query->pageSize)
+                    ->limit($query->pageSize)
+                    ->createCommand()
+                    ->search(['timeout' => '5s'], ['track_scores' => true])['hits'];
+                $costInfo['err'] = 0;
+            } catch (\exception $e) {
+                $info['hit'] = 0;
+                $info['ids'] = [];
+                $info['score'] = [];
+                $costInfo['err'] = 1;
+            }
+
+            $esQueryTime = microtime(true) - $esStartTime;
+            $costInfo['created'] = date('Y-m-d H:i:s', time());
+            $costInfo['cost_time'] = $esQueryTime;
+            $costInfo['name'] = 'Template' . '_recommend';
+//            $info_redis = 'redis_search';
+//            Yii::$app->$info_redis->Rpush('ES_query_time:query_time', json_encode($costInfo));
+
             $return = [];
             $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
             foreach ($info['hits'] as $value) {
                 $return['ids'][] = $value['_id'];
-                $return['score'][$value['_id']] = $value['sort'][0] ?? '';
+                $return['score'][$value['_id']] = isset($value['sort'][0]) ?? [];
             }
-
-            Tools::setRedis(self::$redis_db, $returnQuery['key'], $return);
-
-            $costInfo['err'] = 0;
-        } catch (\exception $e) {
-            $info['hit'] = 0;
-            $info['ids'] = [];
-            $info['score'] = [];
-            $costInfo['err'] = 1;
+//            Tools::setRedis(self::$redis_db, $redisKey, $return);
         }
-
-        $es_query_time = microtime(true) - $esStartTime;
-        $costInfo['created'] = date('Y-m-d H:i:s', time());
-        $costInfo['cost_time'] = $es_query_time;
-        $costInfo['name'] = 'Template' . '_recommend';
-        $info_redis = 'redis_search';
-        Yii::$app->$info_redis->Rpush('ES_query_time:query_time', json_encode($costInfo));
 
         return $return;
     }
@@ -273,26 +307,6 @@ class Template extends BaseModel
             "operator" => $operator
         ];
         return $query;
-    }
-
-    public static function sortByTime()
-    {
-        return 'created desc';
-    }
-
-    public static function sortByYesday()
-    {
-        return 'web_dl desc';
-    }
-
-    public static function sortByWeekday()
-    {
-        return 'week_web_dl desc';
-    }
-
-    public static function sortByMonth()
-    {
-        return 'month_web_dl desc';
     }
 
     public static function getEsTableName()
@@ -368,83 +382,6 @@ class Template extends BaseModel
         return $sort;
     }
 
-    /**
-     * @param array $hex_colors 十六进制颜色值
-     * @param array $weights 颜色值对应的权重值 (0, 1]
-     * @param int $e 颜色搜索范围
-     * @return array
-     */
-    public static function formatColor($hex_colors, $weights = [100], $e = 50)
-    {
-        if (count($hex_colors) == 1) {
-            $e = 80;
-        }
-        $colors = [];
-        foreach ($hex_colors as $key => $value) {
-            $current_w = $weights[$key] / 100 ?? 1;
-            $r = hexdec(substr($value, 0, 2));
-            $g = hexdec(substr($value, 2, 2));
-            $b = hexdec(substr($value, 4, 2));
-            array_push($colors, $r, $g, $b, $current_w);
-        }
-
-        $colorRange = [];
-        $color = self::getColorFeature($colors);
-        foreach ($color as $c) {
-            $min = $c - $e >= 0 ? $c - $e : 0;
-            $max = $c + $e <= 255 ? $c + $e : 255;
-            array_push($colorRange, ['from' => $min, 'to' => $max]);
-        }
-        $colorParams = self::getColorField($colors);//color->params->center
-
-        return [$colorRange, $colorParams];
-    }
-
-    /**
-     * 函数名称：获取颜色特征值 缩小搜索区域
-     * 输入形如 [128,186,200,0.2,
-     * 58,110,85,0.7,
-     * 214,28,59,0.1]
-     *  输出形如 [87,117,105]
-     */
-    private static function getColorFeature($colors)
-    {
-        $r = $g = $b = $w = 0;
-        for ($i = 0; $i < count($colors) / 4; ++$i) {
-            $offset = 4 * $i;
-            $current_w = $colors[$offset + 3];
-            $r += $colors[$offset] * $current_w;
-            $g += $colors[$offset + 1] * $current_w;
-            $b += $colors[$offset + 2] * $current_w;
-            $w += $current_w;
-        }
-        if ($w == 0) {
-            return [0, 0, 0];
-        } else {
-            return [0 => $r / $w, 1 => $g / $w, 2 => $b / $w];
-        }
-    }
-
-    /**
-     * 进行颜色编码
-     * 入参 必选 形如 [128,186,200,0.2, 58,110,85,0.7,214,28,59,0.1]
-     */
-    public static function getColorField($colors)
-    {
-        $str = "";
-        for ($i = 0; $i < count($colors) / 4; ++$i) {
-            $offset = 4 * $i;
-            $current_w = $colors[$offset + 3];
-            $r = sprintf("%02x", $colors[$offset] & 0xff);
-            $g = sprintf("%02x", $colors[$offset + 1] & 0xff);
-            $b = sprintf("%02x", $colors[$offset + 2] & 0xff);
-            $w = sprintf("%02x", (int)($current_w * 100));
-            $str = $str . $r . $g . $b . $w . "_";
-        }
-
-        return substr($str, 0, strlen($str) - 1);
-    }
-
     public static function sortByHot()
     {
         return 'edit desc';
@@ -453,23 +390,7 @@ class Template extends BaseModel
     public function rules()
     {
         return [
-//            [
-//                [
-//                    'keywords', 'kid1', 'kid2', 'sortType', 'tagId', 'isZb', 'page', 'pageSize',
-//                    'ratio', 'classId', 'update', 'fuzzy', 'templateType', 'color', 'use', 'width', 'height',
-//                    'classIntersectionSearch'
-//                ],
-//                'required'
-//            ],
             [['keyword'], 'string'],
-//            [
-//                [
-//                    'kid1', 'kid2', 'tagId', 'ratio', 'page', 'pageSize', 'classId', 'fuzzy', 'templateType', 'width', 'height',
-//                    'classIntersectionSearch'
-//                ],
-//                'integer'
-//            ],
-//            [['isZb', 'update'], 'boolean']
         ];
     }
 
@@ -478,5 +399,25 @@ class Template extends BaseModel
         return [
             [['keyword'], 'string']
         ];
+    }
+
+    public static function sortByTime()
+    {
+        return 'created desc';
+    }
+
+    public static function sortByYesday()
+    {
+        return 'web_dl desc';
+    }
+
+    public static function sortByWeekday()
+    {
+        return 'week_web_dl desc';
+    }
+
+    public static function sortByMonth()
+    {
+        return 'month_web_dl desc';
     }
 }
