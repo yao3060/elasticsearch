@@ -54,9 +54,10 @@ build-staging-job:
     - source ./.env
     - export COMPOSE_PROJECT_NAME="${PROJECT}_${ENVIRONMENT}"
     - export VERSION=$(cat VERSION)
-    - ./docker-compose up
+    - ./docker-compose up -d
     - docker ps
     - ./codecept run unit
+    - ./docker-compose stop
     # - ./apidoc
     # - ./codecept run
     # - ./deploy/scripts/push-to-gitlab.sh
