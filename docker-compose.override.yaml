@@ -1,4 +1,4 @@
-version: "3.9"
+version: "2.3"
 
 services:
   nginx:
@@ -6,8 +6,6 @@ services:
       context: .
       dockerfile: ./.docker/Dockerfile
       target: nginx
-    ports:
-      - "${NGINX_HTTP_PORT}:80"
     restart: "no"
     depends_on:
       - php
@@ -19,6 +17,7 @@ services:
       context: .
       dockerfile: ./.docker/Dockerfile
       args:
+        ALPINE_LINUX_MIRROR: ${ALPINE_LINUX_MIRROR}
         APP_ENV: ${APP_ENV}
       target: php
       extra_hosts:
@@ -36,41 +35,6 @@ services:
 
   mysql:
     restart: "no"
-    volumes:
-      - ./transfer:/docker-entrypoint-initdb.d:delegated
 
   cache:
-    image: redis:5.0-alpine
-    container_name: ${COMPOSE_PROJECT_NAME}_cache
-    restart: always
-    expose:
-      - "6379"
-
-  elasticsearch:
-    image: elasticsearch:5.6.3-alpine
-    restart: always
-    environment:
-      - discovery.type=single-node
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10k"
-        max-file: "10"
-
-  phpredisadmin:
-    image: erikdubbelboer/phpredisadmin
-    environment:
-      - REDIS_1_HOST=cache
-      - REDIS_1_PORT=6379
-    depends_on:
-      - cache
-    ports:
-      - "8082:80"
+    restart: "no"
