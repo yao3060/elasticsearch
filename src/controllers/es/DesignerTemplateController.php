@@ -2,33 +2,62 @@
 
 namespace app\controllers\es;
 
+use app\components\Response;
 use app\controllers\BaseController;
+use app\helpers\StringHelper;
 use app\models\ES\DesignerTemplate;
 use app\queries\ES\DesignerTemplateSearchQuery;
-use yii\base\Request;
+use yii\web\Request;
+use yii\base\UnknownPropertyException;
 
 class DesignerTemplateController extends BaseController
 {
 
     public function actionIndex(Request $request)
     {
-        $items = (new DesignerTemplate)->search(
-            new DesignerTemplateSearchQuery(
-                keyword: $request->get('keyword', ''),
-                page: $request->get('page', 1),
-                pageSize: $request->get('page_size', 40),
-                kid1: $request->get('kid1', 0),
-                kid2: $request->get('kid2', 0),
-                templateInfo: ['picId' => 1, 'templ_attr' => 4, 'type' => 'a', 'settlement_level' => 1],
-                templateTypes: $request->get('template_type', []),
-                ratio: $request->get('ratio'),
-                sortType: $request->get('sort_type', 'default'),
-                isZb: $request->get('is_zb', 0),
-                classId: $request->get('class_id', 0),
-                tagId: $request->get('tag_id', 0)
-            )
-        );
+        try {
+            $items = (new DesignerTemplate)->search(
+                new DesignerTemplateSearchQuery(
+                    keyword: $request->getBodyParam('keyword', 0),
+                    page: $request->getBodyParam('page', 1),
+                    kid1: $request->getBodyParam('kid1', 0),
+                    kid2: $request->getBodyParam('kid2', 0),
+                    sortType: $request->getBodyParam('sort_type', 'default'),
+                    tagId: $request->getBodyParam('tag_id', 0),
+                    isZb: $request->getBodyParam('is_zb', 0),
+                    pageSize: $request->getBodyParam('page_size', 100),
+                    ratio: $request->getBodyParam('ratio', null),
+                    classId: $request->getBodyParam('class_id', 0),
+                    update: $request->getBodyParam('update', 0),
+                    size: $request->getBodyParam('size', 0),
+                    fuzzy: $request->getBodyParam('fuzzy', 0),
+                    templateTypes: $request->getBodyParam('template_type', [1, 2]),
+                    templateInfo: $request->getBodyParam('templ_info', []),
+                    color: $request->getBodyParam('color', []),
+                    use: $request->getBodyParam('use', 0)
+                )
+            );
 
-        return json_encode($items);
+            $response = new Response('design template index', 'DesignTemplateIndex', $items);
+
+        } catch (UnknownPropertyException $unknownException) {
+
+            $response = new Response(
+                StringHelper::snake($unknownException->getName()),
+                StringHelper::replaceModelName($unknownException->getMessage()),
+                [],
+                422);
+
+        } catch (\Throwable $throwable) {
+
+            $response = new Response(
+                'Internal Server Error',
+                $throwable->getMessage(),
+                YII_DEBUG ? explode("\n", $throwable->getTraceAsString()) : [],
+                500);
+
+        }
+
+        return $this->response($response);
     }
 }

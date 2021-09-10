@@ -5,6 +5,7 @@ namespace app\queries\ES;
 
 use app\components\IpsAuthority;
 use app\interfaces\ES\QueryBuilderInterface;
+use app\models\ES\Template;
 
 abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
 {
@@ -20,9 +21,66 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
         return 'edit desc';
     }
 
-    public function sortDefault()
+    public function sortDefault($keyword, $class_id = [], $index_name = null, string $esTableName)
     {
-        # code...
+        $index_name = !empty($index_name) ? $index_name : $esTableName;
+        //        $source = "doc['pr'].value-doc['man_pr'].value+doc['man_pr_add'].value";
+        if ($class_id && is_array($class_id) == false) {
+            $class_id = explode('_', $class_id);
+        }
+        $source = "doc['pr'].value+(int)(_score*10)";
+        if (strstr($keyword, 'h5') || strstr($keyword, 'H5')) {
+            $source .= "+10000-((int)(doc['template_type'].value-5)*(int)(doc['template_type'].value-5)*400)";
+        }
+        if ($keyword) {
+            //关键词人工pr
+            $mapping = Template::getMapping();
+            $hot_keyword = [];
+            if (isset($mapping[$index_name]['mappings']['list']['properties']['hot_keyword']['properties']) && $mapping[$index_name]['mappings']['list']['properties']['hot_keyword']['properties']) {
+                foreach ($mapping[$index_name]['mappings']['list']['properties']['hot_keyword']['properties'] as $kk => $property) {
+                    if ($property['type'] == 'long') {
+                        $hot_keyword[] = (string)$kk;
+                    }
+                }
+                if (in_array((string)$keyword, $hot_keyword, true)) {
+                    $source .= "+doc['hot_keyword.{$keyword}'].value";
+                }
+            }
+            // 根据展示点击率调整pr
+            //            $optimize_keyword = array_keys($mapping[$index_name']['mappings']['list']['properties']['keyword_show_edit']['properties']);
+            //            $optimize_keyword = explode('!!!', implode('!!!', $optimize_keyword));//强制转换为string类型
+            //            if (in_array((string)$keyword, $optimize_keyword)) {
+            //                $source .= "+doc['keyword_show_edit.{$keyword}'].value";
+            //            }
+
+        } elseif ($class_id && count($class_id) >= 1) {
+            //标签的人工pr
+            $choose_class_id = 0;
+            foreach ($class_id as $v) {
+                if ($v > 0 || $v == -1) {
+                    $choose_class_id = $v;
+                }
+            }
+            if ($choose_class_id > 0 || $choose_class_id == -1) {
+                $mapping = Template::getMapping();
+                if (isset($mapping[$index_name]['mappings']['list']['properties']['class_sort']['properties']) && $mapping[$index_name]['mappings']['list']['properties']['class_sort']['properties']) {
+                    $class_sort = array_keys($mapping[$index_name]['mappings']['list']['properties']['class_sort']['properties']);
+                    $class_sort = explode('!!!', implode('!!!', $class_sort));//强制转换为string类型
+                    if (in_array((string)$choose_class_id, $class_sort)) {
+                        $source .= "+doc['class_sort.{$choose_class_id}'].value";
+                    }
+                }
+            }
+        }
+        $sort['_script'] = [
+            'type' => 'number',
+            'script' => [
+                "lang" => "painless",
+                "source" => $source
+            ],
+            'order' => 'desc'
+        ];
+        return $sort;
     }
 
     protected function queryIosAlbumUser()
@@ -145,9 +203,9 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
     }
 
     /**
-     * @param array $hex_colors   十六进制颜色值
-     * @param array $weights      颜色值对应的权重值 (0, 1]
-     * @param int $e              颜色搜索范围
+     * @param array $hex_colors 十六进制颜色值
+     * @param array $weights 颜色值对应的权重值 (0, 1]
+     * @param int $e 颜色搜索范围
      * @return array
      */
     public function formatColor($hex_colors, $weights = [100], $e = 50)
@@ -179,8 +237,8 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
     /**
      * 函数名称：获取颜色特征值 缩小搜索区域
      * 输入形如 [128,186,200,0.2,
-                 58,110,85,0.7,
-                 214,28,59,0.1]
+     * 58,110,85,0.7,
+     * 214,28,59,0.1]
      *  输出形如 [87,117,105]
      */
     private function getColorFeature($colors)

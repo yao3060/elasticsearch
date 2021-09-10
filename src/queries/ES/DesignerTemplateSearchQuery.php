@@ -2,6 +2,7 @@
 
 namespace app\queries\ES;
 
+use app\models\ES\Template;
 use Yii;
 
 class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
@@ -24,30 +25,48 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
     public int $offset;
 
     public function __construct(
-        public string $keyword = '0',
-        public int $page = 1,
-        public int $kid1 = 0,
-        public int $kid2 = 0,
+        public $keyword = 0,
+        public $page = 1,
+        public $kid1 = 0,
+        public $kid2 = 0,
         public string $sortType = 'default',
-        public string $tagId = '',
-        public int $isZb = 1,
-        public int $pageSize = 100,
-        public ?string $ratio = null,
-        public string $classId = '',
-        public int $update = 0,
-        public int $size = 0,
-        public int $fuzzy = 0,
-        public array $templateTypes = [1, 2],
-        public array $templateInfo = [],
-        public array $color = [],
-        public int $use = 0
-    ) {
+        public $tagId = 0,
+        public $isZb = 1,
+        public $pageSize = 100,
+        public $ratio = null,
+        public $classId = 0,
+        public $update = 0,
+        public $size = 0,
+        public $fuzzy = 0,
+        public $templateTypes = [1, 2],
+        public $templateInfo = [],
+        public $color = [],
+        public $use = 0
+    )
+    {
         $this->sortClassId = $classId;
     }
 
     public static function index()
     {
         return 'second_design';
+    }
+
+    public function beforeAssignment()
+    {
+        $this->sortType = $this->sortType ?: 'default';
+        $this->keyword = $this->keyword ?: 0;
+        $this->kid1 = $this->kid1 ? $this->kid1 : 0;
+        $this->kid2 = $this->kid2 ? $this->kid2 : 0;
+        $this->tagId = $this->tagId ? $this->tagId : 0;
+        $this->isZb = $this->isZb ? $this->isZb : 1;
+        $this->ratio = $this->ratio != null ? $this->ratio : null;
+        $this->classId = $this->classId ? $this->classId : '0_0_0_0';
+        $this->sortClassId = $this->classId;
+        $this->size = $this->size ? $this->size : 0;
+        $this->use = $this->use ? $this->use : 0;
+        $this->templateAttr = isset($this->templateInfo['templ_attr']) ? $this->templateInfo['templ_attr'] : 0; //ips_template_info => templ_attr 模板属性 1普通模板  2精品模板  3GIF模板  4套图模板
+        $this->settlementLevel = isset($this->templateInfo['settlement_level']) && $this->templateInfo['settlement_level'] ? $this->templateInfo['settlement_level'] : 0; //ips_template_info => 结算等级 1=>A级    2=>S级'
     }
 
     public function query(): array
@@ -88,12 +107,15 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
         if ($this->color) {
             return $this->queryColor();
         }
+
         return $this->query;
     }
 
     //获取搜索redis key
     public function getRedisKey()
     {
+        $this->beforeAssignment();
+
         $classId = str_replace(
             ['10_133_0_', '132_133_0_', '10_550_27_'],
             ['31_23_0_', '31_23_0_', '32_27_326_'],
@@ -106,8 +128,22 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
 
         // $redisKey:主图厨房用具_156_301_default_0_1_10000__0_0_0_0_0_0_0_0_4_1
 
-        $redisKey = sprintf(
-            $redisKey . ':%s_%d_%d_%s_%s_%d_%d_%s_%s_%d_%d_%d',
+//        var_dump([
+//            'keyword' => $this->keyword,
+//            'kid_1' => $this->kid1,
+//            'kid_2' => $this->kid2,
+//            'sortType' => $this->sortType,
+//            'tag_id' => $this->tagId,
+//            'is_zb' => $this->isZb,
+//            'pagesize' => $this->pageSize,
+//            'class_id' => $this->classId,
+//            'size' => $this->size,
+//            'use' => $this->use,
+//            'templ_attr' => $this->templateAttr,
+//            'settlement_level' => $this->settlementLevel,
+//        ]);exit;
+
+        $implodeKeys = [
             $this->keyword,
             $this->kid1,
             $this->kid2,
@@ -118,29 +154,40 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
             $this->ratio,
             $classId,
             $this->size,
+            $this->use,
             $this->templateAttr,
             $this->settlementLevel
-        );
+        ];
+
+        $redisKey .= ':' . implode('_', $implodeKeys);
+
         //templateTypes = [1,2]
-        if (!empty($this->templateTypes)) {
+        if (!empty($this->templateTypes) && is_array($this->templateTypes)) {
             $redisKey .= '_' . implode('|', $this->templateTypes);
+        } else if ($this->templateTypes > 0) {
+            $redisKey .= "_" . $this->templateTypes;
         }
 
-        if ($this->color) {
+
+        if (!empty($this->color)) {
             $redisKey .= '_' . implode(',', array_column($this->color, 'color')) .
                 '_' . implode(',', array_column($this->color, 'weight'));
         }
 
         //获取页数 占用逻辑
-        switch ($this->templateInfo['type']) {
-            case 'second':
-                self::$esKey = $redisKey;
-                $page = Yii::$app->redis8->hget(self::HASH_KEY_SECOND_PAGE, self::REDIS_KEY);
-                return $page ?: 1;
-            default:
-                $redisKey .= "_" . $this->page;
-                self::$esKey = $redisKey;
-                return $redisKey;
+        if (isset($this->templateInfo['type']) && $this->templateInfo['type']) {
+            switch ($this->templateInfo['type']) {
+                case 'second':
+                    var_dump(1);
+                    self::$esKey = $redisKey;
+                    $page = Yii::$app->redis8->hget(self::HASH_KEY_SECOND_PAGE, self::REDIS_KEY);
+                    return $page ?: 1;
+                default:
+                    var_dump(2);
+                    $redisKey .= "_" . $this->page;
+                    self::$esKey = $redisKey;
+                    return $redisKey;
+            }
         }
     }
 
@@ -235,7 +282,8 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
                 $this->sort = $this->sortDefault(
                     $this->keyword,
                     $this->sortClassId,
-                    static::index()
+                    static::index(),
+                    Template::getEsTableName()
                 );
         }
     }
