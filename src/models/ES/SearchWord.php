@@ -16,22 +16,31 @@ class SearchWord extends BaseModel
      */
     private $redisDb = 5;
 
-    public static function index() {
+    public static function index()
+    {
         return 'search_keyword';
     }
+
     public static function getDb()
     {
         return \Yii::$app->get('elasticsearch_search_keyword');
     }
-    public static function type() {
+
+    public static function type()
+    {
         return 'list';
     }
-    public static function sortByHot() {
+
+    public static function sortByHot()
+    {
         return 'sort desc';
     }
-    public function attributes() {
-        return ['id', 'title', 'description', 'created', 'kid_1', 'kid_2', 'kid_3', 'pr', 'man_pr', 'man_pr_add', 'width', 'height', 'ratio', 'scene_id','is_zb'];
+
+    public function attributes()
+    {
+        return ['id', 'title', 'description', 'created', 'kid_1', 'kid_2', 'kid_3', 'pr', 'man_pr', 'man_pr_add', 'width', 'height', 'ratio', 'scene_id', 'is_zb'];
     }
+
     /**
      * @param QueryBuilderInterface $query
      * @return array 2021-09-08
@@ -39,9 +48,9 @@ class SearchWord extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $redisKey = sprintf('searchword200909:%s_%d_%d',$query->keyword,$query->type,$query->pageSize);
+        $redisKey = sprintf('searchword200909:%s_%d_%d', $query->keyword, $query->type, $query->pageSize);
         $return = Tools::getRedis($this->redisDb, $redisKey);
-        if(!$return){
+        if (!$return) {
             $newQuery = $this->queryKeyword($query->keyword);
             $newQuery['bool']['must'][]['match']['type'] = $query->type;
             $newQuery['bool']['filter'][]['range']['results']['gte'] = 1;
@@ -74,7 +83,9 @@ class SearchWord extends BaseModel
         }
         return $return;
     }
-    public static function queryKeyword($keyword) {
+
+    public static function queryKeyword($keyword)
+    {
         if (mb_strlen($keyword) > 1) {
             $query['bool']['must'][]['match']['keyword'] = [
                 'query' => $keyword,
@@ -87,7 +98,9 @@ class SearchWord extends BaseModel
         }
         return $query;
     }
-    public static function sortDefault() {
+
+    public static function sortDefault()
+    {
         $source = "doc['count'].value*500+doc['results'].value*1";
         $sort['_script'] = [
             'type' => 'number',

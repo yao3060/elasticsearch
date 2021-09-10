@@ -24,7 +24,8 @@ class AssetSearchQuery implements QueryBuilderInterface
         $isZb = 1,
         $sort = 'DESC',
         $useCount = 0
-    ) {
+    )
+    {
         $this->keyword = $keyword;
         $this->page = $page;
         $this->pageSize = $pageSize;
@@ -34,10 +35,12 @@ class AssetSearchQuery implements QueryBuilderInterface
         $this->useCount = $useCount;
 
     }
-    public function query():array
+
+    public function query(): array
     {
         return ['my', 'query'];
     }
+
     public function getRedisKey()
     {
         // TODO: Implement getRedisKey() method.

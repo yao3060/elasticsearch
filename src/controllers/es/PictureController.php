@@ -3,7 +3,9 @@
 /**
  * 重构ES,Asset搜索方法
  */
+
 namespace app\controllers\es;
+
 use app\components\Response;
 use app\helpers\StringHelper;
 use app\models\ES\Picture;
@@ -28,8 +30,8 @@ class PictureController extends BaseController
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $data = (new Picture())
-                    ->search(new PictureSearchQuery($data['keyword'], $data['page'] ?? 1, $data['pageSize'] ?? 40,$data['sceneId'] ?? 0,
-                        $data['isZb'] ?? 1,$data['kid'] ?? 0,$data['vipPic'] ?? 0,$data['ratioId'] ?? 0));
+                    ->search(new PictureSearchQuery($data['keyword'], $data['page'] ?? 1, $data['pageSize'] ?? 40, $data['sceneId'] ?? 0,
+                        $data['isZb'] ?? 1, $data['kid'] ?? 0, $data['vipPic'] ?? 0, $data['ratioId'] ?? 0));
                 $response = new Response('get_picture_list', 'assetList', $data);
             }
         } catch (UnknownPropertyException $e) {

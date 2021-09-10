@@ -20,12 +20,14 @@ class SearchWordSearchQuery implements QueryBuilderInterface
      */
     public int $pageSize;
     public int $type;
+
     function __construct(
         $keyword = 0,
         $page = 1,
         $pageSize = 40,
         $type = 1
-    ) {
+    )
+    {
         $this->keyword = $keyword;
         $this->page = $page;
         $this->pageSize = $pageSize;

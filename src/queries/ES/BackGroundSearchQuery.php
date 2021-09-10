@@ -13,12 +13,13 @@ class BackGroundSearchQuery implements QueryBuilderInterface
     public int $pageSize;
     public string $sceneId;
     public int $isZb;
-    public string | int $sort;
+    public string|int $sort;
     public int $useCount;
-    public string | int $kid;
+    public string|int $kid;
     public int $ratioId;
     public int $class;
     public int $isBg;
+
     function __construct(
         $keyword = 0,
         $page = 1,
@@ -31,7 +32,8 @@ class BackGroundSearchQuery implements QueryBuilderInterface
         $ratioId = 0,
         $class = 0,
         $isBg = 0
-    ) {
+    )
+    {
         $this->keyword = $keyword;
         $this->page = $page;
         $this->pageSize = $pageSize;
@@ -44,10 +46,12 @@ class BackGroundSearchQuery implements QueryBuilderInterface
         $this->class = $class;
         $this->isBg = $isBg;
     }
-    public function query():array
+
+    public function query(): array
     {
         return ['my', 'query'];
     }
+
     public function getRedisKey()
     {
         // TODO: Implement getRedisKey() method.

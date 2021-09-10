@@ -4,6 +4,7 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
+
 /**
  * @package app\models\ES
  * author  ysp
@@ -15,23 +16,31 @@ class Picture extends BaseModel
      */
     private $redisDb = 8;
 
-    public static function index() {
+    public static function index()
+    {
         return 'picture2';
     }
-    public static function type() {
+
+    public static function type()
+    {
         return 'list';
     }
-    public static function sortByTime() {
+
+    public static function sortByTime()
+    {
         return 'created desc';
     }
 
-    public static function sortByHot() {
+    public static function sortByHot()
+    {
         return 'edit desc';
     }
 
-    public function attributes() {
+    public function attributes()
+    {
         return ['id', 'title', 'description', 'created', 'kid_1', 'kid_2', 'kid_3', 'pr', 'man_pr', 'man_pr_add', 'width', 'height', 'ratio', 'scene_id', 'is_vip_asset'];
     }
+
     /**
      * @param QueryBuilderInterface $query
      * @return array 2021-09-08
@@ -39,12 +48,12 @@ class Picture extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $sceneId = is_array($query->sceneId)?$query->sceneId:[];
-        $kid = is_array($query->kid)?$query->kid:[];
+        $sceneId = is_array($query->sceneId) ? $query->sceneId : [];
+        $kid = is_array($query->kid) ? $query->kid : [];
         $ratioId = isset($query->ratioId) ? $query->ratioId : '-1';
         $redisKey = sprintf('ES_picture2:%s:%s_%d_%s_%s_%d_%d_%d_%d_v1',
-            date('Y-m-d'), $query->keyword, $query->page,implode('-', $kid),implode('-', $sceneId),
-            $ratioId,$query->pageSize,$query->isZb,$query->vipPic);
+            date('Y-m-d'), $query->keyword, $query->page, implode('-', $kid), implode('-', $sceneId),
+            $ratioId, $query->pageSize, $query->isZb, $query->vipPic);
         $return = Tools::getRedis($this->redisDb, $redisKey);
         $pageSize = $query->pageSize;
         if (!$return || !$return['hit']) {
@@ -90,7 +99,9 @@ class Picture extends BaseModel
         }
         return $return;
     }
-    public static function queryKeyword($keyword, $is_or = false) {
+
+    public static function queryKeyword($keyword, $is_or = false)
+    {
         $operator = $is_or ? 'or' : 'and';
         $query['bool']['must'][]['multi_match'] = [
             'query' => $keyword,
@@ -100,7 +111,9 @@ class Picture extends BaseModel
         ];
         return $query;
     }
-    public static function sortDefault() {
+
+    public static function sortDefault()
+    {
         //        $source = "doc['pr'].value-doc['man_pr'].value+doc['man_pr_add'].value";
         $source = "doc['pr'].value+(int)(_score*10)";
         $sort['_script'] = [
