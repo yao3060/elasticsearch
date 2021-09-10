@@ -5,6 +5,10 @@ namespace app\models\ES;
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
 
+/**
+ * @package app\models\ES
+ * author  ysp
+ */
 class SearchWord extends BaseModel
 {
     /**

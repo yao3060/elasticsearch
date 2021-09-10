@@ -6,6 +6,10 @@ use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
 use app\services\designers\DesignerRecommendAssetTagService;
 
+/**
+ * @package app\models\ES
+ * author  ysp
+ */
 class GroupWords extends BaseModel
 {
     /**
