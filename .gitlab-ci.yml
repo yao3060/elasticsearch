@@ -32,9 +32,11 @@ staging-install-job:
   tags:
     - yaoin-net:aliyun-small-2
   script:
+    - cd ./src
     - echo "Start install php packages"
-    - ./composer install --ignore-platform-reqs
-    - ./composer dump-autoload
+    - composer install --ignore-platform-reqs
+    - composer dump-autoload
+    - cd ../
 
 build-staging-job:
   stage: build
