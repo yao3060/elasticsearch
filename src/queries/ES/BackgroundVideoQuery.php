@@ -5,14 +5,15 @@ namespace app\queries\ES;
 
 class BackgroundVideoQuery extends BaseTemplateSearchQuery
 {
+    public $sort;
+    protected $query = [];
+
     public function __construct(
         public $keyword = 0,
         public $classId = [],
         public $page = 1,
         public $pageSize = 1,
         public $ratio = 0,
-        public $sort,
-        protected $query = []
     )
     {
     }

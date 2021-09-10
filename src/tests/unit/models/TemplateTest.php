@@ -1,6 +1,6 @@
 <?php
 
-namespace models;
+namespace tests\unit\models;
 
 use app\components\IpsAuthority;
 use app\models\ES\Template;
