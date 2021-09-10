@@ -29,6 +29,8 @@ staging-install-job:
   environment:
     name: staging
   image: composer:2
+  tags:
+    - yaoin-net:aliyun-small-2
   script:
     - echo "Start install php packages"
     - ./composer install --ignore-platform-reqs
