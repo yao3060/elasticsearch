@@ -8,6 +8,7 @@ cache:
     - src/vendor
 
 stages:
+  - install
   - build
   - deploy
 
@@ -22,6 +23,16 @@ after_script:
   - ./deploy/scripts/clean-docker-network.sh  "${PROJECT}_${ENVIRONMENT}_default"
 
 ###########################################################################
+
+staging-install-job:
+  stage: install
+  environment:
+    name: staging
+  image: composer:2
+  script:
+    - echo "Start install php packages"
+    - ./composer install --ignore-platform-reqs
+    - ./composer dump-autoload
 
 build-staging-job:
   stage: build
