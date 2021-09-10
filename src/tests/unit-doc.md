@@ -7,7 +7,9 @@
   - [ ] recommendSearch (无法验证)
 - [ ] DesignerTemplate (没有设计师账号)
 - [x] BackgroundVideo
+  - [x] search
 - [x] SensitiveWord
+  - [x] search
 
 ### 目标
 - [ ] 尽可能的全覆盖能通过api验证的接口用例
