@@ -19,7 +19,7 @@ return [
         'GET  v1/groups/recommends' => 'es/group-words/recommend-search',
         'GET  v1/videos' => 'es/video-audio/search',
         'GET  v1/searchs/word' => 'es/search-word/search',
-        'GET  v1/videos/e' => 'es/video-e/search',
+        'GET  v1/videos/e' => 'es/video-e/search',//搜索
 
         //H
         'GET  v1/designer-templates' => 'es/designer-template/index',

@@ -1,0 +1,27 @@
+FROM php:8-fpm-alpine
+
+# add phpredis to php-available-exts (install in the next step)
+ENV PHPREDIS_VERSION 5.3.4
+RUN mkdir -p /usr/src/php/ext/redis \
+	&& curl -L https://github.com/phpredis/phpredis/archive/$PHPREDIS_VERSION.tar.gz | tar xvz -C /usr/src/php/ext/redis --strip 1 \
+	&& echo 'redis' >> /usr/src/php-available-ext
+
+# update mirror url base on location ( Global or CN )
+RUN sed -i "/dl-cdn.alpinelinux.org/s/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g" /etc/apk/repositories && cat /etc/apk/repositories
+
+# install required php extensions
+RUN apk add --no-cache libzip-dev \
+    && docker-php-ext-install pdo pdo_mysql opcache zip bcmath redis \
+    && rm -rf /var/cache/apk/* /tmp/* \
+    && docker-php-source delete
+
+# set recommended PHP.ini settings
+# see https://secure.php.net/manual/en/opcache.installation.php
+RUN { \
+  echo 'opcache.memory_consumption=128'; \
+  echo 'opcache.interned_strings_buffer=8'; \
+  echo 'opcache.max_accelerated_files=4000'; \
+  echo 'opcache.revalidate_freq=2'; \
+  echo 'opcache.fast_shutdown=1'; \
+  echo 'opcache.enable_cli=1'; \
+  } > /usr/local/etc/php/conf.d/opcache-recommended.ini

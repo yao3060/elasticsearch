@@ -3,11 +3,12 @@ variables:
   GIT_DEPTH: 1
 
 cache:
-  key: ${CI_PROJECT_NAME}
+  key: ${CI_PROJECT_NAME}_2
   paths:
     - src/vendor
 
 stages:
+  - install
   - build
   - deploy
 
@@ -22,6 +23,20 @@ after_script:
   - ./deploy/scripts/clean-docker-network.sh  "${PROJECT}_${ENVIRONMENT}_default"
 
 ###########################################################################
+
+staging-install-job:
+  stage: install
+  environment:
+    name: staging
+  image: composer:2
+  tags:
+    - yaoin-net:aliyun-small-2
+  script:
+    - cd ./src
+    - echo "Start install php packages"
+    - composer install --ignore-platform-reqs
+    - composer dump-autoload
+    - cd ../
 
 build-staging-job:
   stage: build
@@ -39,10 +54,10 @@ build-staging-job:
     - source ./.env
     - export COMPOSE_PROJECT_NAME="${PROJECT}_${ENVIRONMENT}"
     - export VERSION=$(cat VERSION)
-    - docker version
-    # - ./install php package
-    - docker run --rm -v $(pwd)/src:/app -w /app composer about
-    - docker run --rm -v $(pwd)/src:/app -w /app composer install --ignore-platform-reqs
+    - ./docker-compose up -d
+    - docker ps
+    - ./codecept run unit
+    - ./docker-compose stop
     # - ./apidoc
     # - ./codecept run
     # - ./deploy/scripts/push-to-gitlab.sh
