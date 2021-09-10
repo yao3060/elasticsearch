@@ -3,7 +3,7 @@ variables:
   GIT_DEPTH: 1
 
 cache:
-  key: ${CI_PROJECT_NAME}_2
+  key: ${CI_PROJECT_NAME}_3
   paths:
     - src/vendor
 
