@@ -35,5 +35,11 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+# Skip install modules
+if [ "$SKIP_INSTALL" != 1 ]; then
+    echo "install modules"
+    ./composer install --ignore-platform-reqs
+fi
+
 echo "start modules"
 ./docker-compose $NO_DEV up $@
