@@ -1,9 +1,11 @@
 <?php
 
 /**
- * 重构ES,Asset搜索方法
+ * 重构ES,VideoAudio搜索方法
  */
+
 namespace app\controllers\es;
+
 use app\components\Response;
 use app\helpers\StringHelper;
 use app\models\ES\GroupWords;
@@ -29,8 +31,8 @@ class VideoAudioController extends BaseController
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $data = (new VideoAudio())
-                    ->search(new VideoAudioSearchQuery($data['keyword'], $data['page'], $data['pageSize'],$data['parentsId'],
-                        $data['classId'],$data['prep'],$data['isDesigner'],$data['isVip']));
+                    ->search(new VideoAudioSearchQuery($data['keyword'], $data['page'], $data['pageSize'], $data['parentsId'],
+                        $data['classId'], $data['prep'], $data['isDesigner'], $data['isVip']));
                 $response = new Response('get_videoAudio_list', 'VideoAudioList', $data);
             }
         } catch (UnknownPropertyException $e) {
@@ -50,6 +52,7 @@ class VideoAudioController extends BaseController
         }
         return $this->response($response);
     }
+
     public function actionRecommendSearch(Request $request)
     {
         $data = $request->get();

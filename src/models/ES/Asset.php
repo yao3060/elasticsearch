@@ -12,10 +12,10 @@ use app\models\AssetUseTop;
  * @package app\models\ES
  * author  ysp
  */
-
 class Asset extends BaseModel
 {
     private $redisDb = 8;
+
     /**
      * @param QueryBuilderInterface $query
      * @return array 2021-09-03
@@ -100,6 +100,7 @@ class Asset extends BaseModel
         }
         return $return;
     }
+
     //推荐搜索
     public function recommendSearch(QueryBuilderInterface $query): array
     {
@@ -132,6 +133,7 @@ class Asset extends BaseModel
         }
         return $return;
     }
+
     public static function saveRecord($fields = [])
     {
         if (!$fields['id']) return false;
@@ -161,6 +163,7 @@ class Asset extends BaseModel
         $info->scene_id = $scene;
         $info->save();
     }
+
     public static function queryKeyword($keyword, $is_or = false)
     {
         $operator = $is_or ? 'or' : 'and';
@@ -172,10 +175,12 @@ class Asset extends BaseModel
         ];
         return $query;
     }
+
     public static function sortByTime()
     {
         return 'created desc';
     }
+
     public static function sortDefault()
     {
         //        $source = "doc['pr'].value-doc['man_pr'].value+doc['man_pr_add'].value";

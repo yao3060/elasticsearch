@@ -21,13 +21,15 @@ class GroupWordsSearchQuery implements QueryBuilderInterface
     public int $pageSize;
     public string $search;
     public string $searchAll;
+
     function __construct(
         $keyword = 0,
         $page = 1,
         $pageSize = 40,
         $search = 0,
         $searchAll = 0,
-    ) {
+    )
+    {
         $this->keyword = $keyword;
         $this->page = $page;
         $this->pageSize = $pageSize;

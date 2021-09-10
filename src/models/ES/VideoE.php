@@ -10,7 +10,7 @@ use app\services\designers\DesignerRecommendAssetTagService;
  * @package app\models\ES
  * author  ysp
  */
-class GroupWords extends BaseModel
+class VideoE extends BaseModel
 {
     /**
      * @var int redis
@@ -19,7 +19,7 @@ class GroupWords extends BaseModel
 
     public static function index()
     {
-        return 'group_word';
+        return 'video_e_inx';
     }
 
     public static function type()
@@ -34,57 +34,84 @@ class GroupWords extends BaseModel
 
     public function attributes()
     {
-        return ['id', 'title', 'description', 'created', 'kid_1', 'kid_2', 'kid_3', 'pr', 'man_pr', 'man_pr_add', 'width', 'height', 'ratio', 'scene_id', 'is_zb'];
+        return ['id', 'title', 'create_date', 'pr', 'width', 'height', 'class_id', 'description', 'owner', 'audit_through', 'scope_type'];
+    }
+
+    public static function sortByTime()
+    {
+        return 'create_date desc';
     }
 
     /**
      * @param QueryBuilderInterface $query
-     * @return array 2021-09-08
+     * @return array 2021-09-10
      * return ['hit','ids','score'] 命中数,命中id,模板id=>分数
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $redisKey = "ES_group_word:" . date('Y-m-d') . ":{$query->keyword}_{$query->page}_" . "_{$query->pageSize}";
-        if (!empty($query->search)) {
-            $redisKey .= '_' . $query->search;
-        }
-        if (!empty($query->searchAll)) {
-            $redisKey .= '_' . $query->searchAll . '_v1';
-        }
-        $return = Tools::getRedis($this->redisDb, $redisKey);
-        $pageSize = $query->pageSize;
+        /*$redis_key = "ES_video_e:video_e:" . date('Y-m-d') . ":{$keyword}_{$page}_ " . implode('-', $class_id) . " _{$pageSize}". " _{$ratio}"."_{$scopeType}"."_{$owner}";
+        $return = Tools::getRedis(self::$redis_db, $redis_key);*/
+        $return = '';
         if (!$return) {
-            if ($query->searchAll) {
-                $keyword = DesignerRecommendAssetTagService::getRecommendAssetKws(5);
-                $shouldMatch = [];
-                foreach ($keyword as $keywordVal) {
-                    $shouldMatch[] = [
-                        'match' => [
-                            'keyword' => $keywordVal
-                        ]
-                    ];
-                }
-                $newQuery['bool']['should'][] = $shouldMatch;
-            } elseif ($query->keyword) {
-                $newQuery = $this->queryKeyword($query->keyword, false, true);
+            unset($return);
+            if ($query->keyword) {
+                $newQuery = $this->queryKeyword($query->keyword);
             }
-            if (!empty($query->search)) {
-                $newQuery['bool']['must'][]['multi_match'] = [
-                    'query' => $query->search,
-                    'fields' => ["keyword^1"],
-                    'type' => 'most_fields',
-                    "operator" => 'and'
+            if ($query->classId && $query->classId != 0) {
+                foreach ($query->classId as $key) {
+                    if ($key > 0) {
+                        $newQuery['bool']['must'][]['terms']['class_id'] = [$key];
+                    }
+                }
+            }
+
+            //1横2竖
+            if ($query->ratio == 1) {
+                $newQuery['bool']['filter']['script']['script'] = [
+                    'source' => 'doc["width"].value>doc["height"].value',
+                    "lang" => "painless"
+                ];
+            } elseif ($query->ratio == 2) {
+                $newQuery['bool']['filter']['script']['script'] = [
+                    'source' => 'doc["height"].value>doc["width"].value',
+                    "lang" => "painless"
+                ];
+            } elseif ($query->ratio == 3) {
+                $newQuery['bool']['filter']['script']['script'] = [
+                    'source' => 'doc["height"].value == doc["width"].value',
+                    "lang" => "painless"
                 ];
             }
 
-            $sort = $this->sortByHot();
+            $newQuery['bool']['must'][]['match']['scope_type'] = $query->scopeType;
+
+            if (!empty($query->owner) && $query->scopeType == 'bg') {
+                // 匹配度，避免or没有结果时查询全部条件
+                $newQuery['bool']['minimum_should_match'] = 1;
+                // 设计师自身包含待审核以及审核通过部分
+                $boolMust = [];
+                $boolMust[]['term']['owner'] = $query->owner;
+                $boolMust[]['terms']['audit_through'] = [2, 3, 4];
+                $newQuery['bool']['should'][]['bool']['must'] = $boolMust;
+
+                // 全部审核通过
+                $newQuery['bool']['should'][] = [
+                    'term' => [
+                        'audit_through' => 4
+                    ]
+                ];
+            } else {
+                $newQuery['bool']['must'][]['term']['audit_through'] = 4;
+            }
+
+            $sort = $this->sortByTime();
             try {
                 $info = self::find()
                     ->source(['id'])
                     ->query($newQuery)
                     ->orderBy($sort)
-                    ->offset(($query->page - 1) * $pageSize)
-                    ->limit($pageSize)
+                    ->offset(($query->page - 1) * $query->pageSize)
+                    ->limit($query->pageSize)
                     ->createCommand()
                     ->search([], ['track_scores' => true])['hits'];
             } catch (\exception $e) {
@@ -92,12 +119,13 @@ class GroupWords extends BaseModel
                 $info['ids'] = [];
                 $info['score'] = [];
             }
+
             $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
             foreach ($info['hits'] as $value) {
                 $return['ids'][] = $value['_id'];
                 $return['score'][$value['_id']] = $value['sort'][0];
             }
-            Tools::setRedis($this->redisDb, $redisKey, $return, 86400);
+            //Tools::setRedis(self::$redis_db, $redis_key, $return, 86400);
         }
         return $return;
     }

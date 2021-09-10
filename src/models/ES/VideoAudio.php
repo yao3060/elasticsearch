@@ -4,6 +4,7 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
+
 /**
  * @package app\models\ES
  * author  ysp
@@ -15,21 +16,31 @@ class VideoAudio extends BaseModel
      */
     private $redisDb = 8;
 
-    public static function index() {
+    public static function index()
+    {
         return 'video_audio';
     }
-    public static function type() {
+
+    public static function type()
+    {
         return 'list';
     }
-    public static function sortByTime() {
+
+    public static function sortByTime()
+    {
         return 'create_date desc';
     }
-    public static function sortByOrderTime() {
+
+    public static function sortByOrderTime()
+    {
         return 'create_date asc';
     }
-    public static function sortByPr() {
+
+    public static function sortByPr()
+    {
         return 'pr desc';
     }
+
     /**
      * @param QueryBuilderInterface $query
      * @return array 2021-09-08
@@ -59,16 +70,16 @@ class VideoAudio extends BaseModel
                 }
             }
             $newQuery['bool']['must'][]['match']['parents_id'] = $query->parentsId;
-            if($query->isDesigner == 1){
+            if ($query->isDesigner == 1) {
                 $newQuery['bool']['must'][]['term']['is_vip'] = 0;
             }
-            if($query->isVip == 1){
+            if ($query->isVip == 1) {
                 $newQuery['bool']['must'][]['term']['is_vip'] = 1;
                 $sort = $this->sortByOrderTime();
-            }else{
+            } else {
                 $sort = $this->sortByTime();
             }
-            if($query->isDesigner == 0 && $query->isVip == 0){  // 用户视频编辑器原版音乐排版使用pr排序
+            if ($query->isDesigner == 0 && $query->isVip == 0) {  // 用户视频编辑器原版音乐排版使用pr排序
                 $sort = $this->sortByPr();
             }
             try {
@@ -95,7 +106,8 @@ class VideoAudio extends BaseModel
         return $return;
     }
 
-    public static function queryKeyword($keyword, $is_or = false) {
+    public static function queryKeyword($keyword, $is_or = false)
+    {
         $operator = $is_or ? 'or' : 'and';
         $query['bool']['must'][]['multi_match'] = [
             'query' => $keyword,
@@ -105,7 +117,9 @@ class VideoAudio extends BaseModel
         ];
         return $query;
     }
-    public static function sortDefault() {
+
+    public static function sortDefault()
+    {
         $source = "doc['pr'].value+(int)(_score*10)";
         $sort['_script'] = [
             'type' => 'number',

@@ -3,7 +3,9 @@
 /**
  * 重构ES,SeoSearch搜索模块
  */
+
 namespace app\controllers\es;
+
 use app\components\Response;
 use app\helpers\StringHelper;
 use app\models\ES\Seo;
@@ -47,6 +49,7 @@ class SeoController extends BaseController
         }
         return $this->response($response);
     }
+
     public function actionSeoSearch(Request $request)
     {
         $data = $request->get();
