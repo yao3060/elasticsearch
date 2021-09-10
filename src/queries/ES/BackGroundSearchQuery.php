@@ -13,9 +13,9 @@ class BackGroundSearchQuery implements QueryBuilderInterface
     public int $pageSize;
     public string $sceneId;
     public int $isZb;
-    public string $sort;
+    public string | int $sort;
     public int $useCount;
-    public string $kid;
+    public string | int $kid;
     public int $ratioId;
     public int $class;
     public int $isBg;

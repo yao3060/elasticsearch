@@ -3,11 +3,13 @@
 namespace tests\unit\models;
 
 use app\components\IpsAuthority;
-use app\models\ES\Asset;
-use app\queries\ES\AssetSearchQuery;
+use app\models\ES\Background;
+use app\models\ES\Picture;
+use app\queries\ES\BackGroundSearchQuery;
+use app\queries\ES\PictureSearchQuery;
 use yii\helpers\ArrayHelper;
 
-class AssetTest extends \Codeception\Test\Unit
+class PictureTest extends \Codeception\Test\Unit
 {
     /**
      * @var \UnitTester
@@ -30,27 +32,27 @@ class AssetTest extends \Codeception\Test\Unit
     // tests
     public function testSomeFeature()
     {
-        $items = (new Asset())
-            ->search(new AssetSearchQuery(
-                keyword:'你好',
+        $items = (new Picture())
+            ->search(new PictureSearchQuery(
+                keyword:'早安',
                 page:1,
                 pageSize:30,
                 sceneId:0,
-                isZb:0
+                isZb:1,
+                kid:1,
+                vipPic: 0,
             ));
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/get-asset-list?w=%E4%BD%A0%E5%A5%BD&p=1&type=image&k1=0&k2=0&k3=0&tagId=0&sceneId=undefined&styleId=undefined&ratioId=undefined'
+            'https://818ps.com/api/get-asset-list?w=%E6%97%A9%E5%AE%89&p=1&type=pic&k1=0&k2=0&k3=0&tagId=undefined&sceneId=undefined&styleId=0&ratioId=undefined&isPic=true&picId=4689234'
         );
 
         $content = json_decode($response->getBody()->getContents());
-
         $ids = ArrayHelper::getColumn($content, 'id');
         sort($ids);
         $myIds = $items['ids'];
         sort($myIds);
-
         $this->assertEquals(join(',', $ids), join(',', $myIds));
     }
 }

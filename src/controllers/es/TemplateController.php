@@ -37,7 +37,7 @@ class TemplateController extends BaseController
             $validateAttributes = $validate->getAttributes();
 
             $search = $template->search(new TemplateSearchQuery(
-                keyword: $validateAttributes ?? null,
+                keyword: $validateAttributes['keyword'] ?? null,
                 page: $validateAttributes['page'] ?? 1,
                 kid1: $validateAttributes['kid1'] ?? 0,
                 kid2: $validateAttributes['kid2'] ?? 0,

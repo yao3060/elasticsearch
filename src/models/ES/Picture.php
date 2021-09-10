@@ -4,7 +4,10 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
-
+/**
+ * @package app\models\ES
+ * author  ysp
+ */
 class Picture extends BaseModel
 {
     /**
@@ -18,6 +21,13 @@ class Picture extends BaseModel
     public static function type() {
         return 'list';
     }
+    public static function sortByTime() {
+        return 'created desc';
+    }
+
+    public static function sortByHot() {
+        return 'edit desc';
+    }
 
     public function attributes() {
         return ['id', 'title', 'description', 'created', 'kid_1', 'kid_2', 'kid_3', 'pr', 'man_pr', 'man_pr_add', 'width', 'height', 'ratio', 'scene_id', 'is_vip_asset'];
@@ -25,7 +35,7 @@ class Picture extends BaseModel
     /**
      * @param QueryBuilderInterface $query
      * @return array 2021-09-08
-     * return ['hit','ids','score'] 命中数,命中id,模板id=>分数
+     * return ['hit','ids','score'] 命中数,命中id,模板id=>分 数
      */
     public function search(QueryBuilderInterface $query): array
     {
