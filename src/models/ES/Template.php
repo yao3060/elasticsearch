@@ -156,12 +156,13 @@ class Template extends BaseModel
         if (!IpsAuthority::check(IOS_ALBUM_USER)) {
             $return = Tools::getRedis(self::$redis_db, $redisKey);
         }
-
         $redisStat['st'] = (int)((microtime(true) - $reStartTime) * 1000);
         $dbt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
         $caller = isset($dbt[1]['function']) ? $dbt[1]['function'] : null;
         $redisStat['key'] = 'ES_template12-23:' . $caller . ($query->fuzzy == 1 ? 1 : null);
         $redisStat['hit'] = 1;
+
+        $baseQuery = $query->query();
 
 //        if (!$return || Tools::isReturnSource() || $update == 1) {
         if (!$return || $query->update == 1) {
@@ -172,7 +173,7 @@ class Template extends BaseModel
             $reStartTime = microtime(true);
 //            Yii::$app->redis9->incr("search_return_source_incr");
             if ($query->keyword != null) {
-                $query = self::queryKeyword($query->keyword, $query->fuzzy);
+                $baseQuery = self::queryKeyword($query->keyword, $query->fuzzy);
             }
             unset($return);
             $costInfo = [];
@@ -184,7 +185,7 @@ class Template extends BaseModel
                     $flg = '_col';
                     $info = (new Query())->from('818ps_pic', '818ps_pic')
                         ->source(['templ_id'])
-                        ->query($query->query())
+                        ->query($baseQuery)
                         ->offset($query->offset)
                         ->limit($query->pageSize)
                         ->createCommand($query->elasticsearchColor)
@@ -193,7 +194,7 @@ class Template extends BaseModel
                     $flg = '';
                     $info = self::find()
                         ->source(['temple_id'])
-                        ->query($query->query())
+                        ->query($baseQuery)
                         ->orderBy($query->sort)
                         ->offset($query->offset)
                         ->limit($query->pageSize)
