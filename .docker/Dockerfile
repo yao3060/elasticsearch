@@ -16,7 +16,7 @@ FROM composer:2 as composer
 
 # copy source code to image
 COPY ./src/composer.json ./src/composer.lock /app/
-RUN composer install --no-scripts --no-autoloader --no-dev --prefer-dist -vvv
+RUN composer install --no-scripts --no-autoloader --prefer-dist -vvv
 
 
 FROM yao3060/yii2-php:8-fpm-alpine as php
