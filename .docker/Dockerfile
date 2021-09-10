@@ -10,6 +10,15 @@ COPY ./src/web /var/www/html/web
 # set folder permissions
 RUN find /var/www/html -type d -exec chmod 755 {} \;
 
+
+
+FROM composer:2 as composer
+
+# copy source code to image
+COPY ./src/composer.json ./src/composer.lock /app/
+RUN composer install --no-scripts --no-autoloader --no-dev --prefer-dist -vvv
+
+
 FROM php:8-fpm-alpine as php
 
 ARG APP_ENV
@@ -58,7 +67,13 @@ COPY .docker/php/usr/local/etc/php/ /usr/local/etc/php/
 COPY .docker/php/usr/local/etc/php-fpm.d/ /usr/local/etc/php-fpm.d/
 
 # copy source code to image
+COPY --from=composer /app/vendor /var/www/html/vendor
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+
+# copy source code to image
 COPY ./src /var/www/html
+
+RUN /usr/bin/composer dump-autoload
 
 # # Run this after copy source to image instead of /start
 RUN chown -R :www-data /var/www/html/web

@@ -41,7 +41,7 @@ build-staging-job:
     - export VERSION=$(cat VERSION)
     - docker version
     # - ./install php package
-    # - docker run --rm -v $(pwd)/src:/app -w /app composer:2 install --ignore-platform-reqs
+    - ./docker-compose run -u $(id -u) php composer install --ignore-platform-reqs
     # - ./apidoc
     # - ./codecept run
     # - ./deploy/scripts/push-to-gitlab.sh
