@@ -14,8 +14,8 @@ stages:
 
 before_script:
   - set -aeu
-  # - docker login ${DOMAIN_DOCKER_REGISTRY} -u ${DOMAIN_DOCKER_REGISTRY_USERNAME} -p${DOMAIN_DOCKER_REGISTRY_PASSWORD}
   # - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+  - docker login --username=$ALIYUN_USERNAME $ALIYUN_CONTAINER_REGISTRY --password=$DOCKER_PASSWORD
   - cp .env.default .env
 
 after_script:
@@ -54,13 +54,8 @@ build-staging-job:
     - source ./.env
     - export COMPOSE_PROJECT_NAME="${PROJECT}_${ENVIRONMENT}"
     - export VERSION=$(cat VERSION)
-    - ./docker-compose up -d
-    - docker ps
-    - ./codecept run unit
-    - ./docker-compose stop
-    # - ./apidoc
-    # - ./codecept run
-    # - ./deploy/scripts/push-to-gitlab.sh
-    - echo "test passed, ready to build and push to Aliyun CS"
+    - echo $VERSION
+    - echo "ready to build and push to Aliyun CS"
+    - ./deploy/scripts/deploy-to-aliyun-cs.sh nginx php
     - echo "built successfully"
   # when: manual
