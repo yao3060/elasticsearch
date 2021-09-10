@@ -5,7 +5,10 @@ namespace app\models\ES;
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
 use app\models\AssetUseTop;
-
+/**
+ * @package app\models\ES
+ * author  ysp
+ */
 class Background extends BaseModel
 {
     private $redisDb = 8;

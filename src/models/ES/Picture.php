@@ -4,7 +4,10 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
-
+/**
+ * @package app\models\ES
+ * author  ysp
+ */
 class Picture extends BaseModel
 {
     /**
@@ -17,6 +20,13 @@ class Picture extends BaseModel
     }
     public static function type() {
         return 'list';
+    }
+    public static function sortByTime() {
+        return 'created desc';
+    }
+
+    public static function sortByHot() {
+        return 'edit desc';
     }
 
     public function attributes() {

@@ -7,6 +7,12 @@ use app\interfaces\ES\QueryBuilderInterface;
 use app\models\Assettaglink;
 use app\models\AssetUseTop;
 
+/**
+ * Class Asset
+ * @package app\models\ES
+ * author  ysp
+ */
+
 class Asset extends BaseModel
 {
     private $redisDb = 8;
