@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -aeuo pipefail
 
+docker login --username=$ALIYUN_USERNAME $ALIYUN_CONTAINER_REGISTRY --password=$DOCKER_PASSWORD
+
 IMAGES=$@
 
 NAMESPACE=yao3060

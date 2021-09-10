@@ -15,7 +15,6 @@ stages:
 before_script:
   - set -aeu
   # - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
-  - docker login --username=$ALIYUN_USERNAME $ALIYUN_CONTAINER_REGISTRY --password=$DOCKER_PASSWORD
   - cp .env.default .env
 
 after_script:
