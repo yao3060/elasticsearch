@@ -111,9 +111,12 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
 
     protected function queryTemplateTypes()
     {
-        if (count($this->templateTypes) > 1 && in_array(5, $this->templateTypes)) {
-            //有H5就添加长页H5(不改变key,除了单独搜索H5类型)
-            $this->templateTypes[] = 7;
+        // 只有数组才 count
+        if (is_array($this->templateTypes)) {
+            if (count($this->templateTypes) > 1 && in_array(5, $this->templateTypes)) {
+                //有H5就添加长页H5(不改变key,除了单独搜索H5类型)
+                $this->templateTypes[] = 7;
+            }
         }
 
         if (is_array($this->templateTypes) && !empty($this->templateTypes)) {

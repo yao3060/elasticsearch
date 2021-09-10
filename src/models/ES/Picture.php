@@ -35,7 +35,7 @@ class Picture extends BaseModel
     /**
      * @param QueryBuilderInterface $query
      * @return array 2021-09-08
-     * return ['hit','ids','score'] 命中数,命中id,模板id=>分数
+     * return ['hit','ids','score'] 命中数,命中id,模板id=>分 数
      */
     public function search(QueryBuilderInterface $query): array
     {

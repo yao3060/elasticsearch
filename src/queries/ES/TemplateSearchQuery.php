@@ -6,9 +6,14 @@ use app\components\IpsAuthority;
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
 use app\models\ES\Template;
+use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 
 class TemplateSearchQuery extends BaseTemplateSearchQuery
 {
+    public $sortClassId;
+    public $offset;
+    protected $query = [];
+
     public function __construct(
         public $keyword = null,
         public $page = 1,
@@ -29,10 +34,7 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
         public $width = 0,
         public $height = 0,
         public $classIntersectionSearch = 0,
-        public $elasticsearchColor = '',
-        public $sortClassId,
-        public $offset,
-        protected $query = []
+        public $elasticsearchColor = ''
     )
     {
 
@@ -222,46 +224,6 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
         }
 
         return $this;
-    }
-
-    /**
-     * query color
-     */
-    public function queryColor()
-    {
-        list($colorRange, $colorParams) = self::formatColor(array_column($this->color, 'color'), array_column($this->color, 'weight'));
-        $this->query['bool']['filter'][]['range']['r'] = [
-            'from' => $colorRange[0]['from'],
-            'to' => $colorRange[0]['to']
-        ];
-        $this->query['bool']['filter'][]['range']['g'] = [
-            'from' => $colorRange[1]['from'],
-            'to' => $colorRange[1]['to']
-        ];
-        $this->query['bool']['filter'][]['range']['b'] = [
-            'from' => $colorRange[2]['from'],
-            'to' => $colorRange[2]['to']
-        ];
-
-        return [
-            'function_score' => [
-                'query' => $this->query,
-                'functions' => [
-                    [
-                        'script_score' => [
-                            'script' => [
-                                'inline' => 'colorsort',
-                                'lang' => 'native',
-                                'params' => [
-                                    'center' => $colorParams,
-                                    'distance' => 200   //图像相似度,可以根据具体搜索词进行调节
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
-            ]
-        ];
     }
 
     /**
