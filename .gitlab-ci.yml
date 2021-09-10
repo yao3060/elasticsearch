@@ -28,8 +28,7 @@ build-staging-job:
   environment:
     name: staging
   tags:
-    - buildbox-boilerplate:18.03.X
-    # - buildbox-boilerplate-vn:18.03.X
+    - yaoin-net:aliyun-small-2
   only:
     - develop
   script:
