@@ -3,7 +3,9 @@
 /**
  * 重构ES,searchWord搜索方法
  */
+
 namespace app\controllers\es;
+
 use app\components\Response;
 use app\helpers\StringHelper;
 use app\models\ES\GroupWords;
@@ -29,7 +31,7 @@ class SearchWordController extends BaseController
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $data = (new SearchWord())
-                    ->search(new SearchWordSearchQuery($data['keyword'], $data['page'] ?? 1, $data['pageSize'] ?? 40,$data['type'] ?? 1));
+                    ->search(new SearchWordSearchQuery($data['keyword'], $data['page'] ?? 1, $data['pageSize'] ?? 40, $data['type'] ?? 1));
                 $response = new Response('get_SearchWord_list', 'SearchWordsList', $data);
             }
         } catch (UnknownPropertyException $e) {
@@ -49,6 +51,7 @@ class SearchWordController extends BaseController
         }
         return $this->response($response);
     }
+
     public function actionRecommendSearch(Request $request)
     {
         $data = $request->get();

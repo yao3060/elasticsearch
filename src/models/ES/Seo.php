@@ -4,6 +4,7 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
+
 /**
  * @package app\models\ES
  * author  ysp
@@ -11,6 +12,7 @@ use app\interfaces\ES\QueryBuilderInterface;
 class Seo extends BaseModel
 {
     private $redisDb = 8;
+
     /**
      * @param QueryBuilderInterface $query
      * @return array 2021-09-07
@@ -18,7 +20,7 @@ class Seo extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $redisKey = sprintf('ES_asset2:%s:%s',date('Y-m-d'),$query->keyword);
+        $redisKey = sprintf('ES_asset2:%s:%s', date('Y-m-d'), $query->keyword);
         $return = Tools::getRedis($this->redisDb, $redisKey);
         if (!$return) {
             unset($return);
@@ -45,15 +47,17 @@ class Seo extends BaseModel
         }
         return $return;
     }
-    public function seoSearch(QueryBuilderInterface $query): array{
-        $redisKey = sprintf('ES_seo_similar_word:%s:%s_v10',$query->keyword,$query->pageSize);
+
+    public function seoSearch(QueryBuilderInterface $query): array
+    {
+        $redisKey = sprintf('ES_seo_similar_word:%s:%s_v10', $query->keyword, $query->pageSize);
         $return = Tools::getRedis($this->redisDb, $redisKey);
         if (!$return) {
             $newQuery = $this->similarQueryKeyword($query->keyword);
             $newQuery['bool']['filter'][]['range']['count']['gte'] = '3';
             try {
                 $info = self::find()
-                    ->source(['id', '_keyword','pinyin'])
+                    ->source(['id', '_keyword', 'pinyin'])
                     ->query($newQuery)
                     ->limit($query->pageSize)
                     ->createCommand()
@@ -64,7 +68,7 @@ class Seo extends BaseModel
                 $info['score'] = [];
             }
             if ($info['total'] > 0) {
-                foreach ($info['hits'] as $k=>$v) {
+                foreach ($info['hits'] as $k => $v) {
                     $return[$k]['id'] = $v['_source']['id'];
                     $return[$k]['keyword'] = $v['_source']['_keyword'];
                     $return[$k]['pinyin'] = $v['_source']['pinyin'];
@@ -75,24 +79,30 @@ class Seo extends BaseModel
         }
         return $return;
     }
-    public static function similarQueryKeyword($keyword) {
+
+    public static function similarQueryKeyword($keyword)
+    {
         $query['bool']['must'][]['multi_match'] = [
             'query' => $keyword,
-            'fields' => ["_keyword^1","keyword^1"],
+            'fields' => ["_keyword^1", "keyword^1"],
             'type' => 'most_fields',
             "operator" => "or"
         ];
         return $query;
     }
-    public static function index() {
+
+    public static function index()
+    {
         return 'seo_search_word';
     }
 
-    public static function type() {
+    public static function type()
+    {
         return 'list';
     }
 
-    public function attributes() {
-        return ['id', 'keyword', '_keyword','pinyin','count'];
+    public function attributes()
+    {
+        return ['id', 'keyword', '_keyword', 'pinyin', 'count'];
     }
 }

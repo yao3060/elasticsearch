@@ -3,7 +3,9 @@
 /**
  * 重构ES,GroupWords搜索方法
  */
+
 namespace app\controllers\es;
+
 use app\components\Response;
 use app\helpers\StringHelper;
 use app\models\ES\GroupWords;
@@ -27,7 +29,7 @@ class GroupWordsController extends BaseController
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $data = (new GroupWords())
-                    ->search(new GroupWordsSearchQuery($data['keyword'], $data['page'] ?? 1, $data['pageSize'] ?? 40,$data['search'] ?? 0,
+                    ->search(new GroupWordsSearchQuery($data['keyword'], $data['page'] ?? 1, $data['pageSize'] ?? 40, $data['search'] ?? 0,
                         $data['searchAll'] ?? 0));
                 $response = new Response('get_groupWords_list', 'groupWordsList', $data);
             }
@@ -48,6 +50,7 @@ class GroupWordsController extends BaseController
         }
         return $this->response($response);
     }
+
     public function actionRecommendSearch(Request $request)
     {
         $data = $request->get();

@@ -17,21 +17,31 @@ class VideoE extends BaseModel
      */
     private $redisDb = 8;
 
-    public static function index() {
+    public static function index()
+    {
         return 'video_e_inx';
     }
-    public static function type() {
+
+    public static function type()
+    {
         return 'list';
     }
-    public static function sortByHot() {
+
+    public static function sortByHot()
+    {
         return 'sort desc';
     }
-    public function attributes() {
-        return ['id', 'title', 'create_date', 'pr', 'width', 'height', 'class_id','description', 'owner', 'audit_through', 'scope_type'];
+
+    public function attributes()
+    {
+        return ['id', 'title', 'create_date', 'pr', 'width', 'height', 'class_id', 'description', 'owner', 'audit_through', 'scope_type'];
     }
-    public static function sortByTime() {
+
+    public static function sortByTime()
+    {
         return 'create_date desc';
     }
+
     /**
      * @param QueryBuilderInterface $query
      * @return array 2021-09-10
@@ -48,7 +58,7 @@ class VideoE extends BaseModel
                 $newQuery = $this->queryKeyword($query->keyword);
             }
             if ($query->classId && $query->classId != 0) {
-                foreach ($query->classId  as $key) {
+                foreach ($query->classId as $key) {
                     if ($key > 0) {
                         $newQuery['bool']['must'][]['terms']['class_id'] = [$key];
                     }
@@ -66,7 +76,7 @@ class VideoE extends BaseModel
                     'source' => 'doc["height"].value>doc["width"].value',
                     "lang" => "painless"
                 ];
-            } elseif($query->ratio == 3) {
+            } elseif ($query->ratio == 3) {
                 $newQuery['bool']['filter']['script']['script'] = [
                     'source' => 'doc["height"].value == doc["width"].value',
                     "lang" => "painless"
@@ -75,13 +85,13 @@ class VideoE extends BaseModel
 
             $newQuery['bool']['must'][]['match']['scope_type'] = $query->scopeType;
 
-            if(!empty($query->owner) && $query->scopeType == 'bg') {
+            if (!empty($query->owner) && $query->scopeType == 'bg') {
                 // 匹配度，避免or没有结果时查询全部条件
                 $newQuery['bool']['minimum_should_match'] = 1;
                 // 设计师自身包含待审核以及审核通过部分
                 $boolMust = [];
                 $boolMust[]['term']['owner'] = $query->owner;
-                $boolMust[]['terms']['audit_through'] = [2,3,4];
+                $boolMust[]['terms']['audit_through'] = [2, 3, 4];
                 $newQuery['bool']['should'][]['bool']['must'] = $boolMust;
 
                 // 全部审核通过
@@ -119,6 +129,7 @@ class VideoE extends BaseModel
         }
         return $return;
     }
+
     //推荐搜索
     public function recommendSearch(QueryBuilderInterface $query): array
     {
@@ -147,7 +158,9 @@ class VideoE extends BaseModel
         }
         return $return;
     }
-    public static function queryKeyword($keyword, $is_or = false) {
+
+    public static function queryKeyword($keyword, $is_or = false)
+    {
         $operator = $is_or ? 'or' : 'and';
         $query['bool']['must'][]['multi_match'] = [
             'query' => $keyword,
@@ -157,7 +170,9 @@ class VideoE extends BaseModel
         ];
         return $query;
     }
-    public static function sortDefault() {
+
+    public static function sortDefault()
+    {
         $source = "doc['pr'].value+(int)(_score*10)";
         $sort['_script'] = [
             'type' => 'number',

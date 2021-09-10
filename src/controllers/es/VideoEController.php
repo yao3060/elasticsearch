@@ -34,8 +34,8 @@ class VideoEController extends BaseController
                         $data['page'] ?? 1,
                         $data['pageSize'] ?? 40,
                         $data['classId'] ?? 1,
-                        $data['ratio'] ??0,
-                        $data['scopeType'] ??0,
+                        $data['ratio'] ?? 0,
+                        $data['scopeType'] ?? 0,
                         $data['owner'] ?? 0,
                     ));
                 $response = new Response('get_VideoE_list', 'VideoEList', $data);

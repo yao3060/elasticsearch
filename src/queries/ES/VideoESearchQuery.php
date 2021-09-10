@@ -19,7 +19,7 @@ class VideoESearchQuery implements QueryBuilderInterface
      * @var int|mixed 每页数量
      */
     public int $pageSize;
-    public string | array $classId;
+    public string|array $classId;
     public int $ratio;
     public string $scopeType;
     public int $owner;
@@ -30,9 +30,10 @@ class VideoESearchQuery implements QueryBuilderInterface
         $pageSize = 40,
         $classId = 0,
         $ratio = 0,
-        $scopeType= 0,
+        $scopeType = 0,
         $owner = 0,
-    ) {
+    )
+    {
         $this->keyword = $keyword;
         $this->page = $page;
         $this->pageSize = $pageSize;

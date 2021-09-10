@@ -23,6 +23,7 @@ class GroupWordsTest extends \Codeception\Test\Unit
         IpsAuthority::definedAuth(); // 初始化权限变量
         $this->http = new \GuzzleHttp\Client();
     }
+
     protected function _after()
     {
     }
@@ -32,11 +33,11 @@ class GroupWordsTest extends \Codeception\Test\Unit
     {
         $items = (new GroupWords())
             ->search(new GroupWordsSearchQuery(
-                keyword:0,
-                page:1,
-                pageSize:30,
-                search:'你好',
-                searchAll:1,
+                keyword: 0,
+                page: 1,
+                pageSize: 30,
+                search: '你好',
+                searchAll: 1,
             ));
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(

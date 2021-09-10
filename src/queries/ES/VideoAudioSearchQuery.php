@@ -24,6 +24,7 @@ class VideoAudioSearchQuery implements QueryBuilderInterface
     public int $prep;
     public int $isDesigner;
     public int $isVip;
+
     function __construct(
         $keyword = 0,
         $page = 1,
@@ -33,7 +34,8 @@ class VideoAudioSearchQuery implements QueryBuilderInterface
         $prep = 0,
         $isDesigner = 0,
         $isVip = 0
-    ) {
+    )
+    {
         $this->keyword = $keyword;
         $this->page = $page;
         $this->pageSize = $pageSize;

@@ -17,18 +17,26 @@ class GroupWords extends BaseModel
      */
     private $redisDb = 8;
 
-    public static function index() {
+    public static function index()
+    {
         return 'group_word';
     }
-    public static function type() {
+
+    public static function type()
+    {
         return 'list';
     }
-    public static function sortByHot() {
+
+    public static function sortByHot()
+    {
         return 'sort desc';
     }
-    public function attributes() {
-        return ['id', 'title', 'description', 'created', 'kid_1', 'kid_2', 'kid_3', 'pr', 'man_pr', 'man_pr_add', 'width', 'height', 'ratio', 'scene_id','is_zb'];
+
+    public function attributes()
+    {
+        return ['id', 'title', 'description', 'created', 'kid_1', 'kid_2', 'kid_3', 'pr', 'man_pr', 'man_pr_add', 'width', 'height', 'ratio', 'scene_id', 'is_zb'];
     }
+
     /**
      * @param QueryBuilderInterface $query
      * @return array 2021-09-08
@@ -36,17 +44,17 @@ class GroupWords extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $redisKey = "ES_group_word:" . date('Y-m-d') . ":{$query->keyword}_{$query->page}_"  . "_{$query->pageSize}";
-        if(!empty($query->search)) {
-            $redisKey .= '_'.$query->search;
+        $redisKey = "ES_group_word:" . date('Y-m-d') . ":{$query->keyword}_{$query->page}_" . "_{$query->pageSize}";
+        if (!empty($query->search)) {
+            $redisKey .= '_' . $query->search;
         }
-        if(!empty($query->searchAll)) {
-            $redisKey .= '_'.$query->searchAll.'_v1';
+        if (!empty($query->searchAll)) {
+            $redisKey .= '_' . $query->searchAll . '_v1';
         }
         $return = Tools::getRedis($this->redisDb, $redisKey);
         $pageSize = $query->pageSize;
         if (!$return) {
-            if($query->searchAll) {
+            if ($query->searchAll) {
                 $keyword = DesignerRecommendAssetTagService::getRecommendAssetKws(5);
                 $shouldMatch = [];
                 foreach ($keyword as $keywordVal) {
@@ -60,7 +68,7 @@ class GroupWords extends BaseModel
             } elseif ($query->keyword) {
                 $newQuery = $this->queryKeyword($query->keyword, false, true);
             }
-            if(!empty($query->search)) {
+            if (!empty($query->search)) {
                 $newQuery['bool']['must'][]['multi_match'] = [
                     'query' => $query->search,
                     'fields' => ["keyword^1"],
@@ -93,6 +101,7 @@ class GroupWords extends BaseModel
         }
         return $return;
     }
+
     //推荐搜索
     public function recommendSearch(QueryBuilderInterface $query): array
     {
@@ -121,7 +130,9 @@ class GroupWords extends BaseModel
         }
         return $return;
     }
-    public static function queryKeyword($keyword, $is_or = false) {
+
+    public static function queryKeyword($keyword, $is_or = false)
+    {
         $operator = $is_or ? 'or' : 'and';
         $query['bool']['must'][]['multi_match'] = [
             'query' => $keyword,
@@ -131,7 +142,9 @@ class GroupWords extends BaseModel
         ];
         return $query;
     }
-    public static function sortDefault() {
+
+    public static function sortDefault()
+    {
         $source = "doc['pr'].value+(int)(_score*10)";
         $sort['_script'] = [
             'type' => 'number',

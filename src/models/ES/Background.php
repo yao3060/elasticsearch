@@ -5,6 +5,7 @@ namespace app\models\ES;
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
 use app\models\AssetUseTop;
+
 /**
  * @package app\models\ES
  * author  ysp
@@ -12,6 +13,7 @@ use app\models\AssetUseTop;
 class Background extends BaseModel
 {
     private $redisDb = 8;
+
     /**
      * @param QueryBuilderInterface $query
      * @return array 2021-09-06
@@ -19,11 +21,11 @@ class Background extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $sceneId = is_array($query->sceneId)?$query->sceneId:[];
-        $kid = is_array($query->kid)?$query->kid:[];
+        $sceneId = is_array($query->sceneId) ? $query->sceneId : [];
+        $kid = is_array($query->kid) ? $query->kid : [];
         $redisKey = sprintf('ES_background2:%s:%s_%d_%s_%s_%d_%d_%d_%d_%d_%d_%d',
-            date('Y-m-d'), $query->keyword, $query->page,implode('-', $kid),implode('-', $sceneId),
-            $query->sceneId,$query->pageSize,$query->isZb,$query->class,$query->sort,$query->useCount,$query->isBg);
+            date('Y-m-d'), $query->keyword, $query->page, implode('-', $kid), implode('-', $sceneId),
+            $query->sceneId, $query->pageSize, $query->isZb, $query->class, $query->sort, $query->useCount, $query->isBg);
         $return = Tools::getRedis($this->redisDb, $redisKey);
         $pageSize = $query->pageSize;
         if (!$return || !$return['hit']) {
@@ -44,7 +46,7 @@ class Background extends BaseModel
                 $newQuery['bool']['must'][]['match']['class_id'] = $query->class;
             }
 
-            if($query->isBg) {
+            if ($query->isBg) {
                 $newQuery['bool']['must'][]['match']['kid_1'] = 2;
             }
             if ($query->page * $pageSize > 10000) {
@@ -67,15 +69,15 @@ class Background extends BaseModel
                         $newQuery['bool']['filter'][]['range']['use_count']['lt'] = $useInfo['top1_count'];
                         break;
                 }
-            }else{
+            } else {
                 $useInfo = '';
             }
             try {
                 $info = self::find()
-                    ->source(['id','use_count'])
+                    ->source(['id', 'use_count'])
                     ->query($newQuery)
                     ->orderBy($sortBy)
-                    ->offset(( $query->page - 1) * $pageSize)
+                    ->offset(($query->page - 1) * $pageSize)
                     ->limit($pageSize)
                     ->createCommand()
                     ->search([], ['track_scores' => true])['hits'];
@@ -102,7 +104,9 @@ class Background extends BaseModel
         }
         return $return;
     }
-    public static function queryKeyword($keyword, $is_or = false) {
+
+    public static function queryKeyword($keyword, $is_or = false)
+    {
         $operator = $is_or ? 'or' : 'and';
         $query['bool']['must'][]['multi_match'] = [
             'query' => $keyword,
@@ -112,10 +116,14 @@ class Background extends BaseModel
         ];
         return $query;
     }
-    public static function sortByTime() {
+
+    public static function sortByTime()
+    {
         return 'created desc';
     }
-    public static function sortDefault() {
+
+    public static function sortDefault()
+    {
         //        $source = "doc['pr'].value-doc['man_pr'].value+doc['man_pr_add'].value";
         $source = "doc['pr'].value+(int)(_score*10)";
         $sort['_script'] = [
@@ -128,15 +136,19 @@ class Background extends BaseModel
         ];
         return $sort;
     }
-    public static function sortByHot() {
+
+    public static function sortByHot()
+    {
         return 'edit desc';
     }
 
-    public static function index() {
+    public static function index()
+    {
         return 'background2';
     }
 
-    public static function type() {
+    public static function type()
+    {
         return 'list';
     }
 }

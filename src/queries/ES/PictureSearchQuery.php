@@ -19,11 +19,12 @@ class PictureSearchQuery implements QueryBuilderInterface
      * @var int|mixed 每页数量
      */
     public int $pageSize;
-    public array | string $sceneId;
+    public array|string $sceneId;
     public int $isZb;
-    public array | string $kid;
-    public int  $vipPic;
+    public array|string $kid;
+    public int $vipPic;
     public int $ratioId;
+
     function __construct(
         $keyword = 0,
         $page = 1,
@@ -33,7 +34,8 @@ class PictureSearchQuery implements QueryBuilderInterface
         $kid = [],
         $vipPic = 0,
         $ratioId = 0
-    ) {
+    )
+    {
         $this->keyword = $keyword;
         $this->page = $page;
         $this->kid = $kid;

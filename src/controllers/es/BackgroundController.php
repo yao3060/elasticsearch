@@ -3,7 +3,9 @@
 /**
  * 重构ES,background搜索方法
  */
+
 namespace app\controllers\es;
+
 use app\components\Response;
 use app\helpers\StringHelper;
 use app\models\ES\Background;
@@ -31,8 +33,8 @@ class BackgroundController extends BaseController
             } else {
                 $data = (new Background())
                     ->search(new BackGroundSearchQuery($data['keyword'], $data['page'] ?? 1, $data['pageSize'] ?? 40,
-                        $data['sceneId'] ?? 0,$data['isZb'] ?? 0,$data['sort'] ?? 0,$data['useCount'] ?? 0,$data['kid'] ?? 0,
-                        $data['ratioId'] ?? 0,$data['class'] ?? 0 ,$data['isBg'] ?? 0));
+                        $data['sceneId'] ?? 0, $data['isZb'] ?? 0, $data['sort'] ?? 0, $data['useCount'] ?? 0, $data['kid'] ?? 0,
+                        $data['ratioId'] ?? 0, $data['class'] ?? 0, $data['isBg'] ?? 0));
                 $response = new Response('get_list', 'Get List', $data);
             }
         } catch (UnknownPropertyException $e) {
