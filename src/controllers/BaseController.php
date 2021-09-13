@@ -41,11 +41,7 @@ class BaseController extends Controller
     /**
      * common response function
      *
-     * @param string $code
-     * @param string $message
-     * @param array $data
-     * @param integer $status
-     * @param array|null $headers
+     * @param ResponseInterface $response
      * @return \yii\web\Response
      */
     public function response(ResponseInterface $response)
