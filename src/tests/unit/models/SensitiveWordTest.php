@@ -53,6 +53,6 @@ class SensitiveWordTest extends \Codeception\Test\Unit
             prodUrl: getenv('UNIT_BASE_URL') . '/api/get-template-list?w=' .urlencode('党政')
         );
 
-        $this->assertEquals($compare['dev'], $compare['prod']);
+        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
     }
 }

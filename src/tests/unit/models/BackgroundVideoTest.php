@@ -70,7 +70,7 @@ class BackgroundVideoTest extends \Codeception\Test\Unit
             prodUrl: getenv('UNIT_BASE_URL') . '/h5-api/bg-video-search'
         );
 
-        $this->assertEquals(join(',', $compare['dev']), join(',', $compare['prod']));
+        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
     }
 
     /**
@@ -78,7 +78,7 @@ class BackgroundVideoTest extends \Codeception\Test\Unit
      */
     public function testVideoSearch()
     {
-        $compare = $this->prepareData(
+        $compareVideo = $this->prepareData(
             keyword: '',
             page: '',
             ratio: '',
@@ -87,6 +87,6 @@ class BackgroundVideoTest extends \Codeception\Test\Unit
             prodUrl: getenv('UNIT_BASE_URL') . '/video/bg-video-search'
         );
 
-        $this->assertEquals(join(',', $compare['dev']), join(',', $compare['prod']));
+        $this->assertEqualsCanonicalizing($compareVideo['dev'], $compareVideo['prod']);
     }
 }

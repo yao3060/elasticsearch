@@ -162,7 +162,7 @@ class TemplateTest extends \Codeception\Test\Unit
             prodUrl: getenv('UNIT_BASE_URL') . '/apiv2/get-ppt-template-list?sort_type=bytime'
         );
 
-        $this->assertEquals(join(',', $compare['dev']), join(',', $compare['prod']));
+        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
     }
 
     /**
@@ -209,7 +209,7 @@ class TemplateTest extends \Codeception\Test\Unit
             prodUrl: getenv('UNIT_BASE_URL') . '/api/get-template-list?w=%E4%BD%A0%E5%A5%BD&p=1&kid_1=0&kid_2=0&ratioId=0&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=10_30_0&width=1242&height=2208',
         );
 
-        $this->assertEquals(join(',', $compareKeywordResult['dev']), join(',', $compareKeywordResult['prod']));
+        $this->assertEqualsCanonicalizing($compareKeywordResult['dev'], $compareKeywordResult['prod']);
     }
 
     /**

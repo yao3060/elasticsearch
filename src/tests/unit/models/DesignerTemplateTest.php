@@ -104,6 +104,6 @@ class DesignerTemplateTest extends \Codeception\Test\Unit
             prodUrl: getenv("UNIT_BASE_URL") . "/api/get-template-list?w=&p=1&kid_1=1&kid_2=19&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=&width=200&height=200&es_type=1"
         );
 
-        return $this->assertEquals(join(',', $compare['dev']), join(',', $compare['prod']));
+        return $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
     }
 }
