@@ -10,6 +10,8 @@
   - [x] search
 - [x] SensitiveWord
   - [x] search
+- [x] RichEditorAsset
+  - [x] search
 
 ### 目标
 - [ ] 尽可能的全覆盖能通过api验证的接口用例
@@ -61,5 +63,12 @@
       <td>v1/sensitive/word/validate</td>
       <td>SensitiveWordTest@testVideoSearch</td>
       <td><span style="color: #3d7eff">[@testVideoSearch]</span> /video/bg-video-search</td>
+    </tr>
+    <tr>
+      <td>RichEditorAsset</td>
+      <td>富文本元素</td>
+      <td>v1/rich-editor-assets</td>
+      <td>RichEditorAsset@testSearch</td>
+      <td><span style="color: #3d7eff">[@testSearch]</span> /rt-api/rt-asset-search</td>
     </tr>
 </table>
