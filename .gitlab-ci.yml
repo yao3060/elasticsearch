@@ -52,6 +52,7 @@ staging-testing-job:
     - echo "testing"
     - echo $(pwd)
     - ls -la
+    - source ./.env
     - cd src
     # Run webserver
     - php -S localhost:8085 --docroot web &>/dev/null&
