@@ -5,7 +5,8 @@
 - [x] Template
   - [x] search
   - [ ] recommendSearch (无法验证)
-- [ ] DesignerTemplate (没有设计师账号)
+- [x] DesignerTemplate
+  - [x] search
 - [x] BackgroundVideo
   - [x] search
 - [x] SensitiveWord
@@ -61,5 +62,12 @@
       <td>v1/sensitive/word/validate</td>
       <td>SensitiveWordTest@testVideoSearch</td>
       <td><span style="color: #3d7eff">[@testVideoSearch]</span> /video/bg-video-search</td>
+    </tr>
+    <tr>
+      <td>DesignerTemplateSearch</td>
+      <td>设计师模板，二次设计</td>
+      <td>v1/designer-templates</td>
+      <td>DesignerTemplateSearchTest@testSearch</td>
+      <td><span style="color: #3d7eff">[@testSearch]</span> /api/get-template-list?w=&p=1&kid_1=1&kid_2=19&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=&width=200&height=200&es_type=1</td>
     </tr>
 </table>
