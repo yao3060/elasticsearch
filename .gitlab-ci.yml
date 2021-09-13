@@ -9,6 +9,7 @@ cache:
 
 stages:
   - install
+  - test
   - build
   - deploy
 
@@ -30,12 +31,28 @@ staging-install-job:
   image: composer:2
   tags:
     - yaoin-net:aliyun-small-2
+  only:
+    - develop
+    - testing
   script:
     - cd ./src
     - echo "Start install php packages"
     - composer install --ignore-platform-reqs
-    - composer dump-autoload
-    - cd ../
+
+staging-testing-job:
+  stage: test
+  environment:
+    name: staging
+  image: yao3060/yii2-php:8-fpm-alpine
+  tags:
+    - yaoin-net:aliyun-small-2
+  only:
+    - testing
+  script:
+    - echo "testing"
+    - echo $(pwd)
+    - ls -la
+    # - vendor/bin/codecept run unit
 
 build-staging-job:
   stage: build
@@ -57,4 +74,4 @@ build-staging-job:
     - echo "ready to build and push to Aliyun CS"
     - ./deploy/scripts/deploy-to-aliyun-cs.sh nginx php
     - echo "built successfully"
-  # when: manual
+  when: manual
