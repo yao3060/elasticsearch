@@ -48,17 +48,13 @@ class SearchSvgTest extends \Codeception\Test\Unit
 
         $content = json_decode($response->getBody()->getContents());
         $ids = ArrayHelper::getColumn($content->msg, 'id');
-        sort($ids);
 
         // remove empty elements
         $ids = array_filter($ids, fn ($id) => !is_null($id) && $id !== '');
 
-        $myIds = $items['ids'];
-        sort($myIds);
-
         return [
-            'dev' => join(',', $myIds),
-            'prod' => join(',', $ids)
+            'dev' => $items['ids'],
+            'prod' => $ids
         ];
     }
 
@@ -70,10 +66,10 @@ class SearchSvgTest extends \Codeception\Test\Unit
             1,
             [],
             50,
-            'http://818ps.com/apiv2/search-asset-svg?p=1&k2=0&word=&pageSize=50'
+            'https://818ps.com/apiv2/search-asset-svg?p=1&k2=0&word=&pageSize=50'
         );
 
-        $this->assertEquals($data['dev'], $data['prod']);
+        $this->assertEqualsCanonicalizing($data['prod'], $data['dev'],);
     }
 
     public function testSearchSVGHeart()
@@ -83,8 +79,8 @@ class SearchSvgTest extends \Codeception\Test\Unit
             1,
             [],
             50,
-            'http://818ps.com/apiv2/search-asset-svg?p=1&k2=0&word=%E5%BF%83&pageSize=50'
+            'https://818ps.com/apiv2/search-asset-svg?p=1&k2=0&word=%E5%BF%83&pageSize=50'
         );
-        $this->assertEquals($data['dev'], $data['prod']);
+        $this->assertEqualsCanonicalizing($data['prod'], $data['dev']);
     }
 }
