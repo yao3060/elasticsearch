@@ -52,7 +52,10 @@ staging-testing-job:
     - echo "testing"
     - echo $(pwd)
     - ls -la
-    # - vendor/bin/codecept run unit
+    - cd src
+    # Run webserver
+    - php -S localhost:8085 --docroot web &>/dev/null&
+    - ./vendor/bin/codecept run unit
 
 build-staging-job:
   stage: build
