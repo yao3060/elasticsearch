@@ -50,6 +50,15 @@ class GroupWordsTest extends \Codeception\Test\Unit
         sort($ids);
         $myIds = $items['ids'];
         sort($myIds);
-        $this->assertEquals(join(',', $ids), join(',', $myIds));
+        $flag = 1;
+        foreach ($ids as $va) {
+            if (in_array($va, $myIds)) {
+                continue;
+            }else {
+                $flag = 0;
+                break;
+            }
+        }
+        $this->assertEquals($flag,1);
     }
 }

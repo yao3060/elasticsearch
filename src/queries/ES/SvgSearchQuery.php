@@ -36,7 +36,7 @@ class SvgSearchQuery implements QueryBuilderInterface
      * @param Enum $operator="and,or"
      * @return void
      */
-    public function queryKeyword($operator = 'and')
+    protected function queryKeyword($operator = 'and')
     {
         $this->query['bool']['must'][]['multi_match'] = [
             'query' => $this->keyword,

@@ -4,14 +4,25 @@ namespace app\models\ES;
 
 use app\components\IpsAuthority;
 use app\components\Tools;
+use app\models\TaskTemplateLink;
+use app\models\Templ;
+use app\queries\ES\DesignerTemplateSearchQuery;
 use Yii;
 use app\interfaces\ES\QueryBuilderInterface;
-use yii\base\Exception;
 use yii\elasticsearch\Query;
 
 class DesignerTemplate extends BaseModel
 {
     const REDIS_DB = '_search';
+
+    public static $occupy_num = 10;
+    public static $redis_key = "ES:template:second:designer:"; //每个搜索结果存1万条 1天过期
+    //二次设计redis_key
+    public static $occupy_key = "task:template:link:occupy:old:tid:uid:"; // 占用被驳回
+    public static $hash_key = "is:second:hash:template:id"; // 占用的模板 用不过期
+    public static $hash_key_second_page = "is:second:hash:template:second:page"; // 页数，未使用
+    public static $design_redis_db = 8;
+    public static $es_key = null;
 
     public static function getDb()
     {
@@ -56,11 +67,20 @@ class DesignerTemplate extends BaseModel
 
                 }
 
-                $return['total'] = $info['total'];
-                $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
-                foreach ($info['hits'] as $value) {
-                    $return['ids'][] = $value['_id'];
-                    $return['score'][$value['_id']] = $value['sort'][0];
+                if (isset($info['hits']) && sizeof($info['hits'])) {
+                    $total = $info['total'] ?? 0;
+                    $return['total'] = $total;
+                    $return['hit'] = $total > 10000 ? 10000 : $total;
+                    foreach ($info['hits'] as $value) {
+                        $return['ids'][] = $value['_id'];
+                        $return['score'][$value['_id']] = $value['sort'][0];
+                    }
+                } else {
+                    $return = [
+                        'hit' => 0,
+                        'ids' => [],
+                        'score' => []
+                    ];
                 }
             }
         } catch (\Exception $e) {
@@ -77,11 +97,147 @@ class DesignerTemplate extends BaseModel
             Yii::error(http_build_query($errInfo));
         }
 
-        if (!IpsAuthority::check(IOS_ALBUM_USER)) {
-            Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 86400 + rand(-3600, 3600));
-        }
+//        if (!IpsAuthority::check(IOS_ALBUM_USER)) {
+//            Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 86400 + rand(-3600, 3600));
+//        }
 
         return $return;
+    }
+
+    /**
+     * 长尾词新增二次创作功能  需要筛选出精品s级的作品 http://redmine.818ps.com/issues/7346
+     * @param int $keyword
+     * @param int $page
+     * @param int $kid1
+     * @param int $kid2
+     * @param string $sortType
+     * @param int $tagId
+     * @param int $isZb
+     * @param int $pageSize
+     * @param null $ratio
+     * @param int $classId
+     * @param int $update
+     * @param int $size
+     * @param int $fuzzy
+     * @param int[] $templateType
+     * @param array $templInfo
+     * @param array $color
+     * @param int $use
+     * @return array
+     */
+    public function getTemplateIds($keyword = 0, $page = 1, $kid1 = 0, $kid2 = 0, $sortType = 'default', $tagId = 0, $isZb = 1, $pageSize = 100, $ratio = null, $classId = 0, $update = 0, $size = 0, $fuzzy = 0, $templateTypes = [1, 2], $templInfo = [], $color = [], $use = 0)
+    {
+        //获取页数
+        $p = $page_num = $page;
+        $queryBuilder = new DesignerTemplateSearchQuery(
+            keyword: $keyword,
+            page: $page,
+            kid1: $kid1,
+            kid2: $kid2,
+            sortType: $sortType,
+            tagId: $tagId,
+            isZb: $isZb,
+            pageSize: $pageSize,
+            ratio: $ratio,
+            classId: $classId,
+            update: $update,
+            size: $size,
+            fuzzy: $fuzzy,
+            templateTypes: $templateTypes,
+            templateInfo: $templInfo,
+            color: $color,
+            use: $use
+        );
+        $page = $queryBuilder->getRedisKey();
+        //获取结果集
+        if ($templInfo['type']) unset($templInfo['type']);
+        $templIdArr = self::search($queryBuilder);
+
+        $ids = $templIdArr['ids'];
+
+        //如果总数少于最小限制则返回false
+        if (count($ids) < self::$occupy_num) {
+            $templIdArr['ids'] = self::delTemplId($templIdArr['ids'], self::$hash_key);
+            return $templIdArr;
+        }
+        $hit = $templIdArr['hit'];
+        $offset = 32;
+        $levels = array();
+        //小于10个继续查，同时要给前端返回查询es的页数
+        while (count($levels) < self::$occupy_num) {
+            $num = ($p - 1) * $offset;
+            $tmp_ads = array_splice($ids, $num, $offset);
+            //小于10个则需要翻页
+            if (count($tmp_ads) < self::$occupy_num) {
+                $page = $page + 1;
+                //当前页已全部占满  以后无需再此页搜索
+                Yii::$app->redis8->hset(self::$hash_key_second_page, self::$es_key, $page);
+                $templIdArr = self::search($queryBuilder);
+                //翻页后如数量不足  则终止循环
+                if (count($templIdArr['ids']) < self::$occupy_num) {
+                    $ids = array_merge($ids, $templIdArr['ids']);
+                    $p = 2; //返回第二页
+                    $level_arr = self::delTemplId($ids, self::$hash_key);
+                    $levels = array_merge($levels, $level_arr);
+                    break;
+                }
+                $ids = $templIdArr['ids'];
+                $num = 0;
+                $p = 1;
+                $tmp_ads = array_splice($ids, $num, $offset);
+            }
+            //筛选符合条件的模板id
+            $level_arr = self::delTemplId($tmp_ads, self::$hash_key);
+            $levels = array_merge($levels, $level_arr);
+            $p += 1;
+        }
+        $templIdArr = $levels;
+        $picId = $templInfo['picId'];
+        //将已占用的模板放在数组的第一条
+        if (!empty($picId)) {
+            $uid = Yii::$app->user->id;
+            $occupy_key = self::$occupy_key . $picId . ":" . $uid;
+            $occupy = Tools::getRedis(self::$design_redis_db, $occupy_key);
+            if ($occupy === false) {
+                $occupy = TaskTemplateLink::find()->alias('k')
+                    ->leftJoin(Templ::tableName() . ' t', 'k.templ_id=t.id')
+                    ->Where(['=', 'k.templ_id', $picId])
+                    ->andWhere(['=', 'k.is_second', '1'])
+                    ->andWhere(['=', 'k.is_occupy', '1'])
+                    ->andWhere(['=', 'k.status', '2'])  //2代表被驳回
+                    ->andWhere(['=', 't.author', $uid])
+                    ->andWhere(['=', 't.audit_through', 1])
+                    ->select('k.old_templ_id')
+                    ->one()['old_templ_id'];
+                if (!empty($occupy)) {
+                    Tools::setRedis(self::$design_redis_db, $occupy_key, $occupy, 300);
+                }
+            }
+            if (!empty($occupy) && $occupy != -1 && $page_num == 1) {
+                array_unshift($templIdArr, $occupy);
+                $templIdArr = array_unique($templIdArr);
+            } elseif (empty($occupy)) {
+                Tools::setRedis(self::$design_redis_db, $occupy_key, -1, 300);
+            }
+        }
+        $templIdArr = array_splice($templIdArr, 0);
+        return ['hit' => $hit, 'ids' => $templIdArr, 'page' => $p, 'occupy' => $occupy ?? 0];
+    }
+
+    /**
+     * 判断hash表里是否存在，存在则说明已被占用,需要剔除
+     * @param $templIdArr
+     * @return mixed
+     */
+    public static function delTemplId($templIdArr, $hash_key)
+    {
+        foreach ($templIdArr as $k => $v) {
+            $hash = Yii::$app->redis8->hexists($hash_key, $v);
+            if ($hash) {
+                unset($templIdArr[$k]);
+            }
+        }
+        return $templIdArr;
     }
 
     public static function sortByTime()

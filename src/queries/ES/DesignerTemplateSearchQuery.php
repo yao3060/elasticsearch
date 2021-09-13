@@ -11,7 +11,6 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
     protected $sortClassId;
     protected $templateAttr;
     protected $settlementLevel;
-    protected $query = [];
 
     const REDIS_DB = "_search";
 
@@ -178,12 +177,10 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
         if (isset($this->templateInfo['type']) && $this->templateInfo['type']) {
             switch ($this->templateInfo['type']) {
                 case 'second':
-                    var_dump(1);
                     self::$esKey = $redisKey;
                     $page = Yii::$app->redis8->hget(self::HASH_KEY_SECOND_PAGE, self::REDIS_KEY);
                     return $page ?: 1;
                 default:
-                    var_dump(2);
                     $redisKey .= "_" . $this->page;
                     self::$esKey = $redisKey;
                     return $redisKey;
@@ -201,27 +198,29 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
      */
     protected function queryKeyword()
     {
-        $operator = $this->fuzzy > 0 ? 'or' : 'and';
-        switch ($operator):
-            case 'and':
-                $keyword = $this->keyword;
-                $fields = ["title^16", "description^2", "hide_description^2", "brief^2", "info^1"];
-                break;
-            case 'or':
-                $keyword = str_replace(['图片'], '', $this->keyword);
-                $fields = ["title^16", "description^2", "hide_description^2", "info^1"];
-                break;
-        endswitch;
+        if ($this->keyword) {
+            $operator = $this->fuzzy > 0 ? 'or' : 'and';
+            switch ($operator):
+                case 'and':
+                    $keyword = $this->keyword;
+                    $fields = ["title^16", "description^2", "hide_description^2", "brief^2", "info^1"];
+                    break;
+                case 'or':
+                    $keyword = str_replace(['图片'], '', $this->keyword);
+                    $fields = ["title^16", "description^2", "hide_description^2", "info^1"];
+                    break;
+            endswitch;
 
-        if (in_array($keyword, ['LOGO', 'logo'])) {
-            $fields = ["title^16", "description^2", "hide_description^2", "info^1"];
+            if (in_array($keyword, ['LOGO', 'logo'])) {
+                $fields = ["title^16", "description^2", "hide_description^2", "info^1"];
+            }
+            $this->query['bool']['must'][]['multi_match'] = [
+                'query' => $keyword,
+                'fields' => $fields,
+                'type' => 'most_fields',
+                "operator" => $operator
+            ];
         }
-        $this->query['bool']['must'][]['multi_match'] = [
-            'query' => $keyword,
-            'fields' => $fields,
-            'type' => 'most_fields',
-            "operator" => $operator
-        ];
         return $this;
     }
 

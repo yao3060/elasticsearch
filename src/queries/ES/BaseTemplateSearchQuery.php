@@ -9,7 +9,7 @@ use app\models\ES\Template;
 
 abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
 {
-    private $query = [];
+    protected $query = [];
 
     public function sortByTime()
     {
