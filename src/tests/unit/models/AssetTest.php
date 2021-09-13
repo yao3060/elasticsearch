@@ -36,7 +36,7 @@ class AssetTest extends \Codeception\Test\Unit
                 page:1,
                 pageSize:30,
                 sceneId:0,
-                isZb:0
+                isZb:1
             ));
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
@@ -45,7 +45,6 @@ class AssetTest extends \Codeception\Test\Unit
         );
 
         $content = json_decode($response->getBody()->getContents());
-
         $ids = ArrayHelper::getColumn($content, 'id');
         sort($ids);
         $myIds = $items['ids'];

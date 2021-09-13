@@ -36,11 +36,11 @@ class BackgroundsTest extends \Codeception\Test\Unit
                 page:1,
                 pageSize:30,
                 sceneId:0,
-                isZb:0,
+                isZb:1,
                 sort:0,
                 useCount: 0,
                 kid: 0,
-                ratioId: 0,
+                ratioId: -1,
                 isBg: 1
             ));
         /**@var \GuzzleHttp\Psr7\Response $response */

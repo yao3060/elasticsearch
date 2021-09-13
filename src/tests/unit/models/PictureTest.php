@@ -38,9 +38,10 @@ class PictureTest extends \Codeception\Test\Unit
                 page:1,
                 pageSize:30,
                 sceneId:0,
-                isZb:1,
-                kid:1,
+                isZb:0,
+                kid:0,
                 vipPic: 0,
+                ratioId:-1
             ));
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
