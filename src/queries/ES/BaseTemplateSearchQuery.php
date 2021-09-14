@@ -83,6 +83,28 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
         return $sort;
     }
 
+    protected function queryKeyword($keyword, $isOr = false)
+    {
+        if (!empty($keyword)) {
+            $operator = $isOr ? 'or' : 'and';
+            $fields = ["title^16", "description^2", "hide_description^2", "brief^2", "info^1"];
+            if ($operator == 'or') {
+                $keyword = str_replace(['图片'], '', $keyword);
+                $fields = ["title^16", "description^2", "hide_description^2", "info^1"];
+            }
+            if (in_array($keyword, ['LOGO', 'logo'])) {
+                $fields = ["title^16", "description^2", "hide_description^2", "info^1"];
+            }
+            $this->query['bool']['must'][]['multi_match'] = [
+                'query' => $keyword,
+                'fields' => $fields,
+                'type' => 'most_fields',
+                "operator" => $operator
+            ];
+        }
+        return $this;
+    }
+
     protected function queryIosAlbumUser()
     {
         if (IpsAuthority::check(IOS_ALBUM_USER)) {
