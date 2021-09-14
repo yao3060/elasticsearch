@@ -15,6 +15,8 @@
   - [x] search
 - [x] VideoTemplateTest
   - [x] search
+- [x] LottieVideoWordTest
+  - [x] search
 ### 目标
 - [ ] 尽可能的全覆盖能通过api验证的接口用例
 
@@ -29,24 +31,20 @@
         <th style="background-color: #f7f7f7;">old api</th> 
    </tr>
     <tr>
-        <td rowspan="2">Template</td>
-        <td rowspan="2">公共模板</td>
-        <td>v1/templates</td>
-        <td>
-          <p>TemplateTest@testSearch</p>
-          <hr>
-          <p>TemplateTest@testSearchCarryKeyword</p>
-        </td>
-        <td>
-          <p><span style="color: #3d7eff;">[@testSearch]</span> /apiv2/get-ppt-template-list?sort_type=bytime</p>
-          <hr>
-          <p><span style="color: #e74c3c;">[@testSearchCarryKeyword] </span> /api/get-template-list?w=%E4%BD%A0%E5%A5%BD&p=1&kid_1=0&kid_2=0&ratioId=0&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=10_30_0&width=1242&height=2208</p>
-        </td>
+        <td rowspan="3">Template</td>
+        <td rowspan="3">公共模板</td>
+        <td rowspan="2">v1/templates</td>
+        <td>TemplateTest@testSearch</td>
+        <td><span style="color: #3d7eff;">[@testSearch]</span> /apiv2/get-ppt-template-list?sort_type=bytime</td>
+    </tr>
+    <tr>
+      <td>TemplateTest@testSearchCarryKeyword</td>
+      <td><span style="color: #e74c3c;">[@testSearchCarryKeyword] </span> /api/get-template-list?w=%E4%BD%A0%E5%A5%BD&p=1&kid_1=0&kid_2=0&ratioId=0&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=10_30_0&width=1242&height=2208</td>
     </tr>
     <tr>
       <td>v1/templates/recommends</td>
-      <td></td>
-      <td></td>
+      <td>--</td>
+      <td>--</td>
     </tr>
     <tr>
       <td rowspan="2">BackgroundVideo</td>
@@ -81,10 +79,21 @@
       <td><span style="color: #3d7eff">[@testSearch]</span> /rt-api/rt-asset-search</td>
     </tr>
     <tr>
-      <td>VideoTemplateTest</td>
+      <td>VideoTemplate</td>
       <td>片段视频</td>
       <td>v1/video-templates</td>
       <td>VideoTemplateTest@testSearch</td>
       <td><span style="color: #3d7eff">[@testSearch]</span> /api-video/get-excerpt-list</td>
+    </tr>
+    <tr>
+      <td rowspan="2">LottleVideoWord</td>
+      <td rowspan="2">设计师动画特效</td>
+      <td rowspan="2">v1/lottie-video-words</td>
+      <td>LottleVideoWord@testSearch</td>
+      <td><span style="color: #3d7eff">[@testSearch]</span> /api-video/get-excerpt-list</td>
+    </tr>
+    <tr>
+      <td>LottleVideoWord@testSearchCarryKeyword</td>
+      <td><span style="color: #e74c3c">[@testSearchCarryKeyword]</span> /video/lottie-word-search?keyword=风景</td>
     </tr>
 </table>

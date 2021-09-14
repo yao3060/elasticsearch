@@ -29,5 +29,6 @@ return [
         'GET  v1/background/videos' => 'es/background-video/search', // 背景视频搜索
         'GET  v1/rich-editor-assets' => 'es/rich-editor-asset/search', // 富文本元素
         'GET  v1/video-templates' => 'es/video-template/search', // 片段视频
+        'GET  v1/lottie-video-words' => 'es/lottie-video-word/search', // 设计师动画搜索词
     ],
 ];

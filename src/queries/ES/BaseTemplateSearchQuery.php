@@ -86,7 +86,7 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
     protected function queryKeyword()
     {
         if (!empty($this->keyword)) {
-            $operator = $this->fuzzy ? 'or' : 'and';
+            $operator = isset($this->fuzzy) && $this->fuzzy ? 'or' : 'and';
             $fields = ["title^16", "description^2", "hide_description^2", "brief^2", "info^1"];
             if ($operator == 'or') {
                 $this->keyword = str_replace(['图片'], '', $this->keyword);

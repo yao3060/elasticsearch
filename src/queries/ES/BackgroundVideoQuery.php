@@ -41,7 +41,7 @@ class BackgroundVideoQuery extends BaseTemplateSearchQuery
     protected function queryKeyword()
     {
         if (!empty($this->keyword)) {
-            $operator = $this->fuzzy ? 'or' : 'and';
+            $operator = isset($this->fuzzy) && $this->fuzzy ? 'or' : 'and';
             $this->query['bool']['must'][]['multi_match'] = [
                 'query' => $this->keyword,
                 'fields' => ["title^5", "description^1"],
