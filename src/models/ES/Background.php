@@ -15,70 +15,28 @@ class Background extends BaseModel
     private $redisDb = 8;
 
     /**
-     * @param QueryBuilderInterface $query
+     * @param \app\queries\ES\BackGroundSearchQuery $query
      * @return array 2021-09-06
      * return ['hit','ids','score'] 命中数,命中id,模板id=>分数
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $sceneId = is_array($query->sceneId) ? $query->sceneId : [];
-        $kid = is_array($query->kid) ? $query->kid : [];
-        $redisKey = sprintf('ES_background2:%s:%s_%d_%s_%s_%d_%d_%d_%d_%d_%d_%d',
-            date('Y-m-d'), $query->keyword, $query->page, implode('-', $kid), implode('-', $sceneId),
-            $query->sceneId, $query->pageSize, $query->isZb, $query->class, $query->sort, $query->useCount, $query->isBg);
-        $return = Tools::getRedis($this->redisDb, $redisKey);
-        $pageSize = $query->pageSize;
+
+        $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
         if (!$return || !$return['hit']) {
             unset($return);
-            if ($query->keyword) {
-                $newQuery = $this->queryKeyword($query->keyword);
-            }
-            if ($query->ratioId > -1) {
-                $newQuery['bool']['must'][]['match']['ratio'] = $query->ratioId;
-            }
-            if ($query->kid) {
-                $newQuery['bool']['must'][]['terms']['kid_2'] = $query->kid;
-            }
-            if ($query->sceneId) {
-                $newQuery['bool']['must'][]['terms']['scene_id'] = $query->sceneId;
-            }
-            if ($query->class) {
-                $newQuery['bool']['must'][]['match']['class_id'] = $query->class;
-            }
-
-            if ($query->isBg) {
-                $newQuery['bool']['must'][]['match']['kid_1'] = 2;
-            }
-            if ($query->page * $pageSize > 10000) {
-                $pageSize = $query->page * $pageSize - 10000;
-            }
-
-            if ($query->sort === 'bytime') {
-                $sortBy = self::sortByTime();
-            } else {
-                $sortBy = self::sortDefault();
-            }
-
             if ($query->useCount) {
                 $useInfo = AssetUseTop::getLastInfo(2);
-                switch ($query->useCount) {
-                    case 1:
-                        $newQuery['bool']['filter'][]['range']['use_count']['gte'] = $useInfo['top1_count'];
-                        break;
-                    case 2:
-                        $newQuery['bool']['filter'][]['range']['use_count']['lt'] = $useInfo['top1_count'];
-                        break;
-                }
             } else {
                 $useInfo = '';
             }
             try {
                 $info = self::find()
                     ->source(['id', 'use_count'])
-                    ->query($newQuery)
-                    ->orderBy($sortBy)
-                    ->offset(($query->page - 1) * $pageSize)
-                    ->limit($pageSize)
+                    ->query($query->query())
+                    ->orderBy($query->sortBy())
+                    ->offset($query->queryOffset())
+                    ->limit($query->pageSizeSet())
                     ->createCommand()
                     ->search([], ['track_scores' => true])['hits'];
             } catch (\exception $e) {
@@ -100,47 +58,12 @@ class Background extends BaseModel
                     }
                 }
             }
-            Tools::setRedis($this->redisDb, $redisKey, $return, 86400);
+            Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 86400);
         }
         return $return;
     }
 
-    public static function queryKeyword($keyword, $is_or = false)
-    {
-        $operator = $is_or ? 'or' : 'and';
-        $query['bool']['must'][]['multi_match'] = [
-            'query' => $keyword,
-            'fields' => ["title^5", "description^1"],
-            'type' => 'most_fields',
-            "operator" => $operator
-        ];
-        return $query;
-    }
 
-    public static function sortByTime()
-    {
-        return 'created desc';
-    }
-
-    public static function sortDefault()
-    {
-        //        $source = "doc['pr'].value-doc['man_pr'].value+doc['man_pr_add'].value";
-        $source = "doc['pr'].value+(int)(_score*10)";
-        $sort['_script'] = [
-            'type' => 'number',
-            'script' => [
-                "lang" => "painless",
-                "source" => $source
-            ],
-            'order' => 'desc'
-        ];
-        return $sort;
-    }
-
-    public static function sortByHot()
-    {
-        return 'edit desc';
-    }
 
     public static function index()
     {

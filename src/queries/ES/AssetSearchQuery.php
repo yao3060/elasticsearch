@@ -4,6 +4,7 @@
 namespace app\queries\ES;
 
 use app\interfaces\ES\QueryBuilderInterface;
+use app\models\AssetUseTop;
 
 class AssetSearchQuery implements QueryBuilderInterface
 {
@@ -60,7 +61,7 @@ class AssetSearchQuery implements QueryBuilderInterface
         }
         return  $newQuery;
     }
-    public function pageSet(){
+    public function pageSizeSet(){
         $pageSize = $this->pageSize;
         if ($this->page * $this->pageSize > 10000) {
             $pageSize = $this->page * $pageSize - 10000;
@@ -78,6 +79,16 @@ class AssetSearchQuery implements QueryBuilderInterface
         return $sortBy;
     }
 
+    public function queryOffset()
+    {
+        if ($this->page * $this->pageSize > 10000) {
+            $this->pageSize = $this->pageSize - ($this->page * $this->pageSize - 10000) % $this->pageSize;
+            $offset = 10000 - $this->pageSize;
+        } else {
+            $offset = ($this->page - 1) * $this->pageSize;
+        }
+        return $offset;
+    }
     protected function sortByTime()
     {
         return 'created desc';

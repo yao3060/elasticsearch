@@ -41,7 +41,7 @@ class BackgroundsTest extends \Codeception\Test\Unit
                 useCount: 0,
                 kid: 0,
                 ratioId: -1,
-                isBg: 1
+                isBg: 0
             ));
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(

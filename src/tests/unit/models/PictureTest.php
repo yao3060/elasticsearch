@@ -38,7 +38,7 @@ class PictureTest extends \Codeception\Test\Unit
                 page:1,
                 pageSize:30,
                 sceneId:0,
-                isZb:0,
+                isZb:1,
                 kid:0,
                 vipPic: 0,
                 ratioId:-1
