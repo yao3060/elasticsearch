@@ -23,58 +23,21 @@ class Asset extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $sceneId = is_array($query->sceneId) ? $query->sceneId : [];
-        $redisKey = sprintf(
-            'ES_asset2:%s:%s_%d_%s_%d_%d_%d_%d',
-            date('Y-m-d'),
-            $query->keyword,
-            $query->page,
-            implode('-', $sceneId),
-            $query->pageSize,
-            $query->isZb,
-            $query->sort,
-            $query->useCount
-        );
-        $return = Tools::getRedis($this->redisDb, $redisKey);
-        $pageSize = $query->pageSize;
+        $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
         if (!$return || !$return['hit']) {
             unset($return);
-            if ($query->keyword) {
-                $newQuery = $this->queryKeyword($query->keyword);
-            }
-            if ($sceneId) {
-                $newQuery['bool']['must'][]['terms']['scene_id'] = $sceneId;
-            }
-            $newQuery['bool']['filter'][]['term']['kid_1'] = 1;
-            if ($query->page * $pageSize > 10000) {
-                $pageSize = $query->page * $pageSize - 10000;
-            }
-
-            if ($query->sort === 'bytime') {
-                $sortBy = $this->sortByTime();
-            } else {
-                $sortBy = $this->sortDefault();
-            }
             if ($query->useCount) {
                 $useInfo = AssetUseTop::getLastInfo(1);
-                switch ($query->useCount) {
-                    case 1:
-                        $newQuery['bool']['filter'][]['range']['use_count']['gte'] = $useInfo['top1_count'];
-                        break;
-                    case 2:
-                        $newQuery['bool']['filter'][]['range']['use_count']['lt'] = $useInfo['top1_count'];
-                        break;
-                }
             } else {
                 $useInfo = '';
             }
             try {
                 $info = self::find()
                     ->source(['id', 'use_count'])
-                    ->query($newQuery)
-                    ->orderBy($sortBy)
-                    ->offset(($query->page - 1) * $pageSize)
-                    ->limit($pageSize)
+                    ->query($query->query())
+                    ->orderBy($query->sortBy())
+                    ->offset(($query->page - 1) * $query->pageSet())
+                    ->limit($query->pageSet())
                     ->createCommand()
                     ->search([], ['track_scores' => true])['hits'];
             } catch (\exception $e) {
@@ -96,7 +59,7 @@ class Asset extends BaseModel
                     }
                 }
             }
-            Tools::setRedis($this->redisDb, $redisKey, $return, 86400);
+            Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 86400);
         }
         return $return;
     }
@@ -134,7 +97,7 @@ class Asset extends BaseModel
         return $return;
     }
 
-    public static function saveRecord($fields = [])
+    public function saveRecord($fields = [])
     {
         if (!$fields['id']) return false;
         $info = self::findOne($fields['id']);
