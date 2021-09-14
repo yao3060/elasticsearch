@@ -4,7 +4,6 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
-use app\models\Assettaglink;
 use app\models\AssetUseTop;
 
 /**
@@ -17,7 +16,7 @@ class Asset extends BaseModel
     private $redisDb = 8;
 
     /**
-     * @param QueryBuilderInterface $query
+     * @param \app\queries\ES\AssetSearchQuery $query
      * @return array 2021-09-03
      * return ['hit','ids','score'] 命中数,命中id,模板id=>分数
      */
@@ -36,8 +35,8 @@ class Asset extends BaseModel
                     ->source(['id', 'use_count'])
                     ->query($query->query())
                     ->orderBy($query->sortBy())
-                    ->offset(($query->page - 1) * $query->pageSet())
-                    ->limit($query->pageSet())
+                    ->offset($query->queryOffset())
+                    ->limit($query->pageSizeSet())
                     ->createCommand()
                     ->search([], ['track_scores' => true])['hits'];
             } catch (\exception $e) {
@@ -65,7 +64,7 @@ class Asset extends BaseModel
     }
 
     //推荐搜索
-    public function recommendSearch(QueryBuilderInterface $query): array
+    /*public function recommendSearch(QueryBuilderInterface $query): array
     {
         if ($query->keyword) {
             $newQuery['bool']['must']['match']['title'] = $query->keyword;
@@ -76,7 +75,7 @@ class Asset extends BaseModel
                 ->source(['id'])
                 ->query($newQuery)
                 //                ->orderBy($sort)
-                ->offset(($query->page - 1) * $query->pageSize)
+                ->offset($query->queryOffset())
                 ->limit($query->pageSize)
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
@@ -95,9 +94,9 @@ class Asset extends BaseModel
             }
         }
         return $return;
-    }
+    }*/
 
-    public function saveRecord($fields = [])
+    /*public function saveRecord($fields = [])
     {
         if (!$fields['id']) return false;
         $info = self::findOne($fields['id']);
@@ -125,45 +124,11 @@ class Asset extends BaseModel
         }
         $info->scene_id = $scene;
         $info->save();
-    }
-
-    public static function queryKeyword($keyword, $is_or = false)
-    {
-        $operator = $is_or ? 'or' : 'and';
-        $query['bool']['must'][]['multi_match'] = [
-            'query' => $keyword,
-            'fields' => ["title^5", "description^1"],
-            'type' => 'most_fields',
-            "operator" => $operator
-        ];
-        return $query;
-    }
-
-    public static function sortByTime()
-    {
-        return 'created desc';
-    }
-
-    public static function sortDefault()
-    {
-        //        $source = "doc['pr'].value-doc['man_pr'].value+doc['man_pr_add'].value";
-        $source = "doc['pr'].value+(int)(_score*10)";
-        $sort['_script'] = [
-            'type' => 'number',
-            'script' => [
-                "lang" => "painless",
-                "source" => $source
-            ],
-            'order' => 'desc'
-        ];
-        return $sort;
-    }
-
+    }*/
     public static function index()
     {
         return 'asset2';
     }
-
     public static function type()
     {
         return 'list';

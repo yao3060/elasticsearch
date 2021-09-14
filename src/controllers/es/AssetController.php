@@ -29,8 +29,15 @@ class AssetController extends BaseController
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $data = (new Asset())
-                    ->search(new AssetSearchQuery($data['keyword'], $data['page'] ?? 1, $data['pageSize'] ?? 40, $data['sceneId'] ?? 0,
-                        $data['isZb'] ?? 0, $data['sort'] ?? 0, $data['useCount'] ?? 0));
+                    ->search(new AssetSearchQuery(
+                        $data['keyword'],
+                        $data['page'] ?? 1,
+                        $data['pageSize'] ?? 40,
+                        $data['sceneId'] ?? 0,
+                        $data['isZb'] ?? 0,
+                        $data['sort'] ?? 0,
+                        $data['useCount'] ?? 0
+                    ));
                 $response = new Response('get_asset_list', 'assetList', $data);
             }
         } catch (UnknownPropertyException $e) {

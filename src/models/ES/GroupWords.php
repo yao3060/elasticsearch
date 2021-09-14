@@ -26,65 +26,27 @@ class GroupWords extends BaseModel
     {
         return 'list';
     }
-
-    public static function sortByHot()
-    {
-        return 'sort desc';
-    }
-
     public function attributes()
     {
         return ['id', 'title', 'description', 'created', 'kid_1', 'kid_2', 'kid_3', 'pr', 'man_pr', 'man_pr_add', 'width', 'height', 'ratio', 'scene_id', 'is_zb'];
     }
 
     /**
-     * @param QueryBuilderInterface $query
+     * @param \app\queries\ES\GroupWordsSearchQuery $query
      * @return array 2021-09-08
      * return ['hit','ids','score'] 命中数,命中id,模板id=>分数
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $redisKey = "ES_group_word:" . date('Y-m-d') . ":{$query->keyword}_{$query->page}_" . "_{$query->pageSize}";
-        if (!empty($query->search)) {
-            $redisKey .= '_' . $query->search;
-        }
-        if (!empty($query->searchAll)) {
-            $redisKey .= '_' . $query->searchAll . '_v1';
-        }
-        $return = Tools::getRedis($this->redisDb, $redisKey);
-        $pageSize = $query->pageSize;
+        $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
         if (!$return) {
-            if ($query->searchAll) {
-                $keyword = DesignerRecommendAssetTagService::getRecommendAssetKws(5);
-                $shouldMatch = [];
-                foreach ($keyword as $keywordVal) {
-                    $shouldMatch[] = [
-                        'match' => [
-                            'keyword' => $keywordVal
-                        ]
-                    ];
-                }
-                $newQuery['bool']['should'][] = $shouldMatch;
-            } elseif ($query->keyword) {
-                $newQuery = $this->queryKeyword($query->keyword, false, true);
-            }
-            if (!empty($query->search)) {
-                $newQuery['bool']['must'][]['multi_match'] = [
-                    'query' => $query->search,
-                    'fields' => ["keyword^1"],
-                    'type' => 'most_fields',
-                    "operator" => 'and'
-                ];
-            }
-
-            $sort = $this->sortByHot();
             try {
                 $info = self::find()
                     ->source(['id'])
-                    ->query($newQuery)
-                    ->orderBy($sort)
-                    ->offset(($query->page - 1) * $pageSize)
-                    ->limit($pageSize)
+                    ->query($query->query())
+                    ->orderBy($query->sortBy())
+                    ->offset($query->queryOffset())
+                    ->limit($query->pageSizeSet())
                     ->createCommand()
                     ->search([], ['track_scores' => true])['hits'];
             } catch (\exception $e) {
@@ -97,13 +59,13 @@ class GroupWords extends BaseModel
                 $return['ids'][] = $value['_id'];
                 $return['score'][$value['_id']] = $value['sort'][0];
             }
-            Tools::setRedis($this->redisDb, $redisKey, $return, 86400);
+            Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 86400);
         }
         return $return;
     }
 
     //推荐搜索
-    public function recommendSearch(QueryBuilderInterface $query): array
+   /* public function recommendSearch(QueryBuilderInterface $query): array
     {
         if ($query->keyword) {
             $newQuery = $this->queryKeyword($query->keyword, true);
@@ -131,17 +93,6 @@ class GroupWords extends BaseModel
         return $return;
     }
 
-    public static function queryKeyword($keyword, $is_or = false)
-    {
-        $operator = $is_or ? 'or' : 'and';
-        $query['bool']['must'][]['multi_match'] = [
-            'query' => $keyword,
-            'fields' => ["title^5", "description^1"],
-            'type' => 'most_fields',
-            "operator" => $operator
-        ];
-        return $query;
-    }
 
     public static function sortDefault()
     {
@@ -155,7 +106,7 @@ class GroupWords extends BaseModel
             'order' => 'desc'
         ];
         return $sort;
-    }
+    }*/
 
 
 }
