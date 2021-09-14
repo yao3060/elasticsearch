@@ -18,17 +18,17 @@ class SvgController extends BaseController
     {
 
         try {
-            $model = DynamicModel::validateData($request->get(), [
-                ['keyword', 'required']
+            $model = DynamicModel::validateData($request->getBodyParams(), [
+                ['keyword', 'string']
             ]);
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $items = (new Svg)->search(new SvgSearchQuery(
-                    keyword: $request->get('keyword', ''),
-                    kid2: $request->get('kid2', []),
-                    page: $request->get('page', 1),
-                    pageSize: $request->get('page_size', 40)
+                    keyword: $request->getBodyParam('keyword', 0),
+                    kid2: $request->getBodyParam('kid2', []),
+                    page: $request->getBodyParam('page', 1),
+                    pageSize: $request->getBodyParam('page_size', 40)
                 ));
                 $response = new Response('get_svg_list', 'Get Svg List', $items);
             }
