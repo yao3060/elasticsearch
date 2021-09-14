@@ -29,7 +29,9 @@ class SeoController extends BaseController
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $data = (new Seo())
-                    ->search(new SeoSearchQuery($data['keyword']));
+                    ->search(new SeoSearchQuery(
+                        $data['keyword']
+                    ));
                 $response = new Response('get_seo_list', 'seoList', $data);
             }
         } catch (UnknownPropertyException $e) {
@@ -61,7 +63,10 @@ class SeoController extends BaseController
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $data = (new Seo())
-                    ->seoSearch(new SeoSearchQuery($data['keyword'], $data['pageSize']));
+                    ->seoSearch(new SeoSearchQuery(
+                        $data['keyword'],
+                        $data['pageSize'] ?? 40
+                    ));
                 $response = new Response('get_list', 'GetList', $data);
             }
         } catch (UnknownPropertyException $e) {

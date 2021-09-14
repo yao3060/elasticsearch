@@ -33,8 +33,8 @@ class VideoEController extends BaseController
                         $data['keyword'],
                         $data['page'] ?? 1,
                         $data['pageSize'] ?? 40,
-                        $data['classId'] ?? 1,
-                        $data['ratio'] ?? 0,
+                        $data['classId'] ?? 0,
+                        $data['ratio'] ?? 1,
                         $data['scopeType'] ?? 0,
                         $data['owner'] ?? 0,
                     ));
@@ -58,7 +58,7 @@ class VideoEController extends BaseController
         return $this->response($response);
     }
 
-    public function actionRecommendSearch(Request $request)
+    /*public function actionRecommendSearch(Request $request)
     {
         $data = $request->get();
         try {
@@ -92,6 +92,6 @@ class VideoEController extends BaseController
             );
         }
         return $this->response($response);
-    }
+    }*/
 
 }

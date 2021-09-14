@@ -8,9 +8,7 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\helpers\StringHelper;
-use app\models\ES\GroupWords;
 use app\models\ES\SearchWord;
-use app\queries\ES\GroupWordsSearchQuery;
 use app\queries\ES\SearchWordSearchQuery;
 use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
@@ -31,7 +29,11 @@ class SearchWordController extends BaseController
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $data = (new SearchWord())
-                    ->search(new SearchWordSearchQuery($data['keyword'], $data['page'] ?? 1, $data['pageSize'] ?? 40, $data['type'] ?? 1));
+                    ->search(new SearchWordSearchQuery(
+                        $data['keyword'],
+                        $data['page'] ?? 1,
+                        $data['pageSize'] ?? 40,
+                        $data['type'] ?? 1));
                 $response = new Response('get_SearchWord_list', 'SearchWordsList', $data);
             }
         } catch (UnknownPropertyException $e) {
@@ -52,7 +54,7 @@ class SearchWordController extends BaseController
         return $this->response($response);
     }
 
-    public function actionRecommendSearch(Request $request)
+    /*public function actionRecommendSearch(Request $request)
     {
         $data = $request->get();
         try {
@@ -62,8 +64,12 @@ class SearchWordController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new GroupWords())
-                    ->recommendSearch(new GroupWordsSearchQuery($data['keyword'], $data['page'], $data['pageSize']));
+                $data = (new SearchWord())
+                    ->recommendSearch(new SearchWordSearchQuery(
+                        $data['keyword'],
+                        $data['page'],
+                        $data['pageSize']
+                    ));
                 $response = new Response('get_Group_Recommend_list', 'Group_Recommend_List', $data);
             }
         } catch (UnknownPropertyException $e) {
@@ -82,6 +88,6 @@ class SearchWordController extends BaseController
             );
         }
         return $this->response($response);
-    }
+    }*/
 
 }
