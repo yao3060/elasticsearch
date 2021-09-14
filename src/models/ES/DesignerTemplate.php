@@ -150,7 +150,7 @@ class DesignerTemplate extends BaseModel
         );
         $page = $queryBuilder->getRedisKey();
         //获取结果集
-        if ($templInfo['type']) unset($templInfo['type']);
+        if (isset($templInfo['type']) && $templInfo['type']) unset($templInfo['type']);
         $templIdArr = self::search($queryBuilder);
 
         $ids = $templIdArr['ids'];
@@ -192,7 +192,7 @@ class DesignerTemplate extends BaseModel
             $p += 1;
         }
         $templIdArr = $levels;
-        $picId = $templInfo['picId'];
+        $picId = $templInfo['picId'] ?? "";
         //将已占用的模板放在数组的第一条
         if (!empty($picId)) {
             $uid = Yii::$app->user->id;

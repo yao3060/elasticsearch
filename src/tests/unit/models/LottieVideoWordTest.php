@@ -42,7 +42,10 @@ class LottieVideoWordTest extends \Codeception\Test\Unit
 
         $ids = [];
 
-        if (!empty($responseJson['msg'])) $ids = array_column($responseJson['msg'], 'id');
+        if (!empty($responseJson['msg'])) {
+            $ids = array_column($responseJson['msg'], 'id');
+            sort($ids);
+        }
 
         return [
             'dev' => $search['ids'],
