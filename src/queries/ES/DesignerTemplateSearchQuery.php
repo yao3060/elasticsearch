@@ -188,42 +188,6 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
         }
     }
 
-
-    /**
-     * query function
-     *
-     * @param string $keyword
-     * @param int $isOr
-     * @return $this
-     */
-    protected function queryKeyword()
-    {
-        if ($this->keyword) {
-            $operator = $this->fuzzy > 0 ? 'or' : 'and';
-            switch ($operator):
-                case 'and':
-                    $keyword = $this->keyword;
-                    $fields = ["title^16", "description^2", "hide_description^2", "brief^2", "info^1"];
-                    break;
-                case 'or':
-                    $keyword = str_replace(['图片'], '', $this->keyword);
-                    $fields = ["title^16", "description^2", "hide_description^2", "info^1"];
-                    break;
-            endswitch;
-
-            if (in_array($keyword, ['LOGO', 'logo'])) {
-                $fields = ["title^16", "description^2", "hide_description^2", "info^1"];
-            }
-            $this->query['bool']['must'][]['multi_match'] = [
-                'query' => $keyword,
-                'fields' => $fields,
-                'type' => 'most_fields',
-                "operator" => $operator
-            ];
-        }
-        return $this;
-    }
-
     protected function queryColor()
     {
         if ($this->color) {

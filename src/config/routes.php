@@ -28,6 +28,6 @@ return [
         'POST v1/sensitive/word/validate' => 'es/sensitive-word/validate', // 违禁词验证
         'GET  v1/background/videos' => 'es/background-video/search', // 背景视频搜索
         'GET  v1/rich-editor-assets' => 'es/rich-editor-asset/search', // 富文本元素
-        'GET  v1/video-templates' => 'es/video-template/search', // 
+        'GET  v1/video-templates' => 'es/video-template/search', // 片段视频
     ],
 ];

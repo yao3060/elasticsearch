@@ -6,6 +6,7 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
+use yii\base\Exception;
 
 class BackgroundVideo extends BaseModel
 {
@@ -15,6 +16,21 @@ class BackgroundVideo extends BaseModel
     {
         return [
         ];
+    }
+
+    public static function index()
+    {
+        return 'bg_video';
+    }
+
+    public static function type()
+    {
+        return 'list';
+    }
+
+    public function attributes()
+    {
+        return ['id', 'title', 'create_date', 'pr', 'width', 'height', 'class_id', 'description'];
     }
 
     /**
@@ -29,26 +45,33 @@ class BackgroundVideo extends BaseModel
         if (!$return || Tools::isReturnSource()) {
             unset($return);
 
+            $return['hit'] = 0;
+            $return['ids'] = [];
+            $return['score'] = [];
+
             try {
                 $info = self::find()
                     ->source(['id'])
                     ->query($query->query())
                     ->orderBy($query->sort)
-                    ->offset(($query->page - 1) * $query->pageSize)
+                    ->offset($query->offset)
                     ->limit($query->pageSize)
                     ->createCommand()
                     ->search([], ['track_scores' => true])['hits'];
             } catch (\Throwable $throwable) {
-                $info['hit'] = 0;
-                $info['ids'] = [];
-                $info['score'] = [];
+                throw new Exception($throwable->getMessage() . $throwable->getFile() . $throwable->getLine());
             }
 
-            $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
-            foreach ($info['hits'] as $value) {
-                $return['ids'][] = $value['_id'];
-                $return['score'][$value['_id']] = $value['sort'][0];
+            $total = $info['total'] ?? 0;
+
+            $return['hit'] = $total > 10000 ? 10000 : $total;
+            if (isset($info['hits']) && sizeof($info['hits'])) {
+                foreach ($info['hits'] as $value) {
+                    $return['ids'][] = $value['_id'];
+                    $return['score'][$value['_id']] = $value['sort'][0];
+                }
             }
+
 //            Tools::setRedis(self::$redis_db, $query->getRedisKey(), $return, 86400);
         }
 

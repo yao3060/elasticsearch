@@ -66,7 +66,7 @@ class SearchSvgTest extends \Codeception\Test\Unit
             1,
             [],
             50,
-            'https://818ps.com/apiv2/search-asset-svg?p=1&k2=0&word=&pageSize=50'
+            getenv('UNIT_BASE_URL') . '/apiv2/search-asset-svg?p=1&k2=0&word=&pageSize=50'
         );
 
         $this->assertEqualsCanonicalizing($data['prod'], $data['dev'],);
@@ -79,7 +79,7 @@ class SearchSvgTest extends \Codeception\Test\Unit
             1,
             [],
             50,
-            'https://818ps.com/apiv2/search-asset-svg?p=1&k2=0&word=%E5%BF%83&pageSize=50'
+            getenv('UNIT_BASE_URL') . '/apiv2/search-asset-svg?p=1&k2=0&word=%E5%BF%83&pageSize=50'
         );
         $this->assertEqualsCanonicalizing($data['prod'], $data['dev']);
     }

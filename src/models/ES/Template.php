@@ -164,17 +164,13 @@ class Template extends BaseModel
 
         $baseQuery = $query->query();
 
-//        if (!$return || Tools::isReturnSource() || $update == 1) {
-        if (!$return || $query->update == 1) {
+        if (!$return || Tools::isReturnSource() || $query->update == 1) {
             // 把回源从不命中中去除
             if (!$return || !$return['total']) {
                 $redisStat['hit'] = 0;
             }
             $reStartTime = microtime(true);
 //            Yii::$app->redis9->incr("search_return_source_incr");
-            if ($query->keyword != null) {
-                $baseQuery = self::queryKeyword($query->keyword, $query->fuzzy);
-            }
             unset($return);
             $costInfo = [];
             $costInfo['created'] = date('Y-m-d H:i:s', time());
@@ -288,26 +284,6 @@ class Template extends BaseModel
         }
 
         return $return;
-    }
-
-    public static function queryKeyword($keyword, $is_or = false)
-    {
-        $operator = $is_or ? 'or' : 'and';
-        $fields = ["title^16", "description^2", "hide_description^2", "brief^2", "info^1"];
-        if ($operator == 'or') {
-            $keyword = str_replace(['图片'], '', $keyword);
-            $fields = ["title^16", "description^2", "hide_description^2", "info^1"];
-        }
-        if (in_array($keyword, ['LOGO', 'logo'])) {
-            $fields = ["title^16", "description^2", "hide_description^2", "info^1"];
-        }
-        $query['bool']['must'][]['multi_match'] = [
-            'query' => $keyword,
-            'fields' => $fields,
-            'type' => 'most_fields',
-            "operator" => $operator
-        ];
-        return $query;
     }
 
     public static function getEsTableName()

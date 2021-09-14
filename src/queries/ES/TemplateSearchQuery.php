@@ -12,7 +12,6 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
 {
     public $sortClassId;
     public $offset;
-    protected $query = [];
 
     public function __construct(
         public $keyword = null,
@@ -129,72 +128,6 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
     }
 
     /**
-     * query class_ids
-     */
-    public function queryClassIds()
-    {
-        if ($this->classId) {
-            $classId = explode('_', $this->classId);
-            //class_id 过滤 为空 或者 不是数字 或者 小于等于0 都从分类arr中剔除
-            foreach ($classId as $key => $item) {
-                if (empty($item) || !is_numeric($item) || $item <= 0) {
-                    unset($classId[$key]);
-                }
-            }
-            $classId = array_values($classId);
-
-            if (in_array(760, $classId)) {
-                //视频模板要特殊处理
-                $this->templateTypes = 4;
-            }
-            //true 采用交集方式查询 即分类有交集就能查询出来
-            if (!empty($this->classIntersectionSearch)) {
-                //剔除为0的项
-                $classId = array_diff($classId, [0, '']);
-                if (!empty($classId)) {
-                    $this->query['bool']['must'][]['terms']['class_id'] = $classId;
-                }
-            } else {
-                foreach ($classId as $key) {
-                    if ($key > 0) {
-                        $this->query['bool']['must'][]['terms']['class_id'] = [$key];
-                    }
-                }
-            }
-        } else {
-            if ($this->kid1 == 1) {
-                $this->query['bool']['must_not'][]['terms']['class_id'] = ['437', '760', '290', '810', '902'];
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * query width
-     */
-    public function queryWidth()
-    {
-        if (!empty($this->width)) {
-            $this->query['bool']['filter'][]['match']['width'] = $this->width;
-        }
-
-        return $this;
-    }
-
-    /**
-     * query height
-     */
-    public function queryHeight()
-    {
-        if (!empty($this->width)) {
-            $this->query['bool']['filter'][]['match']['width'] = $this->width;
-        }
-
-        return $this;
-    }
-
-    /**
      * query sort type
      */
     public function querySortType()
@@ -233,7 +166,8 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
     {
         $this->offset = $this->queryOffset();
 
-        $this->queryKid1()
+        $this->queryKeyword()
+            ->queryKid1()
             ->queryKid2()
             ->queryRatio()
             ->queryTemplateTypes()

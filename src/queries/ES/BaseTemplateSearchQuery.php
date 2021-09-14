@@ -83,25 +83,26 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
         return $sort;
     }
 
-    protected function queryKeyword($keyword, $isOr = false)
+    protected function queryKeyword()
     {
-        if (!empty($keyword)) {
-            $operator = $isOr ? 'or' : 'and';
+        if (!empty($this->keyword)) {
+            $operator = $this->fuzzy ? 'or' : 'and';
             $fields = ["title^16", "description^2", "hide_description^2", "brief^2", "info^1"];
             if ($operator == 'or') {
-                $keyword = str_replace(['图片'], '', $keyword);
+                $this->keyword = str_replace(['图片'], '', $this->keyword);
                 $fields = ["title^16", "description^2", "hide_description^2", "info^1"];
             }
-            if (in_array($keyword, ['LOGO', 'logo'])) {
+            if (in_array($this->keyword, ['LOGO', 'logo'])) {
                 $fields = ["title^16", "description^2", "hide_description^2", "info^1"];
             }
             $this->query['bool']['must'][]['multi_match'] = [
-                'query' => $keyword,
+                'query' => $this->keyword,
                 'fields' => $fields,
                 'type' => 'most_fields',
                 "operator" => $operator
             ];
         }
+
         return $this;
     }
 
@@ -181,7 +182,7 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
                 }
             }
         } else {
-            if ($this->kid1 == 1) {
+            if (isset($this->kid1) && $this->kid1 == 1) {
                 $this->query['bool']['must_not'][]['terms']['class_id'] = ['437', '760', '290', '810', '902'];
             }
         }
@@ -221,6 +222,30 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
         if ($this->settlementLevel) {
             $this->query['bool']['must'][]['match']['settlement_level'] = $this->settlementLevel;
         }
+        return $this;
+    }
+
+    /**
+     * query width
+     */
+    public function queryWidth()
+    {
+        if (!empty($this->width)) {
+            $this->query['bool']['filter'][]['match']['width'] = $this->width;
+        }
+
+        return $this;
+    }
+
+    /**
+     * query height
+     */
+    public function queryHeight()
+    {
+        if (!empty($this->width)) {
+            $this->query['bool']['filter'][]['match']['width'] = $this->width;
+        }
+
         return $this;
     }
 

@@ -5,7 +5,6 @@ namespace app\queries\ES;
 
 class BackgroundVideoQuery extends BaseTemplateSearchQuery
 {
-    public $sort;
     protected $query = [];
 
     public function __construct(
@@ -14,27 +13,35 @@ class BackgroundVideoQuery extends BaseTemplateSearchQuery
         public $page = 1,
         public $pageSize = 1,
         public $ratio = 0,
+        public $sort = 'create_date desc',
+        public $offset = 0
     )
     {
+
     }
 
     public function getRedisKey()
     {
         $this->keyword = $this->keyword ?: 0;
 
+        $this->classId = $this->classId ?: [];
+
         if (!is_array($this->classId)) {
             $this->classId = [$this->classId];
         }
 
-        $redis_key = "ES_video:bg_video:" . date('Y-m-d') . ":{$this->keyword}_{$this->page}_ " . implode('-', $this->classId) . " _{$this->pageSize}" . " _{$this->ratio}";
+        $this->offset = ((int)$this->page - 1) * (int)$this->pageSize;
 
-        return $redis_key;
+        $redisKey = "ES_video:bg_video:" . date('Y-m-d') . ":{$this->keyword}_{$this->page}_ "
+            . implode('-', $this->classId) . " _{$this->pageSize}" . " _{$this->ratio}";
+
+        return $redisKey;
     }
 
-    public function queryKeyword($isOr = 'and')
+    protected function queryKeyword()
     {
-        if ($this->keyword) {
-            $operator = $isOr ? 'or' : 'and';
+        if (!empty($this->keyword)) {
+            $operator = $this->fuzzy ? 'or' : 'and';
             $this->query['bool']['must'][]['multi_match'] = [
                 'query' => $this->keyword,
                 'fields' => ["title^5", "description^1"],
@@ -62,14 +69,21 @@ class BackgroundVideoQuery extends BaseTemplateSearchQuery
         return $this;
     }
 
-    public function sortByTime()
+    public function queryClassIds()
     {
-        $this->sort = 'create_date desc';
+        if ($this->classId) {
+            foreach ($this->classId as $key) {
+                if ($key > 0) {
+                    $this->query['bool']['must'][]['terms']['class_id'] = [$key];
+                }
+            }
+        }
+
+        return $this;
     }
 
     public function query(): array
     {
-        $this->sortByTime();
         $this->queryKeyword()->queryClassIds()->queryRatio();
 
         return $this->query;

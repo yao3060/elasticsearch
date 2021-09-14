@@ -13,7 +13,8 @@
   - [x] search
 - [x] RichEditorAsset
   - [x] search
-
+- [x] VideoTemplateTest
+  - [x] search
 ### 目标
 - [ ] 尽可能的全覆盖能通过api验证的接口用例
 
@@ -78,5 +79,12 @@
       <td>v1/rich-editor-assets</td>
       <td>RichEditorAsset@testSearch</td>
       <td><span style="color: #3d7eff">[@testSearch]</span> /rt-api/rt-asset-search</td>
+    </tr>
+    <tr>
+      <td>VideoTemplateTest</td>
+      <td>片段视频</td>
+      <td>v1/video-templates</td>
+      <td>VideoTemplateTest@testSearch</td>
+      <td><span style="color: #3d7eff">[@testSearch]</span> /api-video/get-excerpt-list</td>
     </tr>
 </table>

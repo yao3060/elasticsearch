@@ -51,8 +51,8 @@ class BackgroundVideoTest extends \Codeception\Test\Unit
         sort($ids);
 
         return [
-            'dev' => $ids,
-            'prod' => $search['ids']
+            'dev' => $search['ids'],
+            'prod' => $ids
         ];
     }
 

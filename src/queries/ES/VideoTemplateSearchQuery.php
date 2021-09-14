@@ -54,7 +54,7 @@ class VideoTemplateSearchQuery extends BaseTemplateSearchQuery
 
     public function query(): array
     {
-        $this->queryKeyword($this->keyword)
+        $this->queryKeyword()
             ->queryClassIds()->queryRatio();
 
         return $this->query;
