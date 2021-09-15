@@ -22,7 +22,6 @@ class AssetTest extends \Codeception\Test\Unit
     {
         IpsAuthority::definedAuth(); // 初始化权限变量
         $this->http = new \GuzzleHttp\Client();
-        $this->secondSomeFeature();
     }
     protected function _after()
     {
@@ -53,7 +52,7 @@ class AssetTest extends \Codeception\Test\Unit
 
         $this->assertEquals(join(',', $ids), join(',', $myIds));
     }
-    public function secondSomeFeature(){
+    public function testSearch(){
         $items = (new Asset())
             ->search(new AssetSearchQuery(
                 keyword:0,
