@@ -2,13 +2,16 @@
 namespace tests\unit\models;
 
 use app\components\IpsAuthority;
+use app\models\ES\Container;
+use app\queries\ES\ContainerSearchQuery;
 use yii\helpers\ArrayHelper;
-class VideoETest extends \Codeception\Test\Unit
+class ContainerTest extends \Codeception\Test\Unit
 {
     /**
      * @var \UnitTester
      */
     protected $tester;
+
     /**
      * @var \GuzzleHttp\Client
      */
@@ -19,35 +22,29 @@ class VideoETest extends \Codeception\Test\Unit
         IpsAuthority::definedAuth(); // 初始化权限变量
         $this->http = new \GuzzleHttp\Client();
     }
-
+    protected function _after()
+    {
+    }
     public function testSomeFeature()
     {
-        $items = (new SearchWord())
-            ->search(new SearchWordSearchQuery(
-                keyword:'你好',
-                pageSize:20,
-                type:1,
+        $items = (new Container())
+            ->search(new ContainerSearchQuery(
+                keyword:'早安',
+                page:1,
+                pageSize:30,
+                kid:0,
             ));
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/site/sphinx?1=1&keyword=%E4%BD%A0%E5%A5%BD&type=1&max=6'
+            'https://818ps.com/apiv2/search-asset-container?word=%E6%97%A9%E5%AE%89&p=1&k2=0'
         );
 
-        $content = json_decode($response->getBody()->getContents());
+        /*$content = json_decode($response->getBody()->getContents());
         $ids = ArrayHelper::getColumn($content, 'id');
         sort($ids);
         $myIds = $items['ids'];
         sort($myIds);
-        $flag = 1;
-        foreach ($ids as $va) {
-            if (in_array($va, $myIds)) {
-                continue;
-            }else {
-                $flag = 0;
-                break;
-            }
-        }
-        $this->assertEquals($flag,1);
+        $this->assertEquals(join(',', $ids), join(',', $myIds));*/
     }
 }

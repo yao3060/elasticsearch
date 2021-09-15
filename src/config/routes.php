@@ -20,6 +20,8 @@ return [
         'GET  v1/videos' => 'es/video-audio/search',
         'GET  v1/searchs/word' => 'es/search-word/search',
         'GET  v1/videos/e' => 'es/video-e/search',//搜索
+        'GET  v1/containers' => 'es/container/search',//搜索
+
 
         //H
         'GET  v1/designer-templates' => 'es/designer-template/index', // 设计师模板
