@@ -81,15 +81,19 @@
       <td>[@testVideoSearch] /video/bg-video-search</td>
     </tr>
     <tr>
-      <td rowspan="2">DesignerTemplateSearch</td>
-      <td rowspan="2">设计师模板，二次设计</td>
-      <td rowspan="2">v1/designer-templates</td>
+      <td rowspan="3">DesignerTemplateSearch</td>
+      <td rowspan="3">设计师模板，二次设计</td>
+      <td rowspan="3">v1/designer-templates</td>
       <td>DesignerTemplateSearchTest@testSearch</td>
       <td>[@testSearch] /api/get-template-list?w=&p=1&kid_1=1&kid_2=19&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=&width=200&height=200&es_type=1</td>
     </tr>
     <tr>
       <td>DesignerTemplateSearchTest@testSearchCarryKeyword</td>
       <td>[@testSearchCarryKeyword] /api/get-template-list?w=%E4%B8%BB%E5%9B%BE&p=1&kid_1=156&kid_2=301&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=0&es_type=3</td>
+    </tr>
+    <tr>
+      <td>DesignerTemplateSearchTest@testSearchNormalEsTypeOfThree</td>
+      <td>[@testSearchNormalEsTypeOfThree] /api/get-template-list?w=&p=1&kid_1=156&kid_2=157&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=0&es_type=3</td>
     </tr>
     <tr>
       <td>RichEditorAsset</td>

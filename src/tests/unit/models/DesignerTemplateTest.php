@@ -14,14 +14,15 @@ class DesignerTemplateTest extends \Codeception\Test\Unit
      */
     protected $tester;
 
+    protected static $urls = [
+        'search' => '/api/get-template-list?w=&p=1&kid_1=1&kid_2=19&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=&width=200&height=200&es_type=1',
+        'search_carry_keyword' => '/api/get-template-list?w=%E4%B8%BB%E5%9B%BE&p=1&kid_1=156&kid_2=301&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=0&es_type=3',
+        'search_normal_es_type_of_three' => '/api/get-template-list?w=&p=1&kid_1=156&kid_2=157&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=0&es_type=3'
+    ];
+
     protected function _before()
     {
         IpsAuthority::definedAuth();
-    }
-
-    protected function _after()
-    {
-
     }
 
     protected function prepareData(
@@ -163,7 +164,7 @@ class DesignerTemplateTest extends \Codeception\Test\Unit
                 "type" => "second"
             ],
             color: [],
-            produrl: getenv("UNIT_BASE_URL") . "/api/get-template-list?w=&p=1&kid_1=1&kid_2=19&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=&width=200&height=200&es_type=1"
+            produrl: getenv("UNIT_BASE_URL") . self::$urls['search']
         );
 
         $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
@@ -188,7 +189,7 @@ class DesignerTemplateTest extends \Codeception\Test\Unit
             classId: "0_0_0_0",
             templateTypes: 4,
             color: [],
-            produrl: getenv("UNIT_BASE_URL") . "/api/get-template-list?w=%E4%B8%BB%E5%9B%BE&p=1&kid_1=156&kid_2=301&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=0&es_type=3"
+            produrl: getenv("UNIT_BASE_URL") . self::$urls['search_carry_keyword']
         );
 
         $this->assertTrue($compareKeyword);
@@ -211,7 +212,7 @@ class DesignerTemplateTest extends \Codeception\Test\Unit
             classId: "0_0_0_0",
             templateTypes: 4,
             color: [],
-            produrl: getenv("UNIT_BASE_URL") . "/api/get-template-list?w=&p=1&kid_1=156&kid_2=157&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=0&es_type=3"
+            produrl: getenv("UNIT_BASE_URL") . self::$urls['search_normal_es_type_of_three']
         );
 
         $this->assertTrue($compareNormal);
