@@ -14,14 +14,15 @@ class DesignerTemplateTest extends \Codeception\Test\Unit
      */
     protected $tester;
 
+    protected static $urls = [
+        'search' => '/api/get-template-list?w=&p=1&kid_1=1&kid_2=19&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=&width=200&height=200&es_type=1',
+        'search_carry_keyword' => '/api/get-template-list?w=%E4%B8%BB%E5%9B%BE&p=1&kid_1=156&kid_2=301&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=0&es_type=3',
+        'search_normal_es_type_of_three' => '/api/get-template-list?w=&p=1&kid_1=156&kid_2=157&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=0&es_type=3'
+    ];
+
     protected function _before()
     {
         IpsAuthority::definedAuth();
-    }
-
-    protected function _after()
-    {
-
     }
 
     protected function prepareData(
@@ -39,6 +40,7 @@ class DesignerTemplateTest extends \Codeception\Test\Unit
         $size = 0,
         $fuzzy = 0,
         $templateTypes = [1, 2],
+        $templInfo = [],
         $color = [],
         $use = 0,
         $produrl = ''
@@ -59,6 +61,7 @@ class DesignerTemplateTest extends \Codeception\Test\Unit
             size: $size,
             fuzzy: $fuzzy,
             templateTypes: $templateTypes,
+            templateInfo: $templInfo,
             color: $color,
             use: $use,
         ));
@@ -73,13 +76,11 @@ class DesignerTemplateTest extends \Codeception\Test\Unit
 
         if (!empty($responseJson['msg'])) {
             $ids = array_column($responseJson['msg'], 'id');
-            sort($ids);
         }
 
         $intersect = array_intersect($search['ids'], $ids);
 
         return count($intersect) === count($ids);
-
     }
 
     protected function queryTemplateIds(
@@ -133,6 +134,7 @@ class DesignerTemplateTest extends \Codeception\Test\Unit
 
         if (isset($responseJson['msg']) && $responseJson['msg']) {
             $ids = array_column($responseJson['msg'], 'id');
+            sort($ids);
         }
 
         return [
@@ -142,7 +144,9 @@ class DesignerTemplateTest extends \Codeception\Test\Unit
     }
 
     /*
-     * search [normal]
+     * @target 测试 DesignerTemplate@getTemplateIds
+     * @notice 只适用于搜索结果数量小于 32 条【不改变测试代码的情况下】
+     * @reason 搜索条件一致，搜索结果顺序不一致
      */
     public function testSearch()
     {
@@ -158,20 +162,23 @@ class DesignerTemplateTest extends \Codeception\Test\Unit
 //            classId: "",
             templateTypes: 1,
             templInfo: [
-                "picId" => "",
-                "templ_attr" => 2,
-                "type" => "second"
-            ],
+            "picId" => "",
+            "templ_attr" => 2,
+            "type" => "second"
+        ],
             color: [],
-            produrl: getenv("UNIT_BASE_URL") . "/api/get-template-list?w=&p=1&kid_1=1&kid_2=19&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=&width=200&height=200&es_type=1"
+            produrl: getenv("UNIT_BASE_URL") . self::$urls['search']
         );
 
         $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
     }
 
     /**
-     * search 有搜索词
-     * es_type 3
+     * @target 测试有搜索词
+     * @kid1 156
+     * @kid2 301
+     * @es_type 3
+     * @template_type 4
      */
     public function testSearchCarryKeyword()
     {
@@ -187,16 +194,21 @@ class DesignerTemplateTest extends \Codeception\Test\Unit
             ratio: "",
             classId: "0_0_0_0",
             templateTypes: 4,
+            templInfo: [
+                "picId" => ""
+            ],
             color: [],
-            produrl: getenv("UNIT_BASE_URL") . "/api/get-template-list?w=%E4%B8%BB%E5%9B%BE&p=1&kid_1=156&kid_2=301&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=0&es_type=3"
+            produrl: getenv("UNIT_BASE_URL") . self::$urls['search_carry_keyword']
         );
 
         $this->assertTrue($compareKeyword);
     }
 
     /**
-     * search 无搜索词
-     * es_type 3
+     * @target 测试无搜索词
+     * @kid1 156
+     * @kid2 157
+     * @es_type 3
      */
     public function testSearchNormalEsTypeOfThree()
     {
@@ -210,8 +222,11 @@ class DesignerTemplateTest extends \Codeception\Test\Unit
             ratio: "",
             classId: "0_0_0_0",
             templateTypes: 4,
+            templInfo: [
+                "picId" => ""
+            ],
             color: [],
-            produrl: getenv("UNIT_BASE_URL") . "/api/get-template-list?w=&p=1&kid_1=156&kid_2=157&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=0&es_type=3"
+            produrl: getenv("UNIT_BASE_URL") . self::$urls['search_normal_es_type_of_three']
         );
 
         $this->assertTrue($compareNormal);
