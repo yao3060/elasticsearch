@@ -31,7 +31,6 @@ class DesignerTemplate extends BaseModel
 
     public function search(QueryBuilderInterface $query): array
     {
-
         try {
 
             $return = null;
@@ -151,9 +150,32 @@ class DesignerTemplate extends BaseModel
         $page = $queryBuilder->getRedisKey();
         //获取结果集
         if (isset($templInfo['type']) && $templInfo['type']) unset($templInfo['type']);
+//        var_dump([
+//            'keyword' => $keyword,
+//            'page' => $page,
+//            'kid1' => $kid1,
+//            'kid2' => $kid2,
+//            'sort_type' => $sortType,
+//            'tag_id' => $tagId,
+//            'is_zb' => $isZb,
+//            'page_size' => $pageSize,
+//            'ratio' => $ratio,
+//            'class_id' => $classId,
+//            'size' => $size,
+//            'fuzzy' => $fuzzy,
+//            'template_type' => $templateTypes,
+//            'templ_info' => $templInfo,
+//            'color' => $color,
+//            'use' => $use,
+//        ]);exit;
         $templIdArr = self::search($queryBuilder);
 
         $ids = $templIdArr['ids'];
+
+//        var_dump([
+//            'ids' => count($ids),
+//            'occupy' => self::$occupy_num
+//        ]);exit;
 
         //如果总数少于最小限制则返回false
         if (count($ids) < self::$occupy_num) {
@@ -171,7 +193,7 @@ class DesignerTemplate extends BaseModel
             if (count($tmp_ads) < self::$occupy_num) {
                 $page = $page + 1;
                 //当前页已全部占满  以后无需再此页搜索
-                Yii::$app->redis8->hset(self::$hash_key_second_page, self::$es_key, $page);
+//                Yii::$app->redis8->hset(self::$hash_key_second_page, self::$es_key, $page);
                 $templIdArr = self::search($queryBuilder);
                 //翻页后如数量不足  则终止循环
                 if (count($templIdArr['ids']) < self::$occupy_num) {

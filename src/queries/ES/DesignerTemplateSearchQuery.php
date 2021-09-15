@@ -12,8 +12,6 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
     protected $templateAttr;
     protected $settlementLevel;
 
-    const REDIS_DB = "_search";
-
     //每个搜索结果存1万条 1天过期
     const REDIS_KEY = "ES:template:second:designer:";
     // 页数，未使用
@@ -66,28 +64,16 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
         $this->use = $this->use ? $this->use : 0;
         $this->templateAttr = isset($this->templateInfo['templ_attr']) ? $this->templateInfo['templ_attr'] : 0; //ips_template_info => templ_attr 模板属性 1普通模板  2精品模板  3GIF模板  4套图模板
         $this->settlementLevel = isset($this->templateInfo['settlement_level']) && $this->templateInfo['settlement_level'] ? $this->templateInfo['settlement_level'] : 0; //ips_template_info => 结算等级 1=>A级    2=>S级'
-    }
-
-    public function query(): array
-    {
-        if (
-            !$this->keyword &&
-            !$this->tagId &&
-            $this->ratio <= 0 &&
-            in_array($this->classId, ['0_0_0_0', '0_0_0'])
-        ) {
+        if (!$this->keyword && !$this->tagId && $this->ratio <= 0 && in_array($this->classId, ['0_0_0_0', '0_0_0'])) {
             //用于排序的class_id但不影响过滤项 影响全局排序的特殊class_id为-1
             $this->sortClassId = -1;
         }
 
-        //ips_template_info => templ_attr 模板属性 1普通模板  2精品模板  3GIF模板  4套图模板
-        $this->templateAttr = $this->templateInfo['templ_attr'] ?? 0;
-
-        //ips_template_info => 结算等级 1=>A级    2=>S级'
-        $this->settlementLevel = $this->templateInfo['settlement_level'] ?? 0;
-
         $this->offset = ($this->page - 1) * $this->pageSize;
+    }
 
+    public function query(): array
+    {
         $this->queryKeyword()
             ->queryTemplateAttr()
             ->querySettlementLevel()
