@@ -88,10 +88,11 @@ class BackGroundSearchQuery implements QueryBuilderInterface
         // TODO: Implement getRedisKey() method.
         $sceneId = is_array($this->sceneId) ? $this->sceneId : [];
         $kid = is_array($this->kid) ? $this->kid : [];
+        $keyword = $this->keyword ? $this->keyword : 0;
         $redisKey = sprintf(
             'ES_background2:%s:%s_%d_%s_%s_%d_%d_%d_%d_%d_%d_%d',
             date('Y-m-d'),
-            $this->keyword,
+            $keyword,
             $this->page,
             implode('-', $kid),
             implode('-', $sceneId),
