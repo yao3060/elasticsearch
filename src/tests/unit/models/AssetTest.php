@@ -52,4 +52,27 @@ class AssetTest extends \Codeception\Test\Unit
 
         $this->assertEquals(join(',', $ids), join(',', $myIds));
     }
+    public function testSearch(){
+        $items = (new Asset())
+            ->search(new AssetSearchQuery(
+                keyword:0,
+                page:1,
+                pageSize:30,
+                sceneId:0,
+                isZb:1
+            ));
+        /**@var \GuzzleHttp\Psr7\Response $response */
+        $response = $this->http->request(
+            'GET',
+            'https://818ps.com/api/get-asset-list?w=&p=1&type=image&k1=0&k2=0&k3=0&tagId=0&sceneId=undefined&styleId=undefined&ratioId=undefined'
+        );
+
+        $content = json_decode($response->getBody()->getContents());
+        $ids = ArrayHelper::getColumn($content, 'id');
+        sort($ids);
+        $myIds = $items['ids'];
+        sort($myIds);
+
+        $this->assertEquals(join(',', $ids), join(',', $myIds));
+    }
 }
