@@ -63,6 +63,9 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        Yii::warning('this is a warning');
+        Yii::error('this is a error');
+
         return json_encode([
             'code' => 'welcome',
             'message' => 'Welcome'

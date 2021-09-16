@@ -7,31 +7,13 @@ use app\interfaces\ES\QueryBuilderInterface;
 
 class ContainerSearchQuery implements QueryBuilderInterface
 {
-    /**
-     * @var string|int|mixed 关键字
-     */
-    public string $keyword;
-    /**
-     * @var int|mixed 页码
-     */
-    public int $page;
-    /**
-     * @var int|mixed 每页数量
-     */
-    public int $pageSize;
-    public string|array $kid;
-
     function __construct(
-        $keyword = 0,
-        $page = 1,
-        $pageSize = 40,
-        $kid = 0,
+        public $keyword = 0,
+        public int $page = 1,
+        public int $pageSize = 40,
+        public string|array $kid = '0',
     )
     {
-        $this->keyword = $keyword;
-        $this->page = $page;
-        $this->pageSize = $pageSize;
-        $this->kid = $kid;
     }
 
     public function query(): array

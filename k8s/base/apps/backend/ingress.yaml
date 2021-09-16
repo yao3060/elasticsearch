@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: backend-ingress
+spec:
+  rules:
+  - host: $(ADMIN_HOST)
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: backend-nginx
+          servicePort: 80
+  #     - path: /
+  #       backend:
+  #         serviceName: backend-nginx
+  #         servicePort: 443
+  # tls:
+  #   - hosts:
+  #       - $(ADMIN_HOST)
+  #     secretName: wildcard-818ps-com

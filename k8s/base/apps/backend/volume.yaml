@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  finalizers:
+    - kubernetes.io/pv-protection
+  labels:
+    alicloud-pvname: yii-runtime
+  name: yii-runtime
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 10Gi
+  flexVolume:
+    driver: alicloud/nas
+    options:
+      mode: '755'
+      path: null
+      server: null
+      vers: '4.0'
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nas
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  finalizers:
+    - kubernetes.io/pvc-protection
+  name: yii-runtime-claim
+  namespace: default
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  selector:
+    matchLabels:
+      alicloud-pvname: yii-runtime
+  storageClassName: nas
+  volumeName: yii-runtime
