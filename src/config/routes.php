@@ -22,7 +22,7 @@ return [
         'GET  v1/videos/e' => 'es/video-e/search',//视频元素搜索
         'GET  v1/containers' => 'es/container/search',//裁剪搜索
         'GET  v1/seo-search-word-asset' => 'es/seo-search-word-asset/search',//seo词库相关推荐
-
+        'GET  v1/seo-detail-keyword-for-title' => 'es/seo-detail-keyword-for-title/search',//seo词库相关推荐
 
         //H
         'GET  v1/designer-templates' => 'es/designer-template/index', // 设计师模板
