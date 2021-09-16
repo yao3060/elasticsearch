@@ -29,7 +29,7 @@ staging-install-job:
     name: staging
   image: composer:2
   tags:
-    - yaoin-net:aliyun-small-2
+    - 818ps_web_dev
   script:
     - cd ./src
     - echo "Start install php packages"
@@ -42,7 +42,7 @@ build-staging-job:
   environment:
     name: staging
   tags:
-    - yaoin-net:aliyun-small-2
+    - 818ps_web_dev
   only:
     - develop
   script:
