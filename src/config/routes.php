@@ -14,13 +14,14 @@ return [
         'GET  v1/backgrounds' => 'es/background/search', //背景搜索
         'GET  v1/seos' => 'es/seo/search', //seo词库中 相关搜索词
         'GET  v1/seos/seos' => 'es/seo/seo-search',
-        'GET  v1/pictures' => 'es/picture/search',
-        'GET  v1/groups' => 'es/group-words/search',
+        'GET  v1/pictures' => 'es/picture/search',//图片素材搜索
+        'GET  v1/groups' => 'es/group-words/search',//组合字搜索
         'GET  v1/groups/recommends' => 'es/group-words/recommend-search',
-        'GET  v1/videos' => 'es/video-audio/search',
-        'GET  v1/searchs/word' => 'es/search-word/search',
-        'GET  v1/videos/e' => 'es/video-e/search',//搜索
-        'GET  v1/containers' => 'es/container/search',//搜索
+        'GET  v1/videos' => 'es/video-audio/search',//试听素材搜索
+        'GET  v1/searchs/word' => 'es/search-word/search',//关键词搜索
+        'GET  v1/videos/e' => 'es/video-e/search',//视频元素搜索
+        'GET  v1/containers' => 'es/container/search',//裁剪搜索
+        'GET  v1/seo-search-word-asset' => 'es/seo-search-word-asset/search',//	seo词库相关推荐
 
 
         //H
