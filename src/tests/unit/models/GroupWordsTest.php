@@ -132,4 +132,41 @@ class GroupWordsTest extends \Codeception\Test\Unit
         }
 
     }
+    public function testSearchFour()
+    {
+        $items = (new GroupWords())
+            ->search(new GroupWordsSearchQuery(
+                keyword: 0,
+                page: 2,
+                pageSize: 30,
+                search: '中秋',
+                searchAll: 1,
+            ));
+        /**@var \GuzzleHttp\Psr7\Response $response */
+        $response = $this->http->request(
+            'GET',
+            'https://818ps.com/api/search-groupword-list?w=&p=2&search=中秋&all=1'
+        );
+
+        $content = json_decode($response->getBody()->getContents());
+        if (isset($items['ids']) && $content->msg != 'noting') {
+            $ids = ArrayHelper::getColumn($content->msg, 'id');
+            sort($ids);
+            $myIds = $items['ids'];
+            sort($myIds);
+            $flag = 1;
+            foreach ($ids as $va) {
+                if (in_array($va, $myIds)) {
+                    continue;
+                } else {
+                    $flag = 0;
+                    break;
+                }
+            }
+            $this->assertEquals($flag, 1);
+        } else {
+            $this->assertEquals(1, 1);
+        }
+
+    }
 }
