@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-nginx
+  labels:
+    app: backend-nginx 
+spec:
+  ports:
+    - port: 80
+      name: http
+      protocol: TCP
+      targetPort: 80 
+    - port: 443
+      name: https
+      protocol: TCP
+      targetPort: 80 
+  selector:
+    app: backend-nginx
+    tier: backend-nginx
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-php 
+  labels:
+    app: backend-php
+spec:
+  ports:
+    - port: 9000
+      protocol: TCP
+      targetPort: 9000
+  selector:
+    app: backend-php
+    tier: backend-php
+  type: ClusterIP
