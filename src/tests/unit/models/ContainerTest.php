@@ -29,7 +29,7 @@ class ContainerTest extends \Codeception\Test\Unit
     {
         $items = (new Container())
             ->search(new ContainerSearchQuery(
-                keyword:'早安',
+                keyword:0,
                 page:1,
                 pageSize:30,
                 kid:0,
@@ -37,14 +37,36 @@ class ContainerTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/apiv2/search-asset-container?word=%E6%97%A9%E5%AE%89&p=1&k2=0'
+            'https://818ps.com/apiv2/search-asset-container?word=&p=1&k2=0'
         );
 
-        /*$content = json_decode($response->getBody()->getContents());
-        $ids = ArrayHelper::getColumn($content, 'id');
+        $content = json_decode($response->getBody()->getContents());
+        $ids = ArrayHelper::getColumn($content->msg, 'id');
         sort($ids);
         $myIds = $items['ids'];
         sort($myIds);
-        $this->assertEquals(join(',', $ids), join(',', $myIds));*/
+        $this->assertEquals(join(',', $ids), join(',', $myIds));
+    }
+    public function testSearch()
+    {
+        $items = (new Container())
+            ->search(new ContainerSearchQuery(
+                keyword:0,
+                page:8,
+                pageSize:30,
+                kid:0,
+            ));
+        /**@var \GuzzleHttp\Psr7\Response $response */
+        $response = $this->http->request(
+            'GET',
+            'https://818ps.com/apiv2/search-asset-container?word=&p=8&k2=0'
+        );
+
+        $content = json_decode($response->getBody()->getContents());
+        $ids = ArrayHelper::getColumn($content->msg, 'id');
+        sort($ids);
+        $myIds = $items['ids'];
+        sort($myIds);
+        $this->assertEquals(join(',', $ids), join(',', $myIds));
     }
 }

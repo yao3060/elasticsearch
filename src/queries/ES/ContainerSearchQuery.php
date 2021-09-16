@@ -42,7 +42,12 @@ class ContainerSearchQuery implements QueryBuilderInterface
         if ($this->kid) {
             $newQuery['bool']['must'][]['terms']['kid_2'] = $this->kid;
         }
-        return $newQuery;
+        if (isset($newQuery) && $newQuery){
+            return $newQuery;
+        }else{
+            return array();
+        }
+
     }
     public static function queryKeyword($keyword, $is_or = false)
     {
