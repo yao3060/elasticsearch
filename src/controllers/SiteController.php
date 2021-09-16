@@ -21,7 +21,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['logout'],
                 'rules' => [
                     [
@@ -32,7 +32,7 @@ class SiteController extends Controller
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
                 ],
@@ -63,9 +63,10 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $data = (new Picture)
-            ->search(new PictureSearchQuery('red', 2, [], [], [], 100));
-        return json_encode($data);
+        return json_encode([
+            'code' => 'welcome',
+            'message' => 'Welcome'
+        ]);
     }
 
     /**
