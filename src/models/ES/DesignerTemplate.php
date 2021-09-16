@@ -15,14 +15,11 @@ class DesignerTemplate extends BaseModel
 {
     const REDIS_DB = '_search';
 
-    public static $occupy_num = 10;
-    public static $redis_key = "ES:template:second:designer:"; //每个搜索结果存1万条 1天过期
-    //二次设计redis_key
-    public static $occupy_key = "task:template:link:occupy:old:tid:uid:"; // 占用被驳回
-    public static $hash_key = "is:second:hash:template:id"; // 占用的模板 用不过期
-    public static $hash_key_second_page = "is:second:hash:template:second:page"; // 页数，未使用
-    public static $design_redis_db = 8;
-    public static $es_key = null;
+    public static $occupyNum = 10;
+    //二次设计redisKey
+    public static $occupyKey = "task:template:link:occupy:old:tid:uid:"; // 占用被驳回
+    public static $hashKey = "is:second:hash:template:id"; // 占用的模板 用不过期
+    public static $designRedisDb = 8;
 
     public static function getDb()
     {
@@ -174,43 +171,43 @@ class DesignerTemplate extends BaseModel
 
 //        var_dump([
 //            'ids' => count($ids),
-//            'occupy' => self::$occupy_num
+//            'occupy' => self::$occupyNum
 //        ]);exit;
 
         //如果总数少于最小限制则返回false
-        if (count($ids) < self::$occupy_num) {
-            $templIdArr['ids'] = self::delTemplId($templIdArr['ids'], self::$hash_key);
+        if (count($ids) < self::$occupyNum) {
+            $templIdArr['ids'] = self::delTemplId($templIdArr['ids'], self::$hashKey);
             return $templIdArr;
         }
         $hit = $templIdArr['hit'];
         $offset = 32;
         $levels = array();
         //小于10个继续查，同时要给前端返回查询es的页数
-        while (count($levels) < self::$occupy_num) {
+        while (count($levels) < self::$occupyNum) {
             $num = ($p - 1) * $offset;
-            $tmp_ads = array_splice($ids, $num, $offset);
+            $tmpAds = array_splice($ids, $num, $offset);
             //小于10个则需要翻页
-            if (count($tmp_ads) < self::$occupy_num) {
+            if (count($tmpAds) < self::$occupyNum) {
                 $page = $page + 1;
                 //当前页已全部占满  以后无需再此页搜索
-//                Yii::$app->redis8->hset(self::$hash_key_second_page, self::$es_key, $page);
+//                Yii::$app->redis8->hset(self::$hashKeySecondPage, self::$esKey, $page);
                 $templIdArr = self::search($queryBuilder);
                 //翻页后如数量不足  则终止循环
-                if (count($templIdArr['ids']) < self::$occupy_num) {
+                if (count($templIdArr['ids']) < self::$occupyNum) {
                     $ids = array_merge($ids, $templIdArr['ids']);
                     $p = 2; //返回第二页
-                    $level_arr = self::delTemplId($ids, self::$hash_key);
-                    $levels = array_merge($levels, $level_arr);
+                    $levelArr = self::delTemplId($ids, self::$hashKey);
+                    $levels = array_merge($levels, $levelArr);
                     break;
                 }
                 $ids = $templIdArr['ids'];
                 $num = 0;
                 $p = 1;
-                $tmp_ads = array_splice($ids, $num, $offset);
+                $tmpAds = array_splice($ids, $num, $offset);
             }
             //筛选符合条件的模板id
-            $level_arr = self::delTemplId($tmp_ads, self::$hash_key);
-            $levels = array_merge($levels, $level_arr);
+            $levelArr = self::delTemplId($tmpAds, self::$hashKey);
+            $levels = array_merge($levels, $levelArr);
             $p += 1;
         }
         $templIdArr = $levels;
@@ -218,8 +215,8 @@ class DesignerTemplate extends BaseModel
         //将已占用的模板放在数组的第一条
         if (!empty($picId)) {
             $uid = Yii::$app->user->id;
-            $occupy_key = self::$occupy_key . $picId . ":" . $uid;
-            $occupy = Tools::getRedis(self::$design_redis_db, $occupy_key);
+            $occupyKey = self::$occupyKey . $picId . ":" . $uid;
+            $occupy = Tools::getRedis(self::$designRedisDb, $occupyKey);
             if ($occupy === false) {
                 $occupy = TaskTemplateLink::find()->alias('k')
                     ->leftJoin(Templ::tableName() . ' t', 'k.templ_id=t.id')
@@ -232,14 +229,14 @@ class DesignerTemplate extends BaseModel
                     ->select('k.old_templ_id')
                     ->one()['old_templ_id'];
                 if (!empty($occupy)) {
-                    Tools::setRedis(self::$design_redis_db, $occupy_key, $occupy, 300);
+                    Tools::setRedis(self::$designRedisDb, $occupyKey, $occupy, 300);
                 }
             }
             if (!empty($occupy) && $occupy != -1 && $page_num == 1) {
                 array_unshift($templIdArr, $occupy);
                 $templIdArr = array_unique($templIdArr);
             } elseif (empty($occupy)) {
-                Tools::setRedis(self::$design_redis_db, $occupy_key, -1, 300);
+                Tools::setRedis(self::$designRedisDb, $occupyKey, -1, 300);
             }
         }
         $templIdArr = array_splice($templIdArr, 0);
@@ -251,10 +248,10 @@ class DesignerTemplate extends BaseModel
      * @param $templIdArr
      * @return mixed
      */
-    public static function delTemplId($templIdArr, $hash_key)
+    public static function delTemplId($templIdArr, $hashKey)
     {
         foreach ($templIdArr as $k => $v) {
-            $hash = Yii::$app->redis8->hexists($hash_key, $v);
+            $hash = Yii::$app->redis8->hexists($hashKey, $v);
             if ($hash) {
                 unset($templIdArr[$k]);
             }
@@ -328,14 +325,14 @@ class DesignerTemplate extends BaseModel
 
     public static function getMapping()
     {
-        $redis_key = "ES_template:mapping:second";
-        $return = Tools::getRedis(self::REDIS_DB, $redis_key);
+        $redisKey = "ES_template:mapping:second";
+        $return = Tools::getRedis(self::REDIS_DB, $redisKey);
 
         if ($return) return $return;
         $db = static::getDb();
         $command = $db->createCommand();
         $return = $command->getMapping(static::index(), static::type(), static::mapping());
-        Tools::setRedis(self::REDIS_DB, $redis_key, $return, 3600);
+        Tools::setRedis(self::REDIS_DB, $redisKey, $return, 3600);
         return $return;
     }
 

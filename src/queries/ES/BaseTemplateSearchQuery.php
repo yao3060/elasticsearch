@@ -21,12 +21,12 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
         return 'edit desc';
     }
 
-    public function sortDefault($keyword, $class_id = [], $index_name = null, string $esTableName)
+    public function sortDefault($keyword, $classId = [], $indexName = null, string $esTableName)
     {
-        $index_name = !empty($index_name) ? $index_name : $esTableName;
+        $indexName = !empty($indexName) ? $indexName : $esTableName;
         //        $source = "doc['pr'].value-doc['man_pr'].value+doc['man_pr_add'].value";
-        if ($class_id && is_array($class_id) == false) {
-            $class_id = explode('_', $class_id);
+        if ($classId && is_array($classId) == false) {
+            $classId = explode('_', $classId);
         }
         $source = "doc['pr'].value+(int)(_score*10)";
         if (strstr($keyword, 'h5') || strstr($keyword, 'H5')) {
@@ -36,8 +36,8 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
             //关键词人工pr
             $mapping = Template::getMapping();
             $hot_keyword = [];
-            if (isset($mapping[$index_name]['mappings']['list']['properties']['hot_keyword']['properties']) && $mapping[$index_name]['mappings']['list']['properties']['hot_keyword']['properties']) {
-                foreach ($mapping[$index_name]['mappings']['list']['properties']['hot_keyword']['properties'] as $kk => $property) {
+            if (isset($mapping[$indexName]['mappings']['list']['properties']['hot_keyword']['properties']) && $mapping[$indexName]['mappings']['list']['properties']['hot_keyword']['properties']) {
+                foreach ($mapping[$indexName]['mappings']['list']['properties']['hot_keyword']['properties'] as $kk => $property) {
                     if ($property['type'] == 'long') {
                         $hot_keyword[] = (string)$kk;
                     }
@@ -47,24 +47,24 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
                 }
             }
             // 根据展示点击率调整pr
-            //            $optimize_keyword = array_keys($mapping[$index_name']['mappings']['list']['properties']['keyword_show_edit']['properties']);
+            //            $optimize_keyword = array_keys($mapping[$indexName']['mappings']['list']['properties']['keyword_show_edit']['properties']);
             //            $optimize_keyword = explode('!!!', implode('!!!', $optimize_keyword));//强制转换为string类型
             //            if (in_array((string)$keyword, $optimize_keyword)) {
             //                $source .= "+doc['keyword_show_edit.{$keyword}'].value";
             //            }
 
-        } elseif ($class_id && count($class_id) >= 1) {
+        } elseif ($classId && count($classId) >= 1) {
             //标签的人工pr
             $choose_class_id = 0;
-            foreach ($class_id as $v) {
+            foreach ($classId as $v) {
                 if ($v > 0 || $v == -1) {
                     $choose_class_id = $v;
                 }
             }
             if ($choose_class_id > 0 || $choose_class_id == -1) {
                 $mapping = Template::getMapping();
-                if (isset($mapping[$index_name]['mappings']['list']['properties']['class_sort']['properties']) && $mapping[$index_name]['mappings']['list']['properties']['class_sort']['properties']) {
-                    $class_sort = array_keys($mapping[$index_name]['mappings']['list']['properties']['class_sort']['properties']);
+                if (isset($mapping[$indexName]['mappings']['list']['properties']['class_sort']['properties']) && $mapping[$indexName]['mappings']['list']['properties']['class_sort']['properties']) {
+                    $class_sort = array_keys($mapping[$indexName]['mappings']['list']['properties']['class_sort']['properties']);
                     $class_sort = explode('!!!', implode('!!!', $class_sort));//强制转换为string类型
                     if (in_array((string)$choose_class_id, $class_sort)) {
                         $source .= "+doc['class_sort.{$choose_class_id}'].value";

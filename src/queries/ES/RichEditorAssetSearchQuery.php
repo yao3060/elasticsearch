@@ -4,7 +4,7 @@
 namespace app\queries\ES;
 
 
-class RtAssetSearchQuery extends BaseTemplateSearchQuery
+class RichEditorAssetSearchQuery extends BaseTemplateSearchQuery
 {
     protected $query = [];
 

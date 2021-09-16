@@ -63,15 +63,6 @@ class SensitiveWord extends BaseModel
         ]);
     }
 
-    public static function queryWord($word)
-    {
-        $query['bool']['must'][]['match']['word'] = [
-            'query' => $word,
-            "operator" => "or"
-        ];
-        return $query;
-    }
-
     public function attributes()
     {
         return ["id", "word", "_word"];
@@ -81,6 +72,8 @@ class SensitiveWord extends BaseModel
     {
         $redisKey = $query->getRedisKey();
         $validateSensitiveWord = Tools::getRedis(6, $redisKey);
+        // todo 测试
+        $validateSensitiveWord = [];
         if (!$validateSensitiveWord || Tools::isReturnSource()) {
             $validateSensitiveWord['flag'] = false;
             try {
@@ -90,7 +83,7 @@ class SensitiveWord extends BaseModel
                     ->createCommand()
                     ->search()['hits'];
                 if ($find['total'] <= 0) {
-                    Tools::setRedis(6, $query->getRedisKey(), $validateSensitiveWord, 86400 * 7);
+//                    Tools::setRedis(6, $query->getRedisKey(), $validateSensitiveWord, 86400 * 7);
                     $validateSensitiveWord['flag'] = false;
                 }
                 foreach ($find['hits'] as &$item) {
@@ -99,9 +92,9 @@ class SensitiveWord extends BaseModel
                         $validateSensitiveWord['flag'] = true;
                     }
                 }
-                Tools::setRedis(6, $query->getRedisKey(), $validateSensitiveWord, 86400 * 7);
+//                Tools::setRedis(6, $query->getRedisKey(), $validateSensitiveWord, 86400 * 7);
             } catch (Exception $exception) {
-
+                throw new Exception($exception->getMessage());
             }
         }
 

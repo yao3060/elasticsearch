@@ -5,14 +5,20 @@ namespace app\tests\unit\models;
 use app\components\IpsAuthority;
 use app\models\ES\BackgroundVideo;
 use app\queries\ES\BackgroundVideoQuery;
+use Codeception\Test\Unit;
 use GuzzleHttp\Client;
 
-class BackgroundVideoTest extends \Codeception\Test\Unit
+class BackgroundVideoTest extends Unit
 {
     /**
      * @var \UnitTester
      */
     protected $tester;
+
+    protected function _before()
+    {
+        IpsAuthority::definedAuth();
+    }
 
     protected static $urls = [
         'h5_search' => '/h5-api/bg-video-search',
@@ -22,11 +28,6 @@ class BackgroundVideoTest extends \Codeception\Test\Unit
         'video_search_carry_keyword_invitation' => '/video/bg-video-search?keyword=%E9%82%80%E8%AF%B7%E5%87%BD&class_id=0&page=3&ratio=2&pageSize=30',
         'video_search_page_of_nine' => '/video/bg-video-search?keyword=&class_id=&page=1&ratio=2&pageSize=9'
     ];
-
-    protected function _before()
-    {
-        IpsAuthority::definedAuth(); // 初始化权限变量
-    }
 
     protected function prepareData(
         $keyword = 0,

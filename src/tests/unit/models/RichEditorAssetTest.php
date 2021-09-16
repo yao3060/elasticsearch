@@ -3,10 +3,11 @@ namespace models;
 
 use app\components\IpsAuthority;
 use app\models\ES\RichEditorAsset;
-use app\queries\ES\RtAssetSearchQuery;
+use app\queries\ES\RichEditorAssetSearchQuery;
+use Codeception\Test\Unit;
 use GuzzleHttp\Client;
 
-class RichEditorAssetTest extends \Codeception\Test\Unit
+class RichEditorAssetTest extends Unit
 {
     /**
      * @var \UnitTester
@@ -18,10 +19,6 @@ class RichEditorAssetTest extends \Codeception\Test\Unit
         IpsAuthority::definedAuth();
     }
 
-    protected function _after()
-    {
-    }
-
     public function prepareData(
         $keyword = 0,
         $classId = [],
@@ -31,7 +28,7 @@ class RichEditorAssetTest extends \Codeception\Test\Unit
         $prodUrl = ''
     )
     {
-        $search = (new RichEditorAsset)->search(new RtAssetSearchQuery(
+        $search = (new RichEditorAsset)->search(new RichEditorAssetSearchQuery(
             keyword: $keyword,
             classId: $classId,
             page: $page,
@@ -53,6 +50,9 @@ class RichEditorAssetTest extends \Codeception\Test\Unit
         ];
     }
 
+    /**
+     * @target: 默认，无搜索条件
+     */
     public function testSearch()
     {
         $compare = $this->prepareData(

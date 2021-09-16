@@ -6,29 +6,19 @@ use app\components\IpsAuthority;
 use app\models\ES\Template;
 use app\queries\ES\TemplateRecommendSearchQuery;
 use app\queries\ES\TemplateSearchQuery;
+use Codeception\Test\Unit;
 use GuzzleHttp\Client;
 
-class TemplateTest extends \Codeception\Test\Unit
+class TemplateTest extends Unit
 {
     /**
      * @var \UnitTester
      */
     protected $tester;
 
-    /**
-     * @var client
-     */
-    protected $client;
-
     protected function _before()
     {
-        IpsAuthority::definedAuth(); // 初始化权限变量
-
-        $this->client = new Client();
-    }
-
-    protected function _after()
-    {
+        IpsAuthority::definedAuth();
     }
 
     /**
@@ -83,7 +73,7 @@ class TemplateTest extends \Codeception\Test\Unit
 
         sort($search['ids']);
 
-        $response = $this->client->get($prodUrl);
+        $response = (new Client())->get($prodUrl);
 
         $responseJson = json_decode($response->getBody()->getContents(), true);
 
@@ -132,15 +122,16 @@ class TemplateTest extends \Codeception\Test\Unit
 
         sort($recommendSearch['ids']);
 
-        $responose = $this->client->get($prodUrl);
+        $responose = (new Client())->get($prodUrl);
 
         $responseJson = json_decode($responose->getBody()->getContents(), true);
 
     }
 
     /**
-     * 测试搜索模板
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @target 默认，无搜索关键词
+     * @templateTypes 3
+     * @pageSize  35
      */
     public function testSearch()
     {
@@ -166,7 +157,10 @@ class TemplateTest extends \Codeception\Test\Unit
     }
 
     /**
-     * 测试带有搜索词的模板
+     * @target 搜索词：你好
+     * @classId 10_30_0
+     * @width 1242
+     * @height 2208
      */
     public function testSearchCarryKeyword()
     {

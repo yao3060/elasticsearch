@@ -1,25 +1,25 @@
 <?php
-namespace app\controllers\es;
 
+
+namespace app\controllers\es;
 
 use app\components\Response;
 use app\controllers\BaseController;
 use app\helpers\StringHelper;
-use app\models\ES\RichEditorAsset;
-use app\queries\ES\RichEditorAssetSearchQuery;
+use app\models\ES\LottieVideo;
+use app\queries\ES\LottieVideoSearchQuery;
 use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
 use yii\web\Request;
 
-class RichEditorAssetController extends BaseController
+class LottieVideoController extends BaseController
 {
     public function actionSearch(Request $request)
     {
         try {
 
             $validate = DynamicModel::validateData($request->getBodyParams(), [
-                ["keyword", "string"],
-                [["page"], "integer"]
+                [['keyword'], 'string']
             ]);
 
             if ($validate->hasErrors()) {
@@ -32,15 +32,15 @@ class RichEditorAssetController extends BaseController
 
             $validateAttributes = $validate->getAttributes();
 
-            $search = (new RichEditorAsset())->search(new RichEditorAssetSearchQuery(
+            $search = (new LottieVideo())->search(new LottieVideoSearchQuery(
                 keyword: $validateAttributes['keyword'] ?? 0,
                 classId: $validateAttributes['class_id'] ?? [],
                 page: $validateAttributes['page'] ?? 1,
                 pageSize: $validateAttributes['page_size'] ?? 40,
-                ratio: $validateAttributes['ratio'] ?? 0
+                prep: $validateAttributes['prep'] ?? 0
             ));
 
-            return $this->response(new Response('Rt Asset Search', 'rt_asset_search', $search));
+            $response = new Response('lottie_video_search', 'Lottie Video Search', $search);
 
         } catch (UnknownPropertyException $unknownException) {
 

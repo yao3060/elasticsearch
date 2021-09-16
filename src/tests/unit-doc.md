@@ -15,6 +15,8 @@
   - [x] search
 - [x] VideoTemplateTest
   - [x] search
+- [x] LottieVideoTest
+  - [x] search
 - [x] LottieVideoWordTest
   - [x] search
 ### 目标
@@ -110,8 +112,27 @@
       <td>[@testSearch] /api-video/get-excerpt-list</td>
     </tr>
     <tr>
+      <td rowspan="4">LottieVideo</td>
+      <td rowspan="4">设计师动画特效</td>
+      <td rowspan="4">v1/lottie-videos</td>
+      <td>LottieVideoTest@testSearch</td>
+      <td>[@testSearch] /video/lottie-search</td>
+    </tr>
+    <tr>
+      <td>LottieVideoTest@testSearchClassIdOfOnePageOfOne</td>
+      <td>[@testSearchClassIdOfOnePageOfOne] /video/lottie-search?keyword=&class_id=1&page=1</td>
+    </tr>
+    <tr>
+      <td>LottieVideoTest@testSearchCarryKeywordClassIdOfOnePageOfOne</td>
+      <td>[@testSearchCarryKeywordClassIdOfOnePageOfOne] /video/lottie-search?keyword=%E5%8F%AF%E7%88%B1&class_id=1&page=1</td>
+    </tr>
+    <tr>
+      <td>LottieVideoTest@testSearchClassIdOfThreePageOfOne</td>
+      <td>[@testSearchClassIdOfThreePageOfOne] /video/lottie-search?keyword=&class_id=3&page=1</td>
+    </tr>
+    <tr>
       <td rowspan="2">LottleVideoWord</td>
-      <td rowspan="2">设计师动画特效</td>
+      <td rowspan="2">设计师动画特效关键词</td>
       <td rowspan="2">v1/lottie-video-words</td>
       <td>LottleVideoWord@testSearch</td>
       <td>[@testSearch] /api-video/get-excerpt-list</td>

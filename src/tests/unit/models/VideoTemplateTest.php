@@ -5,9 +5,11 @@ namespace models;
 use app\components\IpsAuthority;
 use app\models\ES\VideoTemplate;
 use app\queries\ES\VideoTemplateSearchQuery;
+use Codeception\Test\Unit;
 use GuzzleHttp\Client;
+use tests\unit\models\BaseTest;
 
-class VideoTemplateTest extends \Codeception\Test\Unit
+class VideoTemplateTest extends Unit
 {
     /**
      * @var \UnitTester
@@ -17,10 +19,6 @@ class VideoTemplateTest extends \Codeception\Test\Unit
     protected function _before()
     {
         IpsAuthority::definedAuth();
-    }
-
-    protected function _after()
-    {
     }
 
     public function prepareData(
@@ -42,24 +40,32 @@ class VideoTemplateTest extends \Codeception\Test\Unit
             prep: $prep
         ));
 
-        sort($search['ids']);
+        $devIds = [];
+        if (isset($search['ids']) && $search['ids']) {
+            $devIds = $search['ids'];
+            sort($devIds);
+        }
 
         $response = (new Client())->get($prodUrl);
 
         $responseJson = json_decode($response->getBody()->getContents(), true);
 
-        $ids = array_column($responseJson['msg'], 'id');
+        $ids = [];
 
-        sort($ids);
+        if (isset($responseJson['msg']) && $responseJson['msg']) {
+            $ids = array_column($responseJson['msg'], 'id');
+
+            sort($ids);
+        }
 
         return [
-            'dev' => $search['ids'],
+            'dev' => $devIds,
             'prod' => $ids
         ];
     }
 
     /**
-     * 无搜索词搜索
+     * @target 默认，无搜索词搜索
      */
     public function testSearch()
     {

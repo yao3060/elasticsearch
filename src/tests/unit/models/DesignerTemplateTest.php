@@ -1,29 +1,30 @@
 <?php
 
-namespace models;
+namespace tests\unit\models;
 
 use app\components\IpsAuthority;
 use app\models\ES\DesignerTemplate;
 use app\queries\ES\DesignerTemplateSearchQuery;
+use Codeception\Test\Unit;
 use GuzzleHttp\Client;
 
-class DesignerTemplateTest extends \Codeception\Test\Unit
+class DesignerTemplateTest extends Unit
 {
     /**
      * @var \UnitTester
      */
     protected $tester;
 
+    protected function _before()
+    {
+        IpsAuthority::definedAuth();
+    }
+
     protected static $urls = [
         'search' => '/api/get-template-list?w=&p=1&kid_1=1&kid_2=19&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=&width=200&height=200&es_type=1',
         'search_carry_keyword' => '/api/get-template-list?w=%E4%B8%BB%E5%9B%BE&p=1&kid_1=156&kid_2=301&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=0&es_type=3',
         'search_normal_es_type_of_three' => '/api/get-template-list?w=&p=1&kid_1=156&kid_2=157&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=0&es_type=3'
     ];
-
-    protected function _before()
-    {
-        IpsAuthority::definedAuth();
-    }
 
     protected function prepareData(
         $keyword = 0,
