@@ -54,13 +54,14 @@ class GroupWordsTest extends \Codeception\Test\Unit
         foreach ($ids as $va) {
             if (in_array($va, $myIds)) {
                 continue;
-            }else {
+            } else {
                 $flag = 0;
                 break;
             }
         }
-        $this->assertEquals($flag,1);
+        $this->assertEquals($flag, 1);
     }
+
     public function testSearchTwo()
     {
         $items = (new GroupWords())
@@ -86,13 +87,14 @@ class GroupWordsTest extends \Codeception\Test\Unit
         foreach ($ids as $va) {
             if (in_array($va, $myIds)) {
                 continue;
-            }else {
+            } else {
                 $flag = 0;
                 break;
             }
         }
-        $this->assertEquals($flag,1);
+        $this->assertEquals($flag, 1);
     }
+
     public function testSearchThree()
     {
         $items = (new GroupWords())
@@ -110,7 +112,7 @@ class GroupWordsTest extends \Codeception\Test\Unit
         );
 
         $content = json_decode($response->getBody()->getContents());
-        if (isset($items['ids'])&& $content->msg !='noting'){
+        if (isset($items['ids']) && $content->msg != 'noting') {
             $ids = ArrayHelper::getColumn($content->msg, 'id');
             sort($ids);
             $myIds = $items['ids'];
@@ -119,14 +121,14 @@ class GroupWordsTest extends \Codeception\Test\Unit
             foreach ($ids as $va) {
                 if (in_array($va, $myIds)) {
                     continue;
-                }else {
+                } else {
                     $flag = 0;
                     break;
                 }
             }
-            $this->assertEquals($flag,1);
-        }else{
-            $this->assertEquals(1,1);
+            $this->assertEquals($flag, 1);
+        } else {
+            $this->assertEquals(1, 1);
         }
 
     }

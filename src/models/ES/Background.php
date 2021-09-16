@@ -47,7 +47,7 @@ class Background extends BaseModel
                 $info['hits'] = 0;
             }
             $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
-            if ($info['hits'] !=0){
+            if ($info['hits'] != 0) {
                 foreach ($info['hits'] as $value) {
                     $return['ids'][] = $value['_id'];
                     $return['score'][$value['_id']] = $value['sort'][0];
@@ -66,7 +66,6 @@ class Background extends BaseModel
         }
         return $return;
     }
-
 
 
     public static function index()

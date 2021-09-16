@@ -1,4 +1,5 @@
 <?php
+
 namespace tests\unit\models;
 
 use app\components\IpsAuthority;
@@ -22,16 +23,18 @@ class SearchWordTest extends \Codeception\Test\Unit
         IpsAuthority::definedAuth(); // 初始化权限变量
         $this->http = new \GuzzleHttp\Client();
     }
+
     protected function _after()
     {
     }
+
     public function testSearchOne()
     {
         $items = (new SearchWord())
             ->search(new SearchWordSearchQuery(
-                keyword:'你好',
-                pageSize:20,
-                type:1,
+                keyword: '你好',
+                pageSize: 20,
+                type: 1,
             ));
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
@@ -48,20 +51,21 @@ class SearchWordTest extends \Codeception\Test\Unit
         foreach ($ids as $va) {
             if (in_array($va, $myIds)) {
                 continue;
-            }else {
+            } else {
                 $flag = 0;
                 break;
             }
         }
-        $this->assertEquals($flag,1);
+        $this->assertEquals($flag, 1);
     }
+
     public function testSearchTwo()
     {
         $items = (new SearchWord())
             ->search(new SearchWordSearchQuery(
-                keyword:'再见',
-                pageSize:20,
-                type:1,
+                keyword: '再见',
+                pageSize: 20,
+                type: 1,
             ));
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
@@ -78,11 +82,11 @@ class SearchWordTest extends \Codeception\Test\Unit
         foreach ($ids as $va) {
             if (in_array($va, $myIds)) {
                 continue;
-            }else {
+            } else {
                 $flag = 0;
                 break;
             }
         }
-        $this->assertEquals($flag,1);
+        $this->assertEquals($flag, 1);
     }
 }

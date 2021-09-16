@@ -24,6 +24,7 @@ class BackgroundsTest extends \Codeception\Test\Unit
         $this->http = new \GuzzleHttp\Client();
         //$this->secondSomeFeature();
     }
+
     protected function _after()
     {
     }
@@ -33,12 +34,12 @@ class BackgroundsTest extends \Codeception\Test\Unit
     {
         $items = (new Background())
             ->search(new BackGroundSearchQuery(
-                keyword:'你好',
-                page:1,
-                pageSize:30,
-                sceneId:0,
-                isZb:1,
-                sort:0,
+                keyword: '你好',
+                page: 1,
+                pageSize: 30,
+                sceneId: 0,
+                isZb: 1,
+                sort: 0,
                 useCount: 0,
                 kid: 0,
                 ratioId: -1,
@@ -57,16 +58,17 @@ class BackgroundsTest extends \Codeception\Test\Unit
         sort($myIds);
         $this->assertEquals(join(',', $ids), join(',', $myIds));
     }
+
     public function testSearchTwo()
     {
         $items = (new Background())
             ->search(new BackGroundSearchQuery(
-                keyword:'再见',
-                page:1,
-                pageSize:30,
-                sceneId:0,
-                isZb:1,
-                sort:0,
+                keyword: '再见',
+                page: 1,
+                pageSize: 30,
+                sceneId: 0,
+                isZb: 1,
+                sort: 0,
                 useCount: 0,
                 kid: 0,
                 ratioId: -1,

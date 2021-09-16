@@ -23,6 +23,7 @@ class AssetTest extends \Codeception\Test\Unit
         IpsAuthority::definedAuth(); // 初始化权限变量
         $this->http = new \GuzzleHttp\Client();
     }
+
     protected function _after()
     {
     }
@@ -32,11 +33,11 @@ class AssetTest extends \Codeception\Test\Unit
     {
         $items = (new Asset())
             ->search(new AssetSearchQuery(
-                keyword:'你好',
-                page:1,
-                pageSize:30,
-                sceneId:0,
-                isZb:1
+                keyword: '你好',
+                page: 1,
+                pageSize: 30,
+                sceneId: 0,
+                isZb: 1
             ));
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
@@ -52,14 +53,16 @@ class AssetTest extends \Codeception\Test\Unit
 
         $this->assertEquals(join(',', $ids), join(',', $myIds));
     }
-    public function testSearchTwo(){
+
+    public function testSearchTwo()
+    {
         $items = (new Asset())
             ->search(new AssetSearchQuery(
-                keyword:0,
-                page:1,
-                pageSize:30,
-                sceneId:0,
-                isZb:1
+                keyword: 0,
+                page: 1,
+                pageSize: 30,
+                sceneId: 0,
+                isZb: 1
             ));
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
@@ -75,15 +78,16 @@ class AssetTest extends \Codeception\Test\Unit
 
         $this->assertEquals(join(',', $ids), join(',', $myIds));
     }
+
     public function testSearchThree()
     {
         $items = (new Asset())
             ->search(new AssetSearchQuery(
-                keyword:'你好',
-                page:3,
-                pageSize:30,
-                sceneId:0,
-                isZb:1
+                keyword: '你好',
+                page: 3,
+                pageSize: 30,
+                sceneId: 0,
+                isZb: 1
             ));
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
