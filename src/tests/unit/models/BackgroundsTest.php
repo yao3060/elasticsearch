@@ -29,7 +29,7 @@ class BackgroundsTest extends \Codeception\Test\Unit
     }
 
     // tests
-    public function testSomeFeature()
+    public function testSearchOne()
     {
         $items = (new Background())
             ->search(new BackGroundSearchQuery(
@@ -42,7 +42,7 @@ class BackgroundsTest extends \Codeception\Test\Unit
                 useCount: 0,
                 kid: 0,
                 ratioId: -1,
-                isBg: 0
+                isBg: 1
             ));
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
@@ -57,11 +57,11 @@ class BackgroundsTest extends \Codeception\Test\Unit
         sort($myIds);
         $this->assertEquals(join(',', $ids), join(',', $myIds));
     }
-    public function secondSomeFeature()
+    public function testSearchTwo()
     {
         $items = (new Background())
             ->search(new BackGroundSearchQuery(
-                keyword:0,
+                keyword:'再见',
                 page:1,
                 pageSize:30,
                 sceneId:0,
@@ -75,7 +75,7 @@ class BackgroundsTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/get-asset-list?w=&p=1&type=background&k1=0&k2=0&k3=0&tagId=undefined&sceneId=0&styleId=0&ratioId=-1'
+            'https://818ps.com/api/get-asset-list?w=再见&p=1&type=background&k1=0&k2=0&k3=0&tagId=undefined&sceneId=0&styleId=0&ratioId=-1'
         );
 
         $content = json_decode($response->getBody()->getContents());

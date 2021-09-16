@@ -30,7 +30,7 @@ class PictureTest extends \Codeception\Test\Unit
     }
 
     // tests
-    public function testSomeFeature()
+    public function testSearchOne()
     {
         $items = (new Picture())
             ->search(new PictureSearchQuery(
@@ -56,7 +56,7 @@ class PictureTest extends \Codeception\Test\Unit
         sort($myIds);
         $this->assertEquals(join(',', $ids), join(',', $myIds));
     }
-    public function testSearch()
+    public function testSearchTwo()
     {
         $items = (new Picture())
             ->search(new PictureSearchQuery(
@@ -73,6 +73,32 @@ class PictureTest extends \Codeception\Test\Unit
         $response = $this->http->request(
             'GET',
             'https://818ps.com/api/get-asset-list?w=&p=1&type=pic&k1=0&k2=0&k3=0&tagId=undefined&sceneId=undefined&styleId=0&ratioId=undefined&isPic=true&picId=4689234'
+        );
+
+        $content = json_decode($response->getBody()->getContents());
+        $ids = ArrayHelper::getColumn($content, 'id');
+        sort($ids);
+        $myIds = $items['ids'];
+        sort($myIds);
+        $this->assertEquals(join(',', $ids), join(',', $myIds));
+    }
+    public function testSearchThree()
+    {
+        $items = (new Picture())
+            ->search(new PictureSearchQuery(
+                keyword:'你好',
+                page:1,
+                pageSize:30,
+                sceneId:0,
+                isZb:1,
+                kid:0,
+                vipPic: 0,
+                ratioId:-1
+            ));
+        /**@var \GuzzleHttp\Psr7\Response $response */
+        $response = $this->http->request(
+            'GET',
+            'https://818ps.com/api/get-asset-list?w=你好&p=1&type=pic&k1=0&k2=0&k3=0&tagId=undefined&sceneId=undefined&styleId=0&ratioId=undefined&isPic=true&picId=4689234'
         );
 
         $content = json_decode($response->getBody()->getContents());

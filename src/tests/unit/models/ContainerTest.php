@@ -25,7 +25,7 @@ class ContainerTest extends \Codeception\Test\Unit
     protected function _after()
     {
     }
-    public function testSomeFeature()
+    public function testSearchOne()
     {
         $items = (new Container())
             ->search(new ContainerSearchQuery(
@@ -47,7 +47,7 @@ class ContainerTest extends \Codeception\Test\Unit
         sort($myIds);
         $this->assertEquals(join(',', $ids), join(',', $myIds));
     }
-    public function testSearch()
+    public function testSearchTwo()
     {
         $items = (new Container())
             ->search(new ContainerSearchQuery(

@@ -25,7 +25,7 @@ class SearchWordTest extends \Codeception\Test\Unit
     protected function _after()
     {
     }
-    public function testSomeFeature()
+    public function testSearchOne()
     {
         $items = (new SearchWord())
             ->search(new SearchWordSearchQuery(
@@ -55,7 +55,7 @@ class SearchWordTest extends \Codeception\Test\Unit
         }
         $this->assertEquals($flag,1);
     }
-    public function testSearch()
+    public function testSearchTwo()
     {
         $items = (new SearchWord())
             ->search(new SearchWordSearchQuery(
