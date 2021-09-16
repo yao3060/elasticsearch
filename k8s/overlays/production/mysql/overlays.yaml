@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  template:
+    spec:
+      volumes:
+        - name: mysql-vol
+          persistentVolumeClaim:
+            claimName: elasticsearch-production-mysql-volume-claim
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-volume
+spec:
+  capacity:
+    storage: 50Gi
+  flexVolume:
+    options:
+      mode: "755"
+      path: /mnt/elasticsearch-production-mysql-volume
+      server: 1296c24923c-cro54.cn-hongkong.nas.aliyuncs.com
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-volume-claim
+  namespace: default
+spec:
+  resources:
+    requests:
+      storage: 50Gi
