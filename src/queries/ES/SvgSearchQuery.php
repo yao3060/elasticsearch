@@ -3,7 +3,6 @@
 
 namespace app\queries\ES;
 
-use app\interfaces\ES\QueryBuilderInterface;
 use Yii;
 
 class SvgSearchQuery extends BaseTemplateSearchQuery

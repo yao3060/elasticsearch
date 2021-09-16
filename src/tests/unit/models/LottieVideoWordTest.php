@@ -4,9 +4,10 @@ namespace models;
 use app\components\IpsAuthority;
 use app\models\ES\LottieVideoWord;
 use app\queries\ES\LottieVideoWordSearchQuery;
+use Codeception\Test\Unit;
 use GuzzleHttp\Client;
 
-class LottieVideoWordTest extends \Codeception\Test\Unit
+class LottieVideoWordTest extends Unit
 {
     /**
      * @var \UnitTester
@@ -16,10 +17,6 @@ class LottieVideoWordTest extends \Codeception\Test\Unit
     protected function _before()
     {
         IpsAuthority::definedAuth();
-    }
-
-    protected function _after()
-    {
     }
 
     public function prepareData(
@@ -54,6 +51,9 @@ class LottieVideoWordTest extends \Codeception\Test\Unit
 
     }
 
+    /**
+     * @target 默认，无搜索条件
+     */
     public function testSearch()
     {
         $compare = $this->prepareData(
@@ -67,6 +67,9 @@ class LottieVideoWordTest extends \Codeception\Test\Unit
         $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
     }
 
+    /**
+     * @target 搜索词：风景
+     */
     public function testSearchCarryKeyword()
     {
         $compare = $this->prepareData(

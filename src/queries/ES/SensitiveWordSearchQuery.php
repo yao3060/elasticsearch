@@ -14,9 +14,21 @@ class SensitiveWordSearchQuery extends BaseTemplateSearchQuery
     {
     }
 
+    public function queryWord()
+    {
+        $this->query['bool']['must'][]['match']['word'] = [
+            'query' => $this->keyword,
+            "operator" => "or"
+        ];
+
+        return $this;
+    }
+
     public function query(): array
     {
-        return SensitiveWord::queryWord($this->keyword);
+        $this->queryWord();
+
+        return $this->query();
     }
 
     public function getRedisKey()

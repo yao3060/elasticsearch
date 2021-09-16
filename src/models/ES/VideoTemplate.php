@@ -15,7 +15,15 @@ use yii\base\Exception;
  */
 class VideoTemplate extends BaseModel
 {
-    public static $redis_db = "_search";
+    public static $redisDb = "_search";
+
+    public static function index() {
+        return 'video_excerpt';
+    }
+
+    public static function type() {
+        return 'list';
+    }
 
     public function attributes()
     {
@@ -26,7 +34,9 @@ class VideoTemplate extends BaseModel
     {
         $redisKey = $query->getRedisKey();
 
-        $return = Tools::getRedis(self::$redis_db, $redisKey);
+        $return = Tools::getRedis(self::$redisDb, $redisKey);
+
+        $return = false;
 
         if (!$return || Tools::isReturnSource() || $query->prep) {
             unset($return);
@@ -44,7 +54,6 @@ class VideoTemplate extends BaseModel
                     ->limit($query->pageSize)
                     ->createCommand()
                     ->search([], ['track_scores' => true])['hits'];
-                var_dump($info);exit;
             } catch (\exception $e) {
                 throw new Exception($e->getMessage());
             }
@@ -56,7 +65,7 @@ class VideoTemplate extends BaseModel
                 $return['ids'][] = $value['_id'];
                 $return['score'][$value['_id']] = $value['sort'][0];
             }
-//            Tools::setRedis(self::$redis_db, $redisKey, $return, 86400);
+//            Tools::setRedis(self::$redisDb, $redisKey, $return, 86400);
 
         }
 

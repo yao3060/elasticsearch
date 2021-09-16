@@ -5,9 +5,10 @@ namespace tests\unit\models;
 use app\components\IpsAuthority;
 use app\models\ES\Svg;
 use app\queries\ES\SvgSearchQuery;
+use Codeception\Test\Unit;
 use yii\helpers\ArrayHelper;
 
-class SearchSvgTest extends \Codeception\Test\Unit
+class SearchSvgTest extends Unit
 {
     /**
      * @var \UnitTester
@@ -21,12 +22,8 @@ class SearchSvgTest extends \Codeception\Test\Unit
 
     protected function _before()
     {
-        IpsAuthority::definedAuth(); // 初始化权限变量
+        IpsAuthority::definedAuth();
         $this->http = new \GuzzleHttp\Client();
-    }
-
-    protected function _after()
-    {
     }
 
     protected function prepareData(
@@ -58,7 +55,9 @@ class SearchSvgTest extends \Codeception\Test\Unit
         ];
     }
 
-    // tests
+    /**
+     * @target 默认，无搜索条件
+     */
     public function testSearchSVG()
     {
         $data = $this->prepareData(
@@ -72,6 +71,10 @@ class SearchSvgTest extends \Codeception\Test\Unit
         $this->assertEqualsCanonicalizing($data['prod'], $data['dev'],);
     }
 
+    /**
+     * @target 搜索关键词：心
+     * @pageSize 50
+     */
     public function testSearchSVGHeart()
     {
         $data = $this->prepareData(

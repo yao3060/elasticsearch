@@ -3,12 +3,8 @@
 
 namespace app\queries\ES;
 
-use app\interfaces\ES\QueryBuilderInterface;
-
 class TemplateRecommendSearchQuery extends BaseTemplateSearchQuery
 {
-    protected $query = [];
-
     public function __construct(
         public $keyword = 0,
         public $page = 1,

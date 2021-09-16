@@ -6,7 +6,7 @@ use app\components\Response;
 use app\controllers\BaseController;
 use app\helpers\StringHelper;
 use app\models\ES\RichEditorAsset;
-use app\queries\ES\RtAssetSearchQuery;
+use app\queries\ES\RichEditorAssetSearchQuery;
 use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
 use yii\web\Request;
@@ -32,7 +32,7 @@ class RichEditorAssetController extends BaseController
 
             $validateAttributes = $validate->getAttributes();
 
-            $search = (new RichEditorAsset())->search(new RtAssetSearchQuery(
+            $search = (new RichEditorAsset())->search(new RichEditorAssetSearchQuery(
                 keyword: $validateAttributes['keyword'] ?? 0,
                 classId: $validateAttributes['class_id'] ?? [],
                 page: $validateAttributes['page'] ?? 1,

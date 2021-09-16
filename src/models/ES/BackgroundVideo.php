@@ -10,7 +10,7 @@ use yii\base\Exception;
 
 class BackgroundVideo extends BaseModel
 {
-    public static $redis_db = 8;
+    public static $redisDb = 8;
 
     public static function validateRules()
     {
@@ -40,7 +40,7 @@ class BackgroundVideo extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $return = Tools::getRedis(self::$redis_db, $query->getRedisKey());
+        $return = Tools::getRedis(self::$redisDb, $query->getRedisKey());
 
         if (!$return || Tools::isReturnSource()) {
             unset($return);
@@ -72,7 +72,7 @@ class BackgroundVideo extends BaseModel
                 }
             }
 
-//            Tools::setRedis(self::$redis_db, $query->getRedisKey(), $return, 86400);
+//            Tools::setRedis(self::$redisDb, $query->getRedisKey(), $return, 86400);
         }
 
         return $return;

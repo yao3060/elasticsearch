@@ -10,7 +10,7 @@ use yii\base\Exception;
 
 class LottieVideoWord extends BaseModel
 {
-    public static $redis_db = 8;
+    public static $redisDb = 8;
 
     public static function index()
     {
@@ -30,7 +30,7 @@ class LottieVideoWord extends BaseModel
 
     public function search(QueryBuilderInterface $query) :array
     {
-        $return = Tools::getRedis(self::$redis_db, $query->getRedisKey());
+        $return = Tools::getRedis(self::$redisDb, $query->getRedisKey());
 
         if (!$return || Tools::isReturnSource() || $query->prep) {
             unset($return);
@@ -61,7 +61,7 @@ class LottieVideoWord extends BaseModel
                 }
             }
 
-//            Tools::setRedis(self::$redis_db, $query->getRedisKey(), $return, 86400);
+//            Tools::setRedis(self::$redisDb, $query->getRedisKey(), $return, 86400);
         }
         return $return;
     }
