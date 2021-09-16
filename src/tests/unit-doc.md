@@ -98,18 +98,46 @@
       <td>[@testSearchNormalEsTypeOfThree] /api/get-template-list?w=&p=1&kid_1=156&kid_2=157&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=0&es_type=3</td>
     </tr>
     <tr>
-      <td>RichEditorAsset</td>
-      <td>富文本元素</td>
-      <td>v1/rich-editor-assets</td>
+      <td rowspan="5">RichEditorAsset</td>
+      <td rowspan="5">富文本元素</td>
+      <td rowspan="5">v1/rich-editor-assets</td>
       <td>RichEditorAsset@testSearch</td>
       <td>[@testSearch] /rt-api/rt-asset-search</td>
     </tr>
     <tr>
-      <td>VideoTemplate</td>
-      <td>片段视频</td>
-      <td>v1/video-templates</td>
+      <td>RichEditorAsset@search_carry_class_ids</td>
+      <td>[@search_carry_class_ids] /rt-api/rt-asset-search?class_ids=1,0&page=1&keyword=</td>
+    </tr>
+    <tr>
+      <td>RichEditorAsset@search_carry_class_ids_second</td>
+      <td>[@search_carry_class_ids_second] /rt-api/rt-asset-search?class_ids=2,55&page=1&keyword=</td>
+    </tr>
+    <tr>
+      <td>RichEditorAsset@search_carry_class_ids_page</td>
+      <td>[@search_carry_class_ids_page] /rt-api/rt-asset-search?class_ids=1,0&page=3&keyword=</td>
+    </tr>
+    <tr>
+      <td>RichEditorAsset@search_carry_keyword_class_ids</td>
+      <td>[@search_carry_keyword_class_ids] /rt-api/rt-asset-search?class_ids=5,58&page=1&keyword=%E6%A9%98%E8%89%B2</td>
+    </tr>
+    <tr>
+      <td rowspan="4">VideoTemplate</td>
+      <td rowspan="4">片段视频</td>
+      <td rowspan="4">v1/video-templates</td>
       <td>VideoTemplateTest@testSearch</td>
       <td>[@testSearch] /api-video/get-excerpt-list</td>
+    </tr>
+    <tr>
+      <td>VideoTemplateTest@testSearchCarryKeyword</td>
+      <td>[@testSearchCarryKeyword] /api-video/get-excerpt-list?w=%E6%95%99%E5%B8%88%E8%8A%82&p=1&class_id=&ratio=2</td>
+    </tr>
+    <tr>
+      <td>VideoTemplateTest@testSearchCarryClassIdsPageOfTwo</td>
+      <td>[@testSearchCarryClassIdsPageOfTwo] /api-video/get-excerpt-list?w=&p=2&class_id=1579-1580&ratio=1</td>
+    </tr>
+    <tr>
+      <td>VideoTemplateTest@testSearchCarryKeywordClassIdsOfNone</td>
+      <td>[@testSearchCarryKeywordClassIdsOfNone] /api-video/get-excerpt-list?w=%E4%B8%A2%E5%A4%B1&p=1&class_id=&ratio=1</td>
     </tr>
     <tr>
       <td rowspan="4">LottieVideo</td>

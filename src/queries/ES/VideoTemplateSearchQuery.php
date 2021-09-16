@@ -44,7 +44,7 @@ class VideoTemplateSearchQuery extends BaseTemplateSearchQuery
         if (!empty($this->classId)) {
             foreach ($this->classId as $key) {
                 if ($key > 0) {
-                    $this->query['bool']['must'][]['terms']['class_id'] = [$this->classId];
+                    $this->query['bool']['must'][]['terms']['class_id'] = [$key];
                 }
             }
         }

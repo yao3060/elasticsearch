@@ -14,6 +14,14 @@ class RichEditorAssetTest extends Unit
      */
     protected $tester;
 
+    protected static $urls = [
+        'search' => '/rt-api/rt-asset-search',
+        'search_carry_class_ids' => '/rt-api/rt-asset-search?class_ids=1,0&page=1&keyword=',
+        'search_carry_class_ids_second' => '/rt-api/rt-asset-search?class_ids=2,55&page=1&keyword=',
+        'search_carry_class_ids_page' => '/rt-api/rt-asset-search?class_ids=1,0&page=3&keyword=',
+        'search_carry_keyword_class_ids' => '/rt-api/rt-asset-search?class_ids=5,58&page=1&keyword=%E6%A9%98%E8%89%B2'
+    ];
+
     protected function _before()
     {
         IpsAuthority::definedAuth();
@@ -36,16 +44,26 @@ class RichEditorAssetTest extends Unit
             ratio: $ratio
         ));
 
-        sort($search['ids']);
+        $searchIds = [];
+
+        if (isset($search['ids']) && $search['ids']) {
+            $searchIds = $search['ids'];
+            sort($searchIds);
+        }
 
         $response = (new Client())->get($prodUrl);
 
         $responseJson = json_decode($response->getBody()->getContents(), true);
 
-        $ids = array_column($responseJson['msg']['asset_list'], 'id');
+        $ids = [];
+
+        if (isset($responseJson['msg']['asset_list']) && $responseJson['msg']['asset_list']) {
+            $ids = array_column($responseJson['msg']['asset_list'], 'id');
+            sort($ids);
+        }
 
         return [
-            'dev' => $search['ids'],
+            'dev' => $searchIds,
             'prod' => $ids
         ];
     }
@@ -60,7 +78,78 @@ class RichEditorAssetTest extends Unit
             classId: [],
             page: "",
             ratio: "",
-            prodUrl: getenv('UNIT_BASE_URL') . '/rt-api/rt-asset-search'
+            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search']
+        );
+
+        return $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+    }
+
+    /**
+     * @target: 默认，无搜索条件
+     * @classId: [1, 0]
+     */
+    public function testSearchClassIds()
+    {
+        $compare = $this->prepareData(
+            keyword: "",
+            classId: [1, 0],
+            page: 1,
+            ratio: "",
+            pageSize: 40,
+            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_class_ids']
+        );
+
+        return $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+    }
+
+    /**
+     * @target: 默认，无搜索条件
+     * @classId: [2, 55]
+     */
+    public function testSearchClassIdsSecond()
+    {
+        $compare = $this->prepareData(
+            keyword: "",
+            classId: [2, 55],
+            page: 1,
+            ratio: "",
+            pageSize: 40,
+            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_class_ids_second']
+        );
+
+        return $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+    }
+
+    /**
+     * @target: 默认，无搜索条件
+     * @classId: [2, 55]
+     * @page: 2
+     */
+    public function testSearchClassIdsPage()
+    {
+        $compare = $this->prepareData(
+            keyword: "",
+            classId: [1, 0],
+            page: 3,
+            ratio: "",
+            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_class_ids_page']
+        );
+
+        return $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+    }
+
+    /**
+     * @target 有搜索词：橘色
+     * @classId: [5, 58]
+     */
+    public function testSearchCarryKeywordClassIds()
+    {
+        $compare = $this->prepareData(
+            keyword: "橘色",
+            classId: [5, 58],
+            page: 1,
+            ratio: "",
+            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_keyword_class_ids']
         );
 
         return $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
