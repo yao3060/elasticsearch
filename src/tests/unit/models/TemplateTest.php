@@ -16,6 +16,17 @@ class TemplateTest extends Unit
      */
     protected $tester;
 
+    protected static $urls = [
+        'search' => '/apiv2/get-ppt-template-list?sort_type=bytime',
+        'search_page_two' => '/apiv2/get-ppt-template-list?keyword=&p=2&class_id=290_0_0&sort_type=&tag_id=0',
+        'search_carry_class_ids_tag_id' => '/apiv2/get-ppt-template-list?keyword=&p=1&class_id=290_334_0_0&sort_type=&tag_id=46',
+        'search_carry_class_ids_tag_id_sort_type' => '/apiv2/get-ppt-template-list?keyword=&p=1&class_id=290_334_0_0&sort_type=bytime&tag_id=46',
+        'search_carry_keyword' => '/api/get-template-list?w=%E4%BD%A0%E5%A5%BD&p=1&kid_1=0&kid_2=0&ratioId=0&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=10_30_0&width=1242&height=2208',
+        'search_carry_keyword_class_ids' => '/apiv2/get-ppt-template-list?keyword=%E7%8E%AF%E4%BF%9D&p=1&class_id=290_0_0_0&sort_type=&tag_id=0',
+        'search_carry_keyword_class_ids_tag_id' => '/apiv2/get-ppt-template-list?keyword=%E7%8E%AF%E4%BF%9D&p=1&class_id=290_0_0_710&sort_type=&tag_id=49',
+        'search_carry_keyword_class_ids_tag_id_second' => '/apiv2/get-ppt-template-list?keyword=%E7%8E%AF%E4%BF%9D&p=1&class_id=290_0_0_710&sort_type=&tag_id=104',
+    ];
+
     protected function _before()
     {
         IpsAuthority::definedAuth();
@@ -71,61 +82,28 @@ class TemplateTest extends Unit
             elasticsearchColor: $elasticsearchColor
         ));
 
-        sort($search['ids']);
+        $searchIds = [];
+
+        if (isset($search['ids']) && $search['ids']) {
+            $searchIds = $search['ids'];
+            sort($searchIds);
+        }
 
         $response = (new Client())->get($prodUrl);
 
         $responseJson = json_decode($response->getBody()->getContents(), true);
 
-        if (isset($responseJson['data']['templInfo']) && $responseJson['data']['templInfo']) {
+        $ids = [];
+
+        if (isset($responseJson['data']['templInfo']) && $responseJson['data']['templInfo'] && $responseJson['stat'] != -1) {
             $ids = array_column($responseJson['data']['templInfo'], 'id');
+            sort($ids);
         }
-
-        if (isset($responseJson['msg']) && $responseJson['msg']) {
-            $ids = array_column($responseJson['msg'], 'id');
-        }
-
-        sort($ids);
 
         return [
-            'dev' => $search['ids'],
+            'dev' => $searchIds,
             'prod' => $ids
         ];
-    }
-
-    /**
-     * 推荐搜索data
-     * @param int $keyword
-     * @param int $page
-     * @param int $pageSize
-     * @param null $templateType
-     * @param null $ratio
-     * @param string $prodUrl
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    public function prepareRecommendSearchData(
-        $keyword = 0,
-        $page = 1,
-        $pageSize = 40,
-        $templateType = null,
-        $ratio = null,
-        $prodUrl = ''
-    )
-    {
-        $recommendSearch = (new Template())->recommendSearch(new TemplateRecommendSearchQuery(
-            keyword: $keyword,
-            page: $page,
-            pageSize: $pageSize,
-            templateType: $templateType,
-            ratio: $ratio
-        ));
-
-        sort($recommendSearch['ids']);
-
-        $responose = (new Client())->get($prodUrl);
-
-        $responseJson = json_decode($responose->getBody()->getContents(), true);
-
     }
 
     /**
@@ -150,7 +128,92 @@ class TemplateTest extends Unit
             size: 0,
             templateTypes: 3,
             fuzzy: 0,
-            prodUrl: getenv('UNIT_BASE_URL') . '/apiv2/get-ppt-template-list?sort_type=bytime'
+            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search']
+        );
+
+        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+    }
+
+    /**
+     * @target 测试无搜索词有分类分页
+     * @classId: 290_0_0
+     * @page: 2
+     */
+    public function testSearchPageOfTwo()
+    {
+        $compare = $this->prepareData(
+            keyword: "",
+            page: 2,
+            kid1: 0,
+            kid2: 0,
+            sortType: '',
+            tagId: 0,
+            isZb: 1,
+            pageSize: 35,
+            ratio: "",
+            classId: "290_0_0",
+            update: 0,
+            size: 0,
+            templateTypes: 3,
+            fuzzy: 0,
+            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_page_two']
+        );
+
+        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+    }
+
+    /**
+     * @target 测试无搜索词
+     * @classId: 290_334_0_0
+     * @tagId: 46
+     */
+    public function testSearchCarryClassIdsTagId()
+    {
+        $compare = $this->prepareData(
+            keyword: "",
+            page: 1,
+            kid1: 0,
+            kid2: 0,
+            sortType: '',
+            tagId: 46,
+            isZb: 1,
+            pageSize: 35,
+            ratio: "",
+            classId: "290_334_0_0",
+            update: 0,
+            size: 0,
+            templateTypes: 3,
+            fuzzy: 0,
+            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_class_ids_tag_id']
+        );
+
+        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+    }
+
+    /**
+     * @target 测试无搜索词
+     * @classId: 290_334_0_0
+     * @sortType: 'bytime'
+     * @tagId: 46
+     */
+    public function testSearchCarryClassIdsSortTypeTagId()
+    {
+        $compare = $this->prepareData(
+            keyword: "",
+            page: 1,
+            kid1: 0,
+            kid2: 0,
+            sortType: 'bytime',
+            tagId: 46,
+            isZb: 1,
+            pageSize: 35,
+            ratio: "",
+            classId: "290_334_0_0",
+            update: 0,
+            size: 0,
+            templateTypes: 3,
+            fuzzy: 0,
+            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_class_ids_tag_id_sort_type']
         );
 
         $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
@@ -191,31 +254,101 @@ class TemplateTest extends Unit
             tagId: "",
             isZb: 0,
             pageSize: 32,
-            ratio: 0,
+            ratio: "",
             classId: "10_30_0",
             templateTypes: 1,
-            fuzzy: 1,
             size: 0,
             update: 0,
             width: 1242,
             height: 2208,
             classIntersectionSearch: 1,
-            prodUrl: getenv('UNIT_BASE_URL') . '/api/get-template-list?w=%E4%BD%A0%E5%A5%BD&p=1&kid_1=0&kid_2=0&ratioId=0&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=10_30_0&width=1242&height=2208',
+            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_keyword'],
         );
 
         $this->assertEqualsCanonicalizing($compareKeywordResult['dev'], $compareKeywordResult['prod']);
     }
 
     /**
-     * 测试搜索推荐服务
+     * @target 关键词搜索：环保
+     * @classId: 290_0_0_0
+     * @tagId: 0
      */
-//    public function testRecommendSearch()
-//    {
-//
-//        $compareRecommend = $this->prepareRecommendSearchData(
-//            prodUrl: getenv('UNIT_BASE_URL') . '/api/get-template-list-v2'
-//        );
-//
-//        $this->assertEquals();
-//    }
+    public function testSearchCarryKeywordClassIdsSortTypeTagId()
+    {
+        $compare = $this->prepareData(
+            keyword: "环保",
+            page: 1,
+            kid1: 0,
+            kid2: 0,
+            sortType: '',
+            tagId: 0,
+            isZb: 1,
+            pageSize: 35,
+            ratio: "",
+            classId: "290_0_0_0",
+            update: 0,
+            size: 0,
+            templateTypes: 3,
+            fuzzy: 0,
+            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_keyword_class_ids']
+        );
+
+        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+    }
+
+    /**
+     * @target 关键词搜索：环保
+     * @classId: 290_0_0_710
+     * @tagId: 49
+     */
+    public function testSearchCarryKeywordClassIdsTagId()
+    {
+        $compare = $this->prepareData(
+            keyword: "环保",
+            page: 1,
+            kid1: 0,
+            kid2: 0,
+            sortType: '',
+            tagId: 49,
+            isZb: 1,
+            pageSize: 35,
+            ratio: "",
+            classId: "290_0_0_710",
+            update: 0,
+            size: 0,
+            templateTypes: 3,
+            fuzzy: 0,
+            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_keyword_class_ids_tag_id']
+        );
+
+        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+    }
+
+    /**
+     * @target 关键词搜索：环保
+     * @classId: 290_0_0_710
+     * @tagId: 49
+     */
+    public function testSearchCarryKeywordClassIdsTagIdSecond()
+    {
+        $compare = $this->prepareData(
+            keyword: "环保",
+            page: 1,
+            kid1: 0,
+            kid2: 0,
+            sortType: '',
+            tagId: 104,
+            isZb: 1,
+            pageSize: 35,
+            ratio: "",
+            classId: "290_0_0_710",
+            update: 0,
+            size: 0,
+            templateTypes: 3,
+            fuzzy: 0,
+            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_keyword_class_ids_tag_id_second']
+        );
+
+        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+    }
 }

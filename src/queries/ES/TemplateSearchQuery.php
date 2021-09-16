@@ -69,6 +69,7 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
             ['10_133_0_', '132_133_0_', '10_550_27_'],
             ['31_23_0_', '31_23_0_', '32_27_326_'],
             $this->classId);
+
     }
 
     /**
@@ -170,6 +171,7 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
             ->queryKid1()
             ->queryKid2()
             ->queryRatio()
+            ->queryClassIds()
             ->queryTemplateTypes()
             ->queryTagIds()
             ->queryIsZb()
