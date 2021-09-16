@@ -5,7 +5,7 @@ docker login --username=$ALIYUN_USERNAME $ALIYUN_CONTAINER_REGISTRY --password=$
 
 IMAGES=$@
 
-NAMESPACE=818ps/ips
+NAMESPACE=818ps
 for image in ${IMAGES[*]}
 do
   docker build --target $image --tag $ALIYUN_CONTAINER_REGISTRY/$NAMESPACE/${COMPOSE_PROJECT_NAME}_${image}:${VERSION} -f .docker/Dockerfile .

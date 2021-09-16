@@ -12,7 +12,7 @@ use app\interfaces\ES\QueryBuilderInterface;
 class SeoDetailKeywordForTitle extends BaseModel
 {
     /**
-     * @var int redis
+     * @var int  redis
      */
     private $redisDb = 8;
 
