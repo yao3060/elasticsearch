@@ -30,7 +30,7 @@ staging-install-job:
     name: staging
   image: composer:2
   tags:
-    - yaoin-net:aliyun-small-2
+    - 818ps_web_dev
   only:
     - develop
     - testing
@@ -45,7 +45,7 @@ staging-testing-job:
     name: staging
   image: yao3060/yii2-php:8-fpm-alpine
   tags:
-    - yaoin-net:aliyun-small-2
+    - 818ps_web_dev
   only:
     - testing
   script:
@@ -63,7 +63,7 @@ build-staging-job:
   environment:
     name: staging
   tags:
-    - yaoin-net:aliyun-small-2
+    - 818ps_web_dev
   only:
     - develop
   script:
