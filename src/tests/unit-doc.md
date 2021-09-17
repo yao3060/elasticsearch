@@ -110,38 +110,38 @@
       <td rowspan="3">DesignerTemplateSearch</td>
       <td rowspan="3">设计师模板，二次设计</td>
       <td rowspan="3">v1/designer-templates</td>
-      <td>DesignerTemplateSearchTest@testSearch</td>
+      <td>DesignerTemplateTest@testSearch</td>
       <td>[@testSearch] /api/get-template-list?w=&p=1&kid_1=1&kid_2=19&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=&width=200&height=200&es_type=1</td>
     </tr>
     <tr>
-      <td>DesignerTemplateSearchTest@testSearchCarryKeyword</td>
+      <td>DesignerTemplateTest@testSearchCarryKeyword</td>
       <td>[@testSearchCarryKeyword] /api/get-template-list?w=%E4%B8%BB%E5%9B%BE&p=1&kid_1=156&kid_2=301&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=0&es_type=3</td>
     </tr>
     <tr>
-      <td>DesignerTemplateSearchTest@testSearchNormalEsTypeOfThree</td>
+      <td>DesignerTemplateTest@testSearchNormalEsTypeOfThree</td>
       <td>[@testSearchNormalEsTypeOfThree] /api/get-template-list?w=&p=1&kid_1=156&kid_2=157&ratioId=-1&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=0&es_type=3</td>
     </tr>
     <tr>
       <td rowspan="5">RichEditorAsset</td>
       <td rowspan="5">富文本元素</td>
       <td rowspan="5">v1/rich-editor-assets</td>
-      <td>RichEditorAsset@testSearch</td>
+      <td>RichEditorAssetTest@testSearch</td>
       <td>[@testSearch] /rt-api/rt-asset-search</td>
     </tr>
     <tr>
-      <td>RichEditorAsset@search_carry_class_ids</td>
+      <td>RichEditorAssetTest@search_carry_class_ids</td>
       <td>[@search_carry_class_ids] /rt-api/rt-asset-search?class_ids=1,0&page=1&keyword=</td>
     </tr>
     <tr>
-      <td>RichEditorAsset@search_carry_class_ids_second</td>
+      <td>RichEditorAssetTest@search_carry_class_ids_second</td>
       <td>[@search_carry_class_ids_second] /rt-api/rt-asset-search?class_ids=2,55&page=1&keyword=</td>
     </tr>
     <tr>
-      <td>RichEditorAsset@search_carry_class_ids_page</td>
+      <td>RichEditorAssetTest@search_carry_class_ids_page</td>
       <td>[@search_carry_class_ids_page] /rt-api/rt-asset-search?class_ids=1,0&page=3&keyword=</td>
     </tr>
     <tr>
-      <td>RichEditorAsset@search_carry_keyword_class_ids</td>
+      <td>RichEditorAssetTest@search_carry_keyword_class_ids</td>
       <td>[@search_carry_keyword_class_ids] /rt-api/rt-asset-search?class_ids=5,58&page=1&keyword=%E6%A9%98%E8%89%B2</td>
     </tr>
     <tr>
@@ -183,14 +183,14 @@
       <td>[@testSearchClassIdOfThreePageOfOne] /video/lottie-search?keyword=&class_id=3&page=1</td>
     </tr>
     <tr>
-      <td rowspan="2">LottleVideoWord</td>
+      <td rowspan="2">LottieVideoWord</td>
       <td rowspan="2">设计师动画特效关键词</td>
       <td rowspan="2">v1/lottie-video-words</td>
       <td>LottleVideoWord@testSearch</td>
       <td>[@testSearch] /api-video/get-excerpt-list</td>
     </tr>
     <tr>
-      <td>LottleVideoWord@testSearchCarryKeyword</td>
+      <td>LottieVideoWordTest@testSearchCarryKeyword</td>
       <td>[@testSearchCarryKeyword] /video/lottie-word-search?keyword=风景</td>
     </tr>
 </table>
