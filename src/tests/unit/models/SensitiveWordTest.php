@@ -28,6 +28,9 @@ class SensitiveWordTest extends Unit
             keyword: $keyword
         ));
 
+        var_dump($validate);
+        exit;
+
         $response = (new Client())->get($prodUrl);
 
         $responseJson = json_decode($response->getBody()->getContents(),  true);

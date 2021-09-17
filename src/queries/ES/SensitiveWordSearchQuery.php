@@ -28,7 +28,7 @@ class SensitiveWordSearchQuery extends BaseTemplateSearchQuery
     {
         $this->queryWord();
 
-        return $this->query();
+        return $this->query;
     }
 
     public function getRedisKey()
