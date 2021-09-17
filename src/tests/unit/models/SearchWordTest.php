@@ -39,7 +39,7 @@ class SearchWordTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/site/sphinx?1=1&keyword=%E4%BD%A0%E5%A5%BD&type=1&max=6'
+            getenv('UNIT_BASE_URL') .'/site/sphinx?1=1&keyword=%E4%BD%A0%E5%A5%BD&type=1&max=6'
         );
 
         $content = json_decode($response->getBody()->getContents());
@@ -70,7 +70,7 @@ class SearchWordTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/site/sphinx?1=1&keyword=%E5%86%8D%E8%A7%81&type=1&max=6'
+            getenv('UNIT_BASE_URL') .'/site/sphinx?1=1&keyword=%E5%86%8D%E8%A7%81&type=1&max=6'
         );
 
         $content = json_decode($response->getBody()->getContents());
@@ -130,7 +130,7 @@ class SearchWordTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/site/sphinx?1=1&keyword=我们&type=1&max=6'
+            getenv('UNIT_BASE_URL') .'/site/sphinx?1=1&keyword=我们&type=1&max=6'
         );
 
         $content = json_decode($response->getBody()->getContents());

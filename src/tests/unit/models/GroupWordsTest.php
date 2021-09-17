@@ -42,7 +42,7 @@ class GroupWordsTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/search-groupword-list?w=&p=1&search=%E4%BD%A0%E5%A5%BD&all=1'
+            getenv('UNIT_BASE_URL') .'/api/search-groupword-list?w=&p=1&search=%E4%BD%A0%E5%A5%BD&all=1'
         );
 
         $content = json_decode($response->getBody()->getContents());
@@ -75,7 +75,7 @@ class GroupWordsTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/search-groupword-list?w=&p=1&search=&all=1'
+            getenv('UNIT_BASE_URL') .'/api/search-groupword-list?w=&p=1&search=&all=1'
         );
 
         $content = json_decode($response->getBody()->getContents());
@@ -108,7 +108,7 @@ class GroupWordsTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/search-groupword-list?w=&p=2&search=%E7%BD%91%E5%9D%80&all=1'
+            getenv('UNIT_BASE_URL') .'/api/search-groupword-list?w=&p=2&search=%E7%BD%91%E5%9D%80&all=1'
         );
 
         $content = json_decode($response->getBody()->getContents());
@@ -145,7 +145,7 @@ class GroupWordsTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/search-groupword-list?w=&p=2&search=中秋&all=1'
+            getenv('UNIT_BASE_URL') .'/api/search-groupword-list?w=&p=2&search=中秋&all=1'
         );
 
         $content = json_decode($response->getBody()->getContents());

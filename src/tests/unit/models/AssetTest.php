@@ -42,7 +42,7 @@ class AssetTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/get-asset-list?w=%E4%BD%A0%E5%A5%BD&p=1&type=image&k1=0&k2=0&k3=0&tagId=0&sceneId=undefined&styleId=undefined&ratioId=undefined'
+            getenv('UNIT_BASE_URL') .'/api/get-asset-list?w=%E4%BD%A0%E5%A5%BD&p=1&type=image&k1=0&k2=0&k3=0&tagId=0&sceneId=undefined&styleId=undefined&ratioId=undefined'
         );
 
         $content = json_decode($response->getBody()->getContents());
@@ -67,7 +67,7 @@ class AssetTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/get-asset-list?w=&p=1&type=image&k1=0&k2=0&k3=0&tagId=0&sceneId=undefined&styleId=undefined&ratioId=undefined'
+            getenv('UNIT_BASE_URL') .'/api/get-asset-list?w=&p=1&type=image&k1=0&k2=0&k3=0&tagId=0&sceneId=undefined&styleId=undefined&ratioId=undefined'
         );
 
         $content = json_decode($response->getBody()->getContents());
@@ -92,7 +92,7 @@ class AssetTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/get-asset-list?w=%E4%BD%A0%E5%A5%BD&p=3&type=image&k1=0&k2=0&k3=0&tagId=0&sceneId=undefined&styleId=undefined&ratioId=undefined'
+            getenv('UNIT_BASE_URL') .'/api/get-asset-list?w=%E4%BD%A0%E5%A5%BD&p=3&type=image&k1=0&k2=0&k3=0&tagId=0&sceneId=undefined&styleId=undefined&ratioId=undefined'
         );
 
         $content = json_decode($response->getBody()->getContents());
@@ -116,7 +116,7 @@ class AssetTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/get-asset-list?w=我们&p=1&type=image&k1=0&k2=0&k3=0&tagId=0&sceneId=undefined&styleId=undefined&ratioId=undefined'
+            getenv('UNIT_BASE_URL') .'/api/get-asset-list?w=我们&p=1&type=image&k1=0&k2=0&k3=0&tagId=0&sceneId=undefined&styleId=undefined&ratioId=undefined'
         );
 
         $content = json_decode($response->getBody()->getContents());
@@ -140,7 +140,7 @@ class AssetTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/get-asset-list?w=中秋&p=1&type=image&k1=0&k2=0&k3=0&tagId=0&sceneId=undefined&styleId=undefined&ratioId=undefined'
+            getenv('UNIT_BASE_URL') .'/api/get-asset-list?w=中秋&p=1&type=image&k1=0&k2=0&k3=0&tagId=0&sceneId=undefined&styleId=undefined&ratioId=undefined'
         );
 
         $content = json_decode($response->getBody()->getContents());

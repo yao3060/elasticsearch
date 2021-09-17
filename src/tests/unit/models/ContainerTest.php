@@ -41,7 +41,7 @@ class ContainerTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/apiv2/search-asset-container?word=&p=1&k2=0'
+            getenv('UNIT_BASE_URL') .'/apiv2/search-asset-container?word=&p=1&k2=0'
         );
 
         $content = json_decode($response->getBody()->getContents());
@@ -73,7 +73,7 @@ class ContainerTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/apiv2/search-asset-container?word=&p=8&k2=0'
+            getenv('UNIT_BASE_URL') .'/apiv2/search-asset-container?word=&p=8&k2=0'
         );
 
         $content = json_decode($response->getBody()->getContents());
@@ -104,7 +104,7 @@ class ContainerTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/apiv2/search-asset-container?p=1&k2=0&word= '
+            getenv('UNIT_BASE_URL') .'/apiv2/search-asset-container?p=1&k2=0&word= '
         );
 
         $content = json_decode($response->getBody()->getContents());
@@ -135,7 +135,7 @@ class ContainerTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/apiv2/search-asset-container?p=4&k2=0&word= '
+            getenv('UNIT_BASE_URL') .'/apiv2/search-asset-container?p=4&k2=0&word='
         );
 
         $content = json_decode($response->getBody()->getContents());
