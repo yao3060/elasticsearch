@@ -21,7 +21,7 @@ spec:
     options:
       mode: "755"
       path: /mnt/elasticsearch-production-mysql-volume
-      server: 1296c24923c-cro54.cn-hongkong.nas.aliyuncs.com
+      server: 3766a4a783-jsy8.cn-shanghai.nas.aliyuncs.com
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
