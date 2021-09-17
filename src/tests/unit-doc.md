@@ -33,15 +33,39 @@
         <th style="background-color: #f7f7f7;">old api</th> 
    </tr>
     <tr>
-        <td rowspan="3">Template</td>
-        <td rowspan="3">公共模板</td>
-        <td rowspan="2">v1/templates</td>
+        <td rowspan="9">Template</td>
+        <td rowspan="9">公共模板</td>
+        <td rowspan="8">v1/templates</td>
         <td>TemplateTest@testSearch</td>
         <td>[@testSearch] /apiv2/get-ppt-template-list?sort_type=bytime</td>
     </tr>
     <tr>
       <td>TemplateTest@testSearchCarryKeyword</td>
       <td>[@testSearchCarryKeyword]  /api/get-template-list?w=%E4%BD%A0%E5%A5%BD&p=1&kid_1=0&kid_2=0&ratioId=0&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=10_30_0&width=1242&height=2208</td>
+    </tr>
+    <tr>
+      <td>TemplateTest@testSearchPageOfTwo</td>
+      <td>[@testSearchPageOfTwo]  /apiv2/get-ppt-template-list?keyword=&p=2&class_id=290_0_0&sort_type=&tag_id=0</td>
+    </tr>
+    <tr>
+      <td>TemplateTest@testSearchCarryClassIdsTagId</td>
+      <td>[@testSearchCarryClassIdsTagId]  /apiv2/get-ppt-template-list?keyword=&p=1&class_id=290_334_0_0&sort_type=&tag_id=46</td>
+    </tr>
+    <tr>
+      <td>TemplateTest@testSearchCarryClassIdsSortTypeTagId</td>
+      <td>[@testSearchCarryClassIdsSortTypeTagId]  /apiv2/get-ppt-template-list?keyword=&p=1&class_id=290_334_0_0&sort_type=bytime&tag_id=46</td>
+    </tr>
+    <tr>
+      <td>TemplateTest@testSearchCarryKeywordClassIdsSortTypeTagId</td>
+      <td>[@testSearchCarryKeywordClassIdsSortTypeTagId]  /apiv2/get-ppt-template-list?keyword=%E7%8E%AF%E4%BF%9D&p=1&class_id=290_0_0_0&sort_type=&tag_id=0</td>
+    </tr>
+    <tr>
+      <td>TemplateTest@testSearchCarryKeywordClassIdsTagId</td>
+      <td>[@testSearchCarryKeywordClassIdsTagId]  /apiv2/get-ppt-template-list?keyword=%E7%8E%AF%E4%BF%9D&p=1&class_id=290_0_0_710&sort_type=&tag_id=49</td>
+    </tr>
+    <tr>
+      <td>TemplateTest@testSearchCarryKeywordClassIdsTagIdSecond</td>
+      <td>[@testSearchCarryKeywordClassIdsTagIdSecond]  /apiv2/get-ppt-template-list?keyword=%E7%8E%AF%E4%BF%9D&p=1&class_id=290_0_0_710&sort_type=&tag_id=104</td>
     </tr>
     <tr>
       <td>v1/templates/recommends</td>
