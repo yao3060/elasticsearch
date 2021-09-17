@@ -43,7 +43,7 @@ class GifAssetTest extends \Codeception\Test\Unit
             ));
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/get-gif-asset-list?keyword=你好&p=1&class_id=10'
+            getenv('UNIT_BASE_URL') .'/api/get-gif-asset-list?keyword=你好&p=1&class_id=10'
         );
         $content = json_decode($response->getBody()->getContents());
         $ids = ArrayHelper::getColumn($content->msg, 'id');
@@ -67,7 +67,7 @@ class GifAssetTest extends \Codeception\Test\Unit
             ));
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/get-gif-asset-list?keyword=&p=1&class_id=10'
+            getenv('UNIT_BASE_URL') .'/api/get-gif-asset-list?keyword=&p=1&class_id=10'
         );
         $content = json_decode($response->getBody()->getContents());
         $ids = ArrayHelper::getColumn($content->msg, 'id');
@@ -91,7 +91,7 @@ class GifAssetTest extends \Codeception\Test\Unit
             ));
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/get-gif-asset-list?keyword=寒露&p=1&class_id=10'
+            getenv('UNIT_BASE_URL') .'/api/get-gif-asset-list?keyword=寒露&p=1&class_id=10'
         );
         $content = json_decode($response->getBody()->getContents());
         $ids = ArrayHelper::getColumn($content->msg, 'id');
@@ -123,7 +123,7 @@ class GifAssetTest extends \Codeception\Test\Unit
             ));
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/get-gif-asset-list?keyword=&p=3&class_id=10'
+            getenv('UNIT_BASE_URL') .'/api/get-gif-asset-list?keyword=&p=3&class_id=10'
         );
         $content = json_decode($response->getBody()->getContents());
         $ids = ArrayHelper::getColumn($content->msg, 'id');
@@ -147,7 +147,7 @@ class GifAssetTest extends \Codeception\Test\Unit
             ));
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/get-gif-asset-list?is_h5=1&keyword=&p=1&class_id=0'
+            getenv('UNIT_BASE_URL') .'/api/get-gif-asset-list?is_h5=1&keyword=&p=1&class_id=0'
         );
         $content = json_decode($response->getBody()->getContents());
         $ids = ArrayHelper::getColumn($content->msg, 'id');
@@ -171,7 +171,7 @@ class GifAssetTest extends \Codeception\Test\Unit
             ));
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/get-gif-asset-list?keyword=&p=1&class_id=19'
+            getenv('UNIT_BASE_URL') .'/api/get-gif-asset-list?keyword=&p=1&class_id=19'
         );
         $content = json_decode($response->getBody()->getContents());
         $ids = ArrayHelper::getColumn($content->msg, 'id');

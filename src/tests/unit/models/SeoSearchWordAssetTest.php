@@ -41,7 +41,7 @@ class SeoSearchWordAssetTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/beijing/zaoan.html?route_id=16317766697739&route=16&after_route='
+            getenv('UNIT_BASE_URL') .'/beijing/zaoan.html?route_id=16317766697739&route=16&after_route='
             //https://818ps.com/png/nihao.html
         );
 

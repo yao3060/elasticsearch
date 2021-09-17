@@ -47,7 +47,7 @@ class PictureTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/get-asset-list?w=%E6%97%A9%E5%AE%89&p=1&type=pic&k1=0&k2=0&k3=0&tagId=undefined&sceneId=undefined&styleId=0&ratioId=undefined&isPic=true&picId=4689234'
+            getenv('UNIT_BASE_URL') .'/api/get-asset-list?w=%E6%97%A9%E5%AE%89&p=1&type=pic&k1=0&k2=0&k3=0&tagId=undefined&sceneId=undefined&styleId=0&ratioId=undefined&isPic=true&picId=4689234'
         );
 
         $content = json_decode($response->getBody()->getContents());
@@ -74,7 +74,7 @@ class PictureTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/get-asset-list?w=&p=1&type=pic&k1=0&k2=0&k3=0&tagId=undefined&sceneId=undefined&styleId=0&ratioId=undefined&isPic=true&picId=4689234'
+            getenv('UNIT_BASE_URL') .'/api/get-asset-list?w=&p=1&type=pic&k1=0&k2=0&k3=0&tagId=undefined&sceneId=undefined&styleId=0&ratioId=undefined&isPic=true&picId=4689234'
         );
 
         $content = json_decode($response->getBody()->getContents());
@@ -101,7 +101,7 @@ class PictureTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/get-asset-list?w=你好&p=1&type=pic&k1=0&k2=0&k3=0&tagId=undefined&sceneId=undefined&styleId=0&ratioId=undefined&isPic=true&picId=4689234'
+            getenv('UNIT_BASE_URL') .'/api/get-asset-list?w=你好&p=1&type=pic&k1=0&k2=0&k3=0&tagId=undefined&sceneId=undefined&styleId=0&ratioId=undefined&isPic=true&picId=4689234'
         );
 
         $content = json_decode($response->getBody()->getContents());
@@ -127,7 +127,7 @@ class PictureTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/get-asset-list?w=中秋&p=1&type=pic&k1=0&k2=0&k3=0&tagId=undefined&sceneId=undefined&styleId=0&ratioId=undefined&isPic=true&picId=4689234'
+            getenv('UNIT_BASE_URL') .'/api/get-asset-list?w=中秋&p=1&type=pic&k1=0&k2=0&k3=0&tagId=undefined&sceneId=undefined&styleId=0&ratioId=undefined&isPic=true&picId=4689234'
         );
 
         $content = json_decode($response->getBody()->getContents());
