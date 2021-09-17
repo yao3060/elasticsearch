@@ -17,11 +17,10 @@ metadata:
 spec:
   capacity:
     storage: 50Gi
-  flexVolume:
-    options:
-      mode: "755"
-      path: /mnt/elasticsearch-staging-mysql-volume
-      server: 1296c24923c-cro54.cn-hongkong.nas.aliyuncs.com
+  csi:
+    volumeAttributes:
+      server: "3766a4a783-jsy8.cn-shanghai.nas.aliyuncs.com"
+      path: "/mnt/elasticsearch-staging-mysql-volume"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

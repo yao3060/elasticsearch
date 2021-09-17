@@ -49,7 +49,16 @@ class ContainerTest extends \Codeception\Test\Unit
         sort($ids);
         $myIds = $items['ids'];
         sort($myIds);
-        $this->assertEquals(join(',', $ids), join(',', $myIds));
+        $flag = 1;
+        foreach ($ids as $va) {
+            if (in_array($va, $myIds)) {
+                continue;
+            } else {
+                $flag = 0;
+                break;
+            }
+        }
+        $this->assertEquals($flag, 1);
     }
 
     public function testSearchTwo()
@@ -72,6 +81,77 @@ class ContainerTest extends \Codeception\Test\Unit
         sort($ids);
         $myIds = $items['ids'];
         sort($myIds);
-        $this->assertEquals(join(',', $ids), join(',', $myIds));
+        $flag = 1;
+        foreach ($ids as $va) {
+            if (in_array($va, $myIds)) {
+                continue;
+            } else {
+                $flag = 0;
+                break;
+            }
+        }
+        $this->assertEquals($flag, 1);
+    }
+    public function testSearchThree()
+    {
+        $items = (new Container())
+            ->search(new ContainerSearchQuery(
+                keyword: 0,
+                page: 1,
+                pageSize: 30,
+                kid: 0,
+            ));
+        /**@var \GuzzleHttp\Psr7\Response $response */
+        $response = $this->http->request(
+            'GET',
+            'https://818ps.com/apiv2/search-asset-container?p=1&k2=0&word= '
+        );
+
+        $content = json_decode($response->getBody()->getContents());
+        $ids = ArrayHelper::getColumn($content->msg, 'id');
+        sort($ids);
+        $myIds = $items['ids'];
+        sort($myIds);
+        $flag = 1;
+        foreach ($ids as $va) {
+            if (in_array($va, $myIds)) {
+                continue;
+            } else {
+                $flag = 0;
+                break;
+            }
+        }
+        $this->assertEquals($flag, 1);
+    }
+    public function testSearchFour()
+    {
+        $items = (new Container())
+            ->search(new ContainerSearchQuery(
+                keyword: 0,
+                page: 4,
+                pageSize: 30,
+                kid: 0,
+            ));
+        /**@var \GuzzleHttp\Psr7\Response $response */
+        $response = $this->http->request(
+            'GET',
+            'https://818ps.com/apiv2/search-asset-container?p=4&k2=0&word= '
+        );
+
+        $content = json_decode($response->getBody()->getContents());
+        $ids = ArrayHelper::getColumn($content->msg, 'id');
+        sort($ids);
+        $myIds = $items['ids'];
+        sort($myIds);
+        $flag = 1;
+        foreach ($ids as $va) {
+            if (in_array($va, $myIds)) {
+                continue;
+            } else {
+                $flag = 0;
+                break;
+            }
+        }
+        $this->assertEquals($flag, 1);
     }
 }

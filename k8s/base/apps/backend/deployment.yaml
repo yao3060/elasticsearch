@@ -10,7 +10,7 @@ spec:
       app: backend-nginx
       tier: backend-nginx
   strategy:
-    type: Recreate
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -41,7 +41,7 @@ spec:
       app: backend-php
       tier: backend-php
   strategy:
-    type: Recreate
+    type: RollingUpdate
   template:
     metadata:
       labels:
@@ -78,3 +78,18 @@ spec:
                 secretKeyRef:
                   name: secrets
                   key: DB_PASSWORD
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: REDIS_PASSWORD
+            - name: REDIS_SESSION_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: REDIS_SESSION_PASSWORD
+            - name: REDIS_SEARCH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: REDIS_SEARCH_PASSWORD
