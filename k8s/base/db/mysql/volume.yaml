@@ -11,31 +11,23 @@ spec:
     - ReadWriteMany
   capacity:
     storage: 10Gi
-  flexVolume:
-    driver: alicloud/nas
-    options:
-      mode: '755'
-      path: null
-      server: null
-      vers: '4.0'
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: nas
+  csi:
+    driver: nasplugin.csi.alibabacloud.com
+    volumeHandle: mysql-volume
+  mountOptions:
+    - nolock,tcp,noresvport
+    - vers=3
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
-metadata: 
+metadata:
   finalizers:
     - kubernetes.io/pvc-protection
   name: mysql-volume-claim
-  namespace: default 
+  namespace: default
 spec:
   accessModes:
     - ReadWriteMany
   resources:
     requests:
       storage: 10Gi
-  selector:
-    matchLabels:
-      alicloud-pvname: mysql-volume
-  storageClassName: nas
-  volumeName: mysql-volume

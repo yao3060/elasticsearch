@@ -25,11 +25,7 @@ configMapGenerator:
     literals:
       - api_host=es-api-staging.818ps.com
       - admin_host=es-api-staging.818ps.com
-      - DB_CONNECTION=mysql
-      - DB_HOST=elasticsearch-staging-mysql
-      - DB_PORT=3306
-      - DB_DATABASE=domain
-      - DB_PREFIX=es_
+      - UNIT_BASE_URL=https://818ps.com
       - APP_NAME="ElasticSearch"
       - APP_ENV=staging
       - APP_KEY=base64:gT5YBxoHuFZqzPGU9CO26koLyE6YQkkLK+cH9dKQD8g=
@@ -37,13 +33,18 @@ configMapGenerator:
       - APP_TIMEZONE=Asia/Shanghai
       - APP_LOCALE=zh-CN
       - LOG_CHANNEL=errorlog
-      - BROADCAST_DRIVER=log
-      - CACHE_DRIVER=redis
-      - QUEUE_CONNECTION=redis
-      - REDIS_CLIENT=phpredis
-      - REDIS_CLUSTER=phpredis
+      - DB_CONNECTION=mysql
+      - DB_HOST=elasticsearch-staging-mysql
+      - DB_PORT=3306
+      - DB_DATABASE=domain
+      - DB_PREFIX=es_
       - REDIS_HOST=elasticsearch-staging-cache
-      - REDIS_PASSWORD=null
       - REDIS_PORT=6379
-      - JWT_SECRET=N0FZnCy8MBBaLKsIcGN8ugJhQdPOjpXNsEiXigeyl1fy47vpuuo5GROeXp1aMyVw
-      - JWT_TTL=86400
+      - REDIS_HOSTNAME=r-uf6ho5b75zcknf33lr.redis.rds.aliyuncs.com
+      - REDIS_SESSION_HOSTNAME=r-uf6sl57iwn5z61ssjo.redis.rds.aliyuncs.com
+      - REDIS_SEARCH_HOSTNAME=r-uf6an0ba8tty6e8v03.redis.rds.aliyuncs.com
+      - ELASTIC_HOST=192.168.5.31:9200
+      - ELASTIC_COLOR_HOST=192.168.4.211:9200
+      - ELASTIC_KEYWORD_HOST=192.168.4.86:9200
+      - ELASTIC_SECOND_HOST=192.168.4.194:9200
+

@@ -34,7 +34,8 @@
         "codeception/module-filesystem": "^1.0.0",
         "codeception/module-yii2": "^1.0.0",
         "codeception/module-asserts": "^1.0.0",
-        "symfony/var-dumper": "^5.3"
+        "symfony/var-dumper": "^5.3",
+        "codeception/module-phpbrowser": "^1.0"
     },
     "config": {
         "process-timeout": 1800,

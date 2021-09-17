@@ -1,0 +1,7 @@
+# acceptance.suite.yml
+actor: AcceptanceTester
+modules:
+    enabled:
+        - PhpBrowser:
+            url: https://818ps.com/
+        - \Helper\Acceptance

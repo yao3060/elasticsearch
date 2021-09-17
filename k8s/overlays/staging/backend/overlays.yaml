@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: backend-nginx
 spec:
+  replicas: 3
   template:
     spec:
       containers:
@@ -14,6 +15,7 @@ kind: Deployment
 metadata:
   name: backend-php
 spec:
+  replicas: 3
   template:
     spec:
       containers:
@@ -44,11 +46,10 @@ metadata:
 spec:
   capacity:
     storage: 50Gi
-  flexVolume:
-    options:
-      mode: "755"
-      path: /mnt/elasticsearch-staging-yii-runtime
-      server: 1296c24923c-cro54.cn-hongkong.nas.aliyuncs.com
+  csi:
+    volumeAttributes:
+      server: "3766a4a783-jsy8.cn-shanghai.nas.aliyuncs.com"
+      path: "/mnt/elasticsearch-staging-yii-runtime"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
