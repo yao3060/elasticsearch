@@ -38,6 +38,8 @@ configMapGenerator:
       - DB_PORT=3306
       - DB_DATABASE=domain
       - DB_PREFIX=es_
+      - REDIS_HOST=elasticsearch-staging-cache
+      - REDIS_PORT=6379
       - REDIS_HOSTNAME=r-uf6ho5b75zcknf33lr.redis.rds.aliyuncs.com
       - REDIS_SESSION_HOSTNAME=r-uf6sl57iwn5z61ssjo.redis.rds.aliyuncs.com
       - REDIS_SEARCH_HOSTNAME=r-uf6an0ba8tty6e8v03.redis.rds.aliyuncs.com
