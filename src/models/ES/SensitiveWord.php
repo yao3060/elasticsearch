@@ -68,6 +68,11 @@ class SensitiveWord extends BaseModel
         return ["id", "word", "_word"];
     }
 
+    /**
+     * @param \app\queries\ES\SensitiveWordSearchQuery $query
+     * @return array
+     * @throws Exception
+     */
     public function search(QueryBuilderInterface $query): array
     {
         $redisKey = $query->getRedisKey();

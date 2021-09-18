@@ -27,6 +27,11 @@ class SeoNewPage extends BaseModel
         return ['id', 'keyword', '_keyword'];
     }
 
+    /**
+     * @param \app\queries\ES\SeoNewPageSeoSearchQuery $query
+     * @return array|false|mixed
+     * @throws Exception
+     */
     public function seoSearch(QueryBuilderInterface $query)
     {
         $return = Tools::getRedis(self::$redisDb, $query->getRedisKey());

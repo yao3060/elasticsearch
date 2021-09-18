@@ -30,6 +30,11 @@ class VideoTemplate extends BaseModel
         return ['temple_id', 'title', 'class_id', 'description', 'hide_description', 'brief', 'created', 'updated', 'info'];
     }
 
+    /**
+     * @param \app\queries\ES\VideoTemplateSearchQuery $query
+     * @return array|false
+     * @throws Exception
+     */
     public function search(QueryBuilderInterface $query): array
     {
         $redisKey = $query->getRedisKey();

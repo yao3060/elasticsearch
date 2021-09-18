@@ -35,7 +35,7 @@ class BackgroundVideo extends BaseModel
 
     /**
      * 搜索背景视频
-     * @param QueryBuilderInterface $query
+     * @param \app\queries\ES\BackgroundVideoQuery $query
      * @return array
      */
     public function search(QueryBuilderInterface $query): array
@@ -50,6 +50,7 @@ class BackgroundVideo extends BaseModel
             $return['score'] = [];
 
             try {
+
                 $info = self::find()
                     ->source(['id'])
                     ->query($query->query())
@@ -58,6 +59,7 @@ class BackgroundVideo extends BaseModel
                     ->limit($query->pageSize)
                     ->createCommand()
                     ->search([], ['track_scores' => true])['hits'];
+
             } catch (\Throwable $throwable) {
                 throw new Exception($throwable->getMessage() . $throwable->getFile() . $throwable->getLine());
             }
