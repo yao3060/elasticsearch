@@ -21,8 +21,7 @@ class BackGroundSearchQuery implements QueryBuilderInterface
         public int $ratioId = 0,
         public int $class = 0,
         public int $isBg = 0
-    )
-    {
+    ) {
     }
 
     public function query(): array
@@ -83,7 +82,9 @@ class BackGroundSearchQuery implements QueryBuilderInterface
         );
         return $redisKey;
     }
-    public function pageSizeSet(){
+
+    public function pageSizeSet()
+    {
         $pageSize = $this->pageSize;
         if ($this->page * $this->pageSize > 10000) {
             $pageSize = $this->page * $pageSize - 10000;
@@ -94,9 +95,9 @@ class BackGroundSearchQuery implements QueryBuilderInterface
     public function sortBy()
     {
         if ($this->sort === 'bytime') {
-            $sortBy =$this->sortByTime();
+            $sortBy = $this->sortByTime();
         } else {
-            $sortBy =$this->sortDefault();
+            $sortBy = $this->sortDefault();
         }
         return $sortBy;
     }
@@ -111,6 +112,7 @@ class BackGroundSearchQuery implements QueryBuilderInterface
         }
         return $offset;
     }
+
     public static function queryKeyword($keyword, $is_or = false)
     {
         $operator = $is_or ? 'or' : 'and';

@@ -24,6 +24,8 @@ return [
         'GET  v1/seo-search-word-asset' => 'es/seo-search-word-asset/search',//seo词库相关推荐
         'GET  v1/seo-detail-keyword-for-title' => 'es/seo-detail-keyword-for-title/search',//seo词库相关推荐
         'GET  v1/gif-asset' => 'es/gif-asset/search', //搜索
+        'POST  v1/h5-ban-words' => 'es/h5-ban-words/h5-ban-search', //查询是否存在敏感词
+
 
         //H
         'GET  v1/designer-templates' => 'es/designer-template/index', // 设计师模板
