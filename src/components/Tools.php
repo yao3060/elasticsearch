@@ -54,7 +54,7 @@ class Tools
             $key,
             $value,
             'EX',
-            $time > 0 ? $this : self::REDIS_EXPIRE
+            $time > 0 ? $time : self::REDIS_EXPIRE
         );
     }
 
