@@ -2,9 +2,7 @@
 
 namespace app\components;
 
-use Imagick;
 use Yii;
-use yii\helpers\HtmlPurifier;
 
 /**
  * 工具类
@@ -68,10 +66,13 @@ class Tools
 
         $redis = 'redis' . $db;
         $info = Yii::$app->$redis->get($key);
-        if (!$info) return false;
+        if (!$info) {
+            return false;
+        }
         $return = maybe_unserialize($info);
-        if ($return || $return === [])
+        if ($return || $return === []) {
             return $return;
+        }
 
         if (is_null(json_decode($info))) {
             return $info;
@@ -82,7 +83,6 @@ class Tools
 
     public static function delRedis($db = 2, $key)
     {
-
         if (!is_prod()) {
             return null;
         }
@@ -90,3 +90,4 @@ class Tools
         $redis = 'redis' . $db;
         Yii::$app->$redis->del($key);
     }
+}
