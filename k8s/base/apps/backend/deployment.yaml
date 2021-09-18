@@ -78,6 +78,11 @@ spec:
                 secretKeyRef:
                   name: secrets
                   key: DB_PASSWORD
+            - name: BACKEND_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: BACKEND_DB_PASSWORD
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
