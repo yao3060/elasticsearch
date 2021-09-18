@@ -46,23 +46,18 @@ class LottieVideoTest extends \Codeception\Test\Unit
             prep: $prep
         ));
 
-        $searchIds = [];
+        $searchIds = $search['ids'] ?? [];
 
-        if (isset($search['ids']) && $search['ids']) {
-            $searchIds = $search['ids'];
-            sort($searchIds);
-        }
+        if ($searchIds) sort($searchIds);
 
         $response = (new Client())->get($produrl);
 
         $responseJson = json_decode($response->getBody()->getContents(), true);
 
-        $ids = [];
+        $ids = $responseJson['msg'] ?? [];
 
-        if (isset($responseJson['msg']) && $responseJson['msg']) {
-
-            $ids = array_column($responseJson['msg'], 'id');
-
+        if ($ids) {
+            $ids = array_column($ids, 'id');
             sort($ids);
         }
 
@@ -70,7 +65,6 @@ class LottieVideoTest extends \Codeception\Test\Unit
             'dev' => $searchIds,
             'prod' => $ids
         ];
-
     }
 
     /**

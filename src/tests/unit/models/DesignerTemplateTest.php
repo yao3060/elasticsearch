@@ -125,21 +125,23 @@ class DesignerTemplateTest extends Unit
             use: $use
         );
 
-        if (isset($search['ids']) && $search['ids']) sort($search['ids']);
+        $searchIds = $search['ids'] ?? [];
+
+        if ($searchIds) sort($searchIds);
 
         $response = (new Client())->get($produrl);
 
         $responseJson = json_decode($response->getBody()->getContents(), true);
 
-        $ids = [];
+        $ids = $responseJson['msg'] ?? [];
 
-        if (isset($responseJson['msg']) && $responseJson['msg']) {
-            $ids = array_column($responseJson['msg'], 'id');
+        if ($ids) {
+            $ids = array_column($ids, 'id');
             sort($ids);
         }
 
         return [
-            'dev' => $search['ids'],
+            'dev' => $searchIds,
             'prod' => $ids
         ];
     }
