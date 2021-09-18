@@ -69,7 +69,6 @@ class SiteController extends Controller
             'message' => 'Welcome',
             'data' => [
                 'AssetUseTop' => AssetUseTop::getLatestBy('kid_1', 1),
-                'AssetUseTop2' => \app\models\AssetUseTop::getLastInfo(1)
             ]
         ]);
     }
