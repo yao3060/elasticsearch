@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Backend\AssetUseTop;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -63,12 +64,13 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        Yii::warning('this is a warning');
-        Yii::error('this is a error');
-
         return json_encode([
             'code' => 'welcome',
-            'message' => 'Welcome'
+            'message' => 'Welcome',
+            'data' => [
+                'AssetUseTop' => AssetUseTop::getLatestBy('kid_1', 1),
+                'AssetUseTop2' => \app\models\AssetUseTop::getLastInfo(1)
+            ]
         ]);
     }
 
