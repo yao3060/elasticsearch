@@ -46,9 +46,8 @@ class VideoTemplateTest extends Unit
             prep: $prep
         ));
 
-        $devIds = [];
-        if (isset($search['ids']) && $search['ids']) {
-            $devIds = $search['ids'];
+        $devIds = $search['ids'] ?? [];
+        if ($devIds) {
             sort($devIds);
         }
 
@@ -56,11 +55,13 @@ class VideoTemplateTest extends Unit
 
         $responseJson = json_decode($response->getBody()->getContents(), true);
 
-        $ids = [];
+        $ids = $responseJson['msg'] ?? [];
 
-        if (isset($responseJson['msg']) && $responseJson['msg'] && $responseJson['stat'] != -1) {
-            $ids = array_column($responseJson['msg'], 'id');
+        if ($ids && $responseJson['stat'] != -1) {
+            $ids = array_column($ids, 'id');
             sort($ids);
+        } else {
+            $ids = [];
         }
 
         return [
@@ -69,56 +70,56 @@ class VideoTemplateTest extends Unit
         ];
     }
 
-    /**
-     * @target 默认，无搜索词搜索
-     * @tips 其余参数默认
-     */
-    public function testSearch()
-    {
-        $compare = $this->prepareData(
-            classId: [],
-            pageSize: 32,
-            ratio: '',
-            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search']
-        );
-
-        return $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
-    }
-
-    /**
-     * @target 有搜索词：教师节
-     * @ratio: 2
-     */
-    public function testSearchCarryKeyword()
-    {
-        $compare = $this->prepareData(
-            keyword: '教师节',
-            classId: [],
-            pageSize: 32,
-            ratio: 2,
-            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_keyword']
-        );
-
-        return $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
-    }
-
-    /**
-     * @target 无搜索词
-     * @classId: [1579, 1580]
-     * @page: 2
-     */
-    public function testSearchCarryClassIdsPageOfTwo()
-    {
-        $compare = $this->prepareData(
-            classId: [1579, 1580],
-            page:2,
-            pageSize: 32,
-            ratio: 1,
-            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_class_ids_page_two']
-        );
-
-        return $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
-    }
+//    /**
+//     * @target 默认，无搜索词搜索
+//     * @tips 其余参数默认
+//     */
+//    public function testSearch()
+//    {
+//        $compare = $this->prepareData(
+//            classId: [],
+//            pageSize: 32,
+//            ratio: '',
+//            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search']
+//        );
+//
+//        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+//    }
+//
+//    /**
+//     * @target 有搜索词：教师节
+//     * @ratio: 2
+//     */
+//    public function testSearchCarryKeyword()
+//    {
+//        $compare = $this->prepareData(
+//            keyword: '教师节',
+//            classId: [],
+//            pageSize: 32,
+//            ratio: 2,
+//            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_keyword']
+//        );
+//
+//        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+//    }
+//
+//    /**
+//     * @target 无搜索词
+//     * @classId: [1579, 1580]
+//     * @page: 2
+//     */
+//    public function testSearchCarryClassIdsPageOfTwo()
+//    {
+//        $compare = $this->prepareData(
+//            classId: [1579, 1580],
+//            page:2,
+//            pageSize: 32,
+//            ratio: 1,
+//            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_class_ids_page_two']
+//        );
+//
+//        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+//    }
 
     /**
      * @target 有搜索词：丢失
@@ -133,6 +134,6 @@ class VideoTemplateTest extends Unit
             prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carrd_keyword_class_ids_none']
         );
 
-        return $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
     }
 }

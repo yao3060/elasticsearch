@@ -44,10 +44,9 @@ class RichEditorAssetTest extends Unit
             ratio: $ratio
         ));
 
-        $searchIds = [];
+        $searchIds = $search['ids'] ?? [];
 
-        if (isset($search['ids']) && $search['ids']) {
-            $searchIds = $search['ids'];
+        if ($searchIds) {
             sort($searchIds);
         }
 
@@ -55,10 +54,10 @@ class RichEditorAssetTest extends Unit
 
         $responseJson = json_decode($response->getBody()->getContents(), true);
 
-        $ids = [];
+        $ids = $responseJson['msg']['asset_list'] ?? [];
 
-        if (isset($responseJson['msg']['asset_list']) && $responseJson['msg']['asset_list']) {
-            $ids = array_column($responseJson['msg']['asset_list'], 'id');
+        if ($ids) {
+            $ids = array_column($ids, 'id');
             sort($ids);
         }
 
@@ -81,7 +80,7 @@ class RichEditorAssetTest extends Unit
             prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search']
         );
 
-        return $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
     }
 
     /**
@@ -99,7 +98,7 @@ class RichEditorAssetTest extends Unit
             prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_class_ids']
         );
 
-        return $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
     }
 
     /**
@@ -117,7 +116,7 @@ class RichEditorAssetTest extends Unit
             prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_class_ids_second']
         );
 
-        return $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
     }
 
     /**
@@ -135,7 +134,7 @@ class RichEditorAssetTest extends Unit
             prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_class_ids_page']
         );
 
-        return $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
     }
 
     /**
@@ -152,6 +151,6 @@ class RichEditorAssetTest extends Unit
             prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_keyword_class_ids']
         );
 
-        return $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
     }
 }

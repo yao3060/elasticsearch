@@ -31,21 +31,23 @@ class LottieVideoWordTest extends Unit
             keyword: $keyword, page: $page, pageSize: $pageSize, prep: $prep
         ));
 
-        if (sizeof($search['ids'])) sort($search['ids']);
+        $searchIds = $search['ids'] ?? [];
+
+        if ($searchIds) sort($search['ids']);
 
         $response = (new Client())->get($prodUrl);
 
         $responseJson = json_decode($response->getBody()->getContents(), true);
 
-        $ids = [];
+        $ids = $responseJson['msg'] ?? [];
 
-        if (!empty($responseJson['msg'])) {
-            $ids = array_column($responseJson['msg'], 'id');
+        if ($ids) {
+            $ids = array_column($ids, 'id');
             sort($ids);
         }
 
         return [
-            'dev' => $search['ids'],
+            'dev' => $searchIds,
             'prod' => $ids
         ];
 

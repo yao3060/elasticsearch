@@ -82,10 +82,9 @@ class TemplateTest extends Unit
             elasticsearchColor: $elasticsearchColor
         ));
 
-        $searchIds = [];
+        $searchIds = $search['ids'] ?? [];
 
-        if (isset($search['ids']) && $search['ids']) {
-            $searchIds = $search['ids'];
+        if ($searchIds) {
             sort($searchIds);
         }
 
@@ -93,10 +92,10 @@ class TemplateTest extends Unit
 
         $responseJson = json_decode($response->getBody()->getContents(), true);
 
-        $ids = [];
+        $ids = $responseJson['data']['templInfo'] ?? [];
 
-        if (isset($responseJson['data']['templInfo']) && $responseJson['data']['templInfo'] && $responseJson['stat'] != -1) {
-            $ids = array_column($responseJson['data']['templInfo'], 'id');
+        if ($ids && $responseJson['stat'] != -1) {
+            $ids = array_column($ids, 'id');
             sort($ids);
         }
 
