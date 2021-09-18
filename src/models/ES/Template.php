@@ -142,7 +142,7 @@ class Template extends BaseModel
 
     /**
      * 搜索
-     * @param QueryBuilderInterface $query
+     * @param \app\queries\ES\TemplateSearchQuery $query
      * @return array
      */
     public function search(QueryBuilderInterface $query): array

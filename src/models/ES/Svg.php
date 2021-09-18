@@ -11,6 +11,11 @@ class Svg extends BaseModel
 {
     const REDIS_DB = 8;
 
+    /**
+     * @param \app\queries\ES\SvgSearchQuery $query
+     * @return array
+     * @throws Exception
+     */
     public function search(QueryBuilderInterface $query): array
     {
         $redisKey = $query->getRedisKey();

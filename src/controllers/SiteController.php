@@ -3,15 +3,10 @@
 namespace app\controllers;
 
 use app\models\Backend\AssetUseTop;
-use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
-use app\models\ES\Picture;
-use app\queries\ES\PictureSearchQuery;
 
 class SiteController extends Controller
 {
@@ -64,10 +59,12 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return json_encode([
+        return $this->asJson([
             'code' => 'welcome',
             'message' => 'Welcome',
             'data' => [
+                'is_prod' => is_prod(),
+                'is_local' => is_local(),
                 'AssetUseTop' => AssetUseTop::getLatestBy('kid_1', 1),
             ]
         ]);
@@ -80,19 +77,7 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        }
-
-        $model->password = '';
-        return $this->render('login', [
-            'model' => $model,
-        ]);
+        return 'this is a login action';
     }
 
     /**
@@ -102,9 +87,7 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
-        Yii::$app->user->logout();
-
-        return $this->goHome();
+        return 'this is a logout action';
     }
 
     /**
@@ -114,15 +97,7 @@ class SiteController extends Controller
      */
     public function actionContact()
     {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
+        return 'this is a contact page';
     }
 
     /**
@@ -132,6 +107,6 @@ class SiteController extends Controller
      */
     public function actionAbout()
     {
-        return $this->render('about');
+        return 'this is a about action';
     }
 }

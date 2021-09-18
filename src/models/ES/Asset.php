@@ -2,9 +2,10 @@
 
 namespace app\models\ES;
 
+use Yii;
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
-use app\models\AssetUseTop;
+use app\models\Backend\AssetUseTop;
 
 /**
  * Class Asset
@@ -13,7 +14,8 @@ use app\models\AssetUseTop;
  */
 class Asset extends BaseModel
 {
-    private $redisDb = 8;
+    const REDIS_DB = 8;
+    const REDIS_EXPIRE = 86400;
 
     /**
      * @param \app\queries\ES\AssetSearchQuery $query
@@ -22,44 +24,48 @@ class Asset extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
-        if (!$return || !$return['hit']) {
-            unset($return);
-            if ($query->useCount) {
-                $useInfo = AssetUseTop::getLastInfo(1);
-            } else {
-                $useInfo = '';
-            }
-            try {
-                $info = self::find()
-                    ->source(['id', 'use_count'])
-                    ->query($query->query())
-                    ->orderBy($query->sortBy())
-                    ->offset($query->queryOffset())
-                    ->limit($query->pageSizeSet())
-                    ->createCommand()
-                    ->search([], ['track_scores' => true])['hits'];
-            } catch (\exception $e) {
-                $info['hit'] = 0;
-                $info['ids'] = [];
-                $info['score'] = [];
-            }
-            $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
-            foreach ($info['hits'] as $value) {
-                $return['ids'][] = $value['_id'];
-                $return['score'][$value['_id']] = $value['sort'][0];
-                if ($useInfo) {
-                    if ($value['_source']['use_count'] >= $useInfo['top1_count']) {
-                        $return['use_count'][$value['_id']] = 1;
-                    } elseif ($value['_source']['use_count'] >= $useInfo['top5_count']) {
-                        $return['use_count'][$value['_id']] = 2;
-                    } else {
-                        $return['use_count'][$value['_id']] = 3;
-                    }
+        $redisKey = $query->getRedisKey();
+        $return = Tools::getRedis(self::REDIS_DB, $redisKey());
+        if ($return && isset($return['hit']) && $return['hit']) {
+            return $return;
+        }
+
+        if ($query->useCount) {
+            $useInfo = AssetUseTop::getLatestBy('kid_1', 1);
+        } else {
+            $useInfo = '';
+        }
+        try {
+            $info = self::find()
+                ->source(['id', 'use_count'])
+                ->query($query->query())
+                ->orderBy($query->sortBy())
+                ->offset($query->queryOffset())
+                ->limit($query->pageSizeSet())
+                ->createCommand()
+                ->search([], ['track_scores' => true])['hits'];
+        } catch (\Exception $e) {
+            Yii::error($e->getMessage());
+            $info['hit'] = 0;
+            $info['ids'] = [];
+            $info['score'] = [];
+        }
+        $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
+        foreach ($info['hits'] as $value) {
+            $return['ids'][] = $value['_id'];
+            $return['score'][$value['_id']] = $value['sort'][0];
+            if ($useInfo) {
+                if ($value['_source']['use_count'] >= $useInfo['top1_count']) {
+                    $return['use_count'][$value['_id']] = 1;
+                } elseif ($value['_source']['use_count'] >= $useInfo['top5_count']) {
+                    $return['use_count'][$value['_id']] = 2;
+                } else {
+                    $return['use_count'][$value['_id']] = 3;
                 }
             }
-            Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 86400);
         }
+        Tools::setRedis(self::REDIS_DB, $redisKey, $return, self::REDIS_EXPIRE);
+
         return $return;
     }
 

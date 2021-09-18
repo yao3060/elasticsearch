@@ -8,15 +8,14 @@ use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
 use yii\base\Exception;
 
-class LottieVideoWord extends BaseModel
+class SeoNewPage extends BaseModel
 {
     public static $redisDb = 8;
 
     public static function index()
     {
-        return 'video_lottie_word';
+        return 'seo_new_page';
     }
-
 
     public static function type()
     {
@@ -25,49 +24,53 @@ class LottieVideoWord extends BaseModel
 
     public function attributes()
     {
-        return ['id', 'title', 'create_date', 'pr', 'width', 'height', 'description'];
+        return ['id', 'keyword', '_keyword'];
     }
 
     /**
-     * @param \app\queries\ES\LottieVideoSearchQuery $query
-     * @return array
+     * @param \app\queries\ES\SeoNewPageSeoSearchQuery $query
+     * @return array|false|mixed
      * @throws Exception
      */
-    public function search(QueryBuilderInterface $query) :array
+    public function seoSearch(QueryBuilderInterface $query)
     {
         $return = Tools::getRedis(self::$redisDb, $query->getRedisKey());
 
-        if (!$return || Tools::isReturnSource() || $query->prep) {
-            unset($return);
+        if (!$return || Tools::isReturnSource()) {
 
             $return['hit'] = 0;
             $return['ids'] = [];
             $return['score'] = [];
 
             try {
+
                 $info = self::find()
-                    ->source(['id'])
+                    ->source(['id', '_keyword'])
                     ->query($query->query())
-                    ->orderBy($query->sort)
-                    ->offset($query->offset)
                     ->limit($query->pageSize)
                     ->createCommand()
                     ->search([], ['track_scores' => true])['hits'];
+
             } catch (\exception $e) {
+
                 throw new Exception($e->getMessage());
+
             }
 
-            if (isset($info['hits']) && sizeof($info['hits'])) {
-                $total = $info['total'] ?? 0;
-                $return['hit'] = $total > 10000 ? 10000 : $total;
-                foreach ($info['hits'] as $value) {
-                    $return['ids'][] = $value['_id'];
-                    $return['score'][$value['_id']] = $value['sort'][0];
+            $total = $info['total'] ?? [];
+
+            if (isset($info['hits']) && $info['hits'] && $total > 0) {
+
+                foreach ($info['hits'] as $k=>$v) {
+                    $return[$k]['id'] = $v['_source']['id'];
+                    $return[$k]['keyword'] = $v['_source']['_keyword'];
                 }
             }
 
-//            Tools::setRedis(self::$redisDb, $query->getRedisKey(), $return, 86400);
+//            Tools::setRedis(self::$redisDb, $query->getRedisKey(), $return, 86400 * 30);
+
         }
+
         return $return;
     }
 }

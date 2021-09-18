@@ -40,7 +40,7 @@ configMapGenerator:
       - DB_PREFIX=es_
       - BACKEND_DB_HOST=rm-uf6ppr853k88o05pprw.mysql.rds.aliyuncs.com
       - BACKEND_DB_DATABASE=db_ips
-      - BACKEND_DB_USERNAME=S2671_818ps
+      - BACKEND_DB_USERNAME=hckj_ips_pic
       - REDIS_HOST=elasticsearch-staging-cache
       - REDIS_PORT=6379
       - REDIS_HOSTNAME=r-uf6ho5b75zcknf33lr.redis.rds.aliyuncs.com
