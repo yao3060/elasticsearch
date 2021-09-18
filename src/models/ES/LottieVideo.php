@@ -27,6 +27,11 @@ class LottieVideo extends BaseModel
         return ['id', 'title', 'create_date', 'pr', 'width', 'height', 'class_id', 'description'];
     }
 
+    /**
+     * @param \app\queries\ES\LottieVideoSearchQuery $query
+     * @return array
+     * @throws Exception
+     */
     public function search(QueryBuilderInterface $query) :array
     {
         $return = Tools::getRedis(self::$redisDb, $query->getRedisKey());

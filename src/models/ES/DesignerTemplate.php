@@ -26,6 +26,10 @@ class DesignerTemplate extends BaseModel
         return Yii::$app->get('elasticsearch_second');
     }
 
+    /**
+     * @param \app\queries\ES\DesignerTemplateSearchQuery $query
+     * @return array
+     */
     public function search(QueryBuilderInterface $query): array
     {
         try {

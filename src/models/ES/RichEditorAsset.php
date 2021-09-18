@@ -27,6 +27,11 @@ class RichEditorAsset extends BaseModel
         return ['id', 'title', 'create_date', 'width', 'height', 'class_id','description'];
     }
 
+    /**
+     * @param \app\queries\ES\RichEditorAssetSearchQuery $query
+     * @return array
+     * @throws Exception
+     */
     public function search(QueryBuilderInterface $query): array
     {
         $return = Tools::getRedis(self::$redisDb, $query->getRedisKey());
