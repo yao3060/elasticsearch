@@ -6,4 +6,4 @@ fi
 
 cp overlays/production/secrets.txt base/apps/secrets.txt
 cp overlays/production/secrets.txt base/db/secrets.txt
-kubectl apply -k overlays/production/
+./kubectl apply -k overlays/production/
