@@ -43,9 +43,9 @@ class Tools
 
     public static function setRedis($db = 2, $key, $value, $time = 86400)
     {
-        if (!is_prod()) {
-            return;
-        }
+//        if (!is_prod()) {
+//            return;
+//        }
 
         if (is_array($value) || is_object($value)) {
             $value = serialize($value);
@@ -61,9 +61,9 @@ class Tools
 
     public static function getRedis($db = 2, $key)
     {
-        if (!is_prod()) {
-            return null;
-        }
+//        if (!is_prod()) {
+//            return null;
+//        }
 
         $redis = 'redis'.$db;
         $info = Yii::$app->$redis->get($key);

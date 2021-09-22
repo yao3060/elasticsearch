@@ -1,10 +1,10 @@
 <?php
 
-namespace app\models\ES;
+namespace app\models\Backend;
 
-use yii\db\ActiveRecord;
+use app\models\BackendActiveRecord;
 
-class TableName extends ActiveRecord
+class TableName extends BackendActiveRecord
 {
     public static function tableName()
     {

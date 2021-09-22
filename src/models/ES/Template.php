@@ -5,6 +5,7 @@ namespace app\models\ES;
 use app\components\IpsAuthority;
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
+use app\models\Backend\TableName;
 use app\models\Backend\Templtaglink;
 use app\models\Backend\Test;
 use Yii;

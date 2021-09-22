@@ -26,6 +26,7 @@ class BackgroundVideoController extends BaseController
             };
 
             $validateAttributes = $validate->getAttributes();
+
             $search = (new BackgroundVideo())->search(new BackgroundVideoQuery(
                 keyword: $validateAttributes['keyword'] ?? 0,
                 classId: $validateAttributes['class_id'] ?? [],

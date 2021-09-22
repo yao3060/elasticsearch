@@ -23,12 +23,13 @@ class RichEditorAsset extends BaseModel
         return 'list';
     }
 
-    public function attributes() {
-        return ['id', 'title', 'create_date', 'width', 'height', 'class_id','description'];
+    public function attributes()
+    {
+        return ['id', 'title', 'create_date', 'width', 'height', 'class_id', 'description'];
     }
 
     /**
-     * @param \app\queries\ES\RichEditorAssetSearchQuery $query
+     * @param  \app\queries\ES\RichEditorAssetSearchQuery  $query
      * @return array
      * @throws Exception
      */
@@ -37,8 +38,10 @@ class RichEditorAsset extends BaseModel
         $return = Tools::getRedis(self::$redisDb, $query->getRedisKey());
 
         $designer = IpsAuthority::check(DESIGNER_USER);
-        if (!$return || Tools::isReturnSource() || $designer) {
-            unset($return);
+
+        if (!empty($return) && isset($return['hit']) && $return['hit'] && Tools::isReturnSource(
+            ) === false && !$designer) {
+            return $return;
         }
 
         $return['hit'] = 0;
@@ -55,6 +58,7 @@ class RichEditorAsset extends BaseModel
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
         } catch (\exception $e) {
+            \Yii::error($e->getMessage(), __METHOD__);
             throw new Exception($e->getMessage());
         }
 
@@ -69,7 +73,7 @@ class RichEditorAsset extends BaseModel
             }
         }
 
-//        Tools::setRedis(self::$redisDb, $query->getRedisKey(), $return, 86400);
+        Tools::setRedis(self::$redisDb, $query->getRedisKey(), $return, 86400);
 
         return $return;
     }

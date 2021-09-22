@@ -110,28 +110,28 @@ class TemplateTest extends Unit
      * @templateTypes 3
      * @pageSize  35
      */
-    public function testSearch()
-    {
-        $compare = $this->prepareData(
-            keyword: "",
-            page: 1,
-            kid1: 0,
-            kid2: 0,
-            sortType: 'bytime',
-            tagId: "",
-            isZb: 1,
-            pageSize: 35,
-            ratio: "",
-            classId: "",
-            update: 0,
-            size: 0,
-            templateTypes: 3,
-            fuzzy: 0,
-            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search']
-        );
-
-        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
-    }
+//    public function testSearch()
+//    {
+//        $compare = $this->prepareData(
+//            keyword: "",
+//            page: 1,
+//            kid1: 0,
+//            kid2: 0,
+//            sortType: 'bytime',
+//            tagId: "",
+//            isZb: 1,
+//            pageSize: 35,
+//            ratio: "",
+//            classId: "",
+//            update: 0,
+//            size: 0,
+//            templateTypes: 3,
+//            fuzzy: 0,
+//            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search']
+//        );
+//
+//        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+//    }
 
     /**
      * @target 测试无搜索词有分类分页
@@ -166,28 +166,28 @@ class TemplateTest extends Unit
      * @classId: 290_334_0_0
      * @tagId: 46
      */
-    public function testSearchCarryClassIdsTagId()
-    {
-        $compare = $this->prepareData(
-            keyword: "",
-            page: 1,
-            kid1: 0,
-            kid2: 0,
-            sortType: '',
-            tagId: 46,
-            isZb: 1,
-            pageSize: 35,
-            ratio: "",
-            classId: "290_334_0_0",
-            update: 0,
-            size: 0,
-            templateTypes: 3,
-            fuzzy: 0,
-            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_class_ids_tag_id']
-        );
-
-        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
-    }
+//    public function testSearchCarryClassIdsTagId()
+//    {
+//        $compare = $this->prepareData(
+//            keyword: "",
+//            page: 1,
+//            kid1: 0,
+//            kid2: 0,
+//            sortType: '',
+//            tagId: 46,
+//            isZb: 1,
+//            pageSize: 35,
+//            ratio: "",
+//            classId: "290_334_0_0",
+//            update: 0,
+//            size: 0,
+//            templateTypes: 3,
+//            fuzzy: 0,
+//            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_class_ids_tag_id']
+//        );
+//
+//        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+//    }
 
     /**
      * @target 测试无搜索词
@@ -195,28 +195,28 @@ class TemplateTest extends Unit
      * @sortType: 'bytime'
      * @tagId: 46
      */
-    public function testSearchCarryClassIdsSortTypeTagId()
-    {
-        $compare = $this->prepareData(
-            keyword: "",
-            page: 1,
-            kid1: 0,
-            kid2: 0,
-            sortType: 'bytime',
-            tagId: 46,
-            isZb: 1,
-            pageSize: 35,
-            ratio: "",
-            classId: "290_334_0_0",
-            update: 0,
-            size: 0,
-            templateTypes: 3,
-            fuzzy: 0,
-            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_class_ids_tag_id_sort_type']
-        );
-
-        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
-    }
+//    public function testSearchCarryClassIdsSortTypeTagId()
+//    {
+//        $compare = $this->prepareData(
+//            keyword: "",
+//            page: 1,
+//            kid1: 0,
+//            kid2: 0,
+//            sortType: 'bytime',
+//            tagId: 46,
+//            isZb: 1,
+//            pageSize: 35,
+//            ratio: "",
+//            classId: "290_334_0_0",
+//            update: 0,
+//            size: 0,
+//            templateTypes: 3,
+//            fuzzy: 0,
+//            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_class_ids_tag_id_sort_type']
+//        );
+//
+//        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+//    }
 
     /**
      * @target 搜索词：你好
@@ -224,8 +224,26 @@ class TemplateTest extends Unit
      * @width 1242
      * @height 2208
      */
-    public function testSearchCarryKeyword()
-    {
+//    public function testSearchCarryKeyword()
+//    {
+////        $compareKeywordResult = $this->prepareData(
+////            keyword: "你好",
+////            page: 1,
+////            kid1: 0,
+////            kid2: 0,
+////            sortType: "",
+////            tagId: "",
+////            isZb: 1,
+////            pageSize: 32,
+////            ratio: 0,
+////            classId: "10_30_0",
+////            templateTypes: 1,
+////            fuzzy: 0,
+////            size: 0,
+////            update: 0,
+////            prodUrl: getenv('UNIT_BASE_URL') . '/api/get-template-list?w=%E4%BD%A0%E5%A5%BD&p=1&kid_1=0&kid_2=0&ratioId=0&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=10_30_0&width=1242&height=2208',
+////        );
+//
 //        $compareKeywordResult = $this->prepareData(
 //            keyword: "你好",
 //            page: 1,
@@ -233,121 +251,103 @@ class TemplateTest extends Unit
 //            kid2: 0,
 //            sortType: "",
 //            tagId: "",
-//            isZb: 1,
+//            isZb: 0,
 //            pageSize: 32,
-//            ratio: 0,
+//            ratio: "",
 //            classId: "10_30_0",
 //            templateTypes: 1,
-//            fuzzy: 0,
 //            size: 0,
 //            update: 0,
-//            prodUrl: getenv('UNIT_BASE_URL') . '/api/get-template-list?w=%E4%BD%A0%E5%A5%BD&p=1&kid_1=0&kid_2=0&ratioId=0&tag1=0&tag2=0&tag3=0&sort_type=&is_zb=0&class_id=10_30_0&width=1242&height=2208',
+//            width: 1242,
+//            height: 2208,
+//            classIntersectionSearch: 1,
+//            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_keyword'],
 //        );
-
-        $compareKeywordResult = $this->prepareData(
-            keyword: "你好",
-            page: 1,
-            kid1: 0,
-            kid2: 0,
-            sortType: "",
-            tagId: "",
-            isZb: 0,
-            pageSize: 32,
-            ratio: "",
-            classId: "10_30_0",
-            templateTypes: 1,
-            size: 0,
-            update: 0,
-            width: 1242,
-            height: 2208,
-            classIntersectionSearch: 1,
-            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_keyword'],
-        );
-
-        $this->assertEqualsCanonicalizing($compareKeywordResult['dev'], $compareKeywordResult['prod']);
-    }
+//
+//        $this->assertEqualsCanonicalizing($compareKeywordResult['dev'], $compareKeywordResult['prod']);
+//    }
 
     /**
      * @target 关键词搜索：环保
      * @classId: 290_0_0_0
      * @tagId: 0
      */
-    public function testSearchCarryKeywordClassIdsSortTypeTagId()
-    {
-        $compare = $this->prepareData(
-            keyword: "环保",
-            page: 1,
-            kid1: 0,
-            kid2: 0,
-            sortType: '',
-            tagId: 0,
-            isZb: 1,
-            pageSize: 35,
-            ratio: "",
-            classId: "290_0_0_0",
-            update: 0,
-            size: 0,
-            templateTypes: 3,
-            fuzzy: 0,
-            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_keyword_class_ids']
-        );
-
-        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
-    }
-
-    /**
-     * @target 关键词搜索：环保
-     * @classId: 290_0_0_710
-     * @tagId: 49
-     */
-    public function testSearchCarryKeywordClassIdsTagId()
-    {
-        $compare = $this->prepareData(
-            keyword: "环保",
-            page: 1,
-            kid1: 0,
-            kid2: 0,
-            sortType: '',
-            tagId: 49,
-            isZb: 1,
-            pageSize: 35,
-            ratio: "",
-            classId: "290_0_0_710",
-            update: 0,
-            size: 0,
-            templateTypes: 3,
-            fuzzy: 0,
-            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_keyword_class_ids_tag_id']
-        );
-
-        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
-    }
+//    public function testSearchCarryKeywordClassIdsSortTypeTagId()
+//    {
+//        $compare = $this->prepareData(
+//            keyword: "环保",
+//            page: 1,
+//            kid1: 0,
+//            kid2: 0,
+//            sortType: '',
+//            tagId: 0,
+//            isZb: 1,
+//            pageSize: 35,
+//            ratio: "",
+//            classId: "290_0_0_0",
+//            update: 0,
+//            size: 0,
+//            templateTypes: 3,
+//            fuzzy: 0,
+//            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_keyword_class_ids']
+//        );
+//
+//        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+//    }
 
     /**
      * @target 关键词搜索：环保
      * @classId: 290_0_0_710
      * @tagId: 49
      */
-    public function testSearchCarryKeywordClassIdsTagIdSecond()
-    {
-        $compare = $this->prepareData(
-            keyword: "环保",
-            page: 1,
-            kid1: 0,
-            kid2: 0,
-            sortType: '',
-            tagId: 104,
-            isZb: 1,
-            pageSize: 35,
-            ratio: "",
-            classId: "290_0_0_710",
-            update: 0,
-            size: 0,
-            templateTypes: 3,
-            fuzzy: 0,
-            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_keyword_class_ids_tag_id_second']
-        );
+//    public function testSearchCarryKeywordClassIdsTagId()
+//    {
+//        $compare = $this->prepareData(
+//            keyword: "环保",
+//            page: 1,
+//            kid1: 0,
+//            kid2: 0,
+//            sortType: '',
+//            tagId: 49,
+//            isZb: 1,
+//            pageSize: 35,
+//            ratio: "",
+//            classId: "290_0_0_710",
+//            update: 0,
+//            size: 0,
+//            templateTypes: 3,
+//            fuzzy: 0,
+//            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_keyword_class_ids_tag_id']
+//        );
+//
+//        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+//    }
 
-        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
-    }
+    /**
+     * @target 关键词搜索：环保
+     * @classId: 290_0_0_710
+     * @tagId: 49
+     */
+//    public function testSearchCarryKeywordClassIdsTagIdSecond()
+//    {
+//        $compare = $this->prepareData(
+//            keyword: "环保",
+//            page: 1,
+//            kid1: 0,
+//            kid2: 0,
+//            sortType: '',
+//            tagId: 104,
+//            isZb: 1,
+//            pageSize: 35,
+//            ratio: "",
+//            classId: "290_0_0_710",
+//            update: 0,
+//            size: 0,
+//            templateTypes: 3,
+//            fuzzy: 0,
+//            prodUrl: getenv('UNIT_BASE_URL') . self::$urls['search_carry_keyword_class_ids_tag_id_second']
+//        );
+//
+//        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
+//    }
 }
