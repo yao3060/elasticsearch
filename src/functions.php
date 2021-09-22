@@ -3,7 +3,7 @@
 if (!function_exists('is_prod')) {
     function is_prod()
     {
-        return getenv('APP_ENV') === 'production';
+        return getenv('APP_ENV') === 'production' || getenv('APP_ENV') === 'prod';
     }
 }
 
