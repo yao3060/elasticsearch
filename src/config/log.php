@@ -1,5 +1,7 @@
 <?php
 
+use app\components\JsonStreamTarget;
+
 return  [
     'traceLevel' => YII_DEBUG ? 3 : 0,
     'targets' => [
@@ -8,13 +10,13 @@ return  [
             'levels' => [],
         ],
         [
-            'class' => \codemix\streamlog\Target::class,
+            'class' => JsonStreamTarget::class,
             'url' => 'php://stdout',
             'levels' => ['info', 'trace'],
             'logVars' => [],
         ],
         [
-            'class' => \codemix\streamlog\Target::class,
+            'class' => JsonStreamTarget::class,
             'url' => 'php://stderr',
             'levels' => ['error', 'warning'],
             'logVars' => [],
