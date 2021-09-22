@@ -1,0 +1,34 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - backend/cronjob.yaml
+  - backend/service.yaml
+  - backend/deployment.yaml
+  - backend/ingress.yaml
+  - backend/volume.yaml
+  - backend/hpa.yaml
+
+configMapGenerator:
+  - name: public
+    literals:
+
+secretGenerator:
+  - name: secrets
+    env: secrets.txt
+    type: Opaque
+
+vars:
+  - name: UPSTREAM_ADMIN
+    objref:
+      kind: Service
+      name: backend-php
+      apiVersion: v1
+    fieldref:
+      fieldpath: metadata.name
+  - name: ADMIN_HOST
+    objref:
+      apiVersion: v1
+      kind: ConfigMap
+      name: public-overlays
+    fieldref:
+      fieldpath: data.admin_host

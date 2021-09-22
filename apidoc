@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -aeuo pipefail
+
+# first build the image after cloning this repository
+docker build -t apidoc/apidoc ./.docker/apidoc
+
+# run apidoc
+mkdir -p ./src/web/apidocs/
+chmod -R 777 ./src/web/apidocs/
+
+docker run --rm \
+  -v $(pwd):/home/node/apidoc \
+  apidoc/apidoc -i src/controllers/ -o ./src/web/apidocs/

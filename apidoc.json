@@ -1,0 +1,12 @@
+{
+  "name": "API Document",
+  "version": "1.0.0",
+  "description": "API Document",
+  "title": "API Document",
+  "url": "https://api-staging.818ps.com",
+  "template": {
+    "withCompare": true,
+    "withGenerator": true,
+    "aloneDisplay": false
+  }
+}

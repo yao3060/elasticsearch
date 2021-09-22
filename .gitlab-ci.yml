@@ -3,22 +3,19 @@ variables:
   GIT_DEPTH: 1
 
 cache:
-  key: ${CI_PROJECT_NAME}
+  key: ${CI_PROJECT_NAME}_3
   paths:
-    - ./src-magento/.composer-cache
-    - src-react/node_modules
-    - src-static/node_modules
+    - src/vendor
 
 stages:
+  - install
   - build
   - deploy
 
 before_script:
   - set -aeu
-  # - docker login ${DOMAIN_DOCKER_REGISTRY} -u ${DOMAIN_DOCKER_REGISTRY_USERNAME} -p${DOMAIN_DOCKER_REGISTRY_PASSWORD}
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+  # - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   - cp .env.default .env
-  - if [[ $CI_RUNNER_DESCRIPTION =~ vietnam ]]; then export BUILD_LOCATION=VN; else BUILD_LOCATION=CN; fi
 
 after_script:
   - source .env
@@ -26,13 +23,28 @@ after_script:
 
 ###########################################################################
 
-build-staging-job:
+staging-install-job:
+  stage: install
+  environment:
+    name: staging
+  image: composer:2
+  tags:
+    - 818ps_web_dev
+  only:
+    - develop
+  script:
+    - cd ./src
+    - echo "Start install php packages"
+    - composer install --ignore-platform-reqs --no-scripts
+    - composer dump-autoload
+    - cd ../
+
+staging-build-job:
   stage: build
   environment:
     name: staging
   tags:
-    - buildbox-boilerplate:18.03.X
-    # - buildbox-boilerplate-vn:18.03.X 
+    - 818ps_web_dev
   only:
     - develop
   script:
@@ -43,43 +55,34 @@ build-staging-job:
     - source ./.env
     - export COMPOSE_PROJECT_NAME="${PROJECT}_${ENVIRONMENT}"
     - export VERSION=$(cat VERSION)
-    - ./install
-    - ./build
-    - ./test
-    - ./deploy/scripts/push-to-gitlab.sh
-    - echo "built successfully" 
-  when: manual
-  
-deploy-staging-job:
-  stage: deploy
+    - echo $VERSION
+    - echo "ready to build and push to Aliyun CS"
+    - ./deploy/scripts/deploy-to-aliyun-cs.sh nginx php
+    - echo "built successfully"
+  # when: manual
+
+prod-install-job:
+  stage: install
   environment:
-    name: staging
+    name: production
+  image: composer:2
   tags:
-    - buildbox-boilerplate:18.03.X
-    # - buildbox-boilerplate-cn:18.03.X 
+    - 818ps_web_dev
   only:
-    - develop
+    - master
   script:
-    # - ./deploy/scripts/enable-docker-compose-network.sh
-    - ./deploy/scripts/modify-dot-env-staging.sh
-    - sed -i "1 s|$|-${CI_COMMIT_SHA:0:8}|" VERSION
-    - source ./.env
-    - export COMPOSE_PROJECT_NAME="${PROJECT}_${ENVIRONMENT}"
-    - export VERSION=$(cat VERSION)
-    # - ./deploy/scripts/deploy-to.sh [ staging-1 120.55.113.220 ; staging-2 47.90.34.3 ]
-    # - ./deploy/scripts/deploy-to-aliyun-cs.sh cron react_nginx [list containers name here, as example] for aliyun_cs 
-    - echo "pushed successfully"
-  when: manual
+    - cd ./src
+    - echo "Start install php packages"
+    - composer install --ignore-platform-reqs --no-dev --no-scripts
+    - composer dump-autoload
+    - cd ../
 
-###########################################################################
-
-build-production-job:
+prod-build-job:
   stage: build
   environment:
     name: production
   tags:
-    - buildbox-boilerplate:18.03.X
-    # - buildbox-boilerplate-vn:18.03.X
+    - 818ps_web_dev
   only:
     - master
   script:
@@ -90,30 +93,8 @@ build-production-job:
     - source ./.env
     - export COMPOSE_PROJECT_NAME="${PROJECT}_${ENVIRONMENT}"
     - export VERSION=$(cat VERSION)
-    - ./install
-    - ./build
-    - ./test
-    - ./deploy/scripts/push-to-gitlab.sh
-    - echo "built successfully" 
-  when: manual
-
-deploy-production-job:
-  stage: deploy
-  environment:
-    name: production
-  tags:
-    - buildbox-boilerplate:18.03.X
-    # - buildbox-boilerplate-cn:18.03.X
-  only:
-    - master
-  script:
-    # - ./deploy/scripts/enable-docker-compose-network.sh
-    - ./deploy/scripts/modify-dot-env-production.sh
-    - sed -i "1 s|$|-${CI_COMMIT_SHA:0:8}|" VERSION
-    - source ./.env
-    - export COMPOSE_PROJECT_NAME="${PROJECT}_${ENVIRONMENT}"
-    - export VERSION=$(cat VERSION)
-    # - ./deploy/scripts/deploy-to.sh [replace_production_server_ip_here] for standalone server
-    #- ./deploy/scripts/deploy-to-aliyun-cs.sh cron react_nginx [list containers name here, as example] for aliyun_cs 
-    - echo "pushed successfully"
+    - echo $VERSION
+    - echo "ready to build and push to Aliyun CS"
+    - ./deploy/scripts/deploy-to-aliyun-cs.sh nginx php
+    - echo "built successfully"
   when: manual

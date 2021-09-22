@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-nginx
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+        - image: registry-vpc.cn-shanghai.aliyuncs.com/818ps/elasticsearch_staging_nginx:latest
+          name: backend-nginx
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-php
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+        - image: registry-vpc.cn-shanghai.aliyuncs.com/818ps/elasticsearch_staging_php:latest
+          name: backend-php
+          resources:
+            limits:
+              cpu: 500m
+            requests:
+              cpu: 200m
+      volumes:
+        - name: yii-runtime
+          persistentVolumeClaim:
+            claimName: elasticsearch-staging-yii-runtime-claim
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: yii-runtime
+spec:
+  capacity:
+    storage: 50Gi
+  csi:
+    volumeAttributes:
+      server: "3766a4a783-jsy8.cn-shanghai.nas.aliyuncs.com"
+      path: "/mnt/elasticsearch-staging-yii-runtime"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: yii-runtime-claim
+  namespace: default
+spec:
+  resources:
+    requests:
+      storage: 50Gi
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cronjob-test
+spec:
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - image: registry-vpc.cn-shanghai.aliyuncs.com/818ps/elasticsearch_staging_php:latest
+              name: cronjob-test
