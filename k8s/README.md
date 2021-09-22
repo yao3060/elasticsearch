@@ -20,3 +20,11 @@ Deployment is done by running
 
 Production deployment is not scheduled to be done using Kubernetes.
 Deployment will be done manually using a more standard infrastructure approach.
+
+## Add TLS configuration
+
+```shell
+kubectl create secret tls wildcard-818ps-com \
+  --cert=818ps.pem \
+  --key=818ps.key
+```

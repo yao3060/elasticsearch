@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: backend-nginx
 spec:
+  replicas: 3
   template:
     spec:
       containers:
@@ -14,19 +15,17 @@ kind: Deployment
 metadata:
   name: backend-php
 spec:
+  replicas: 3
   template:
     spec:
       containers:
-        - image: registry-vpc.cn-shanghai.aliyuncs.com/818ps/elasticsearch_production_laravel_php:latest
+        - image: registry-vpc.cn-shanghai.aliyuncs.com/818ps/elasticsearch_production_php:latest
           name: backend-php
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: backend-php
-spec:
-  template:
-    spec:
+          resources:
+            limits:
+              cpu: 500m
+            requests:
+              cpu: 200m
       volumes:
         - name: yii-runtime
           persistentVolumeClaim:
@@ -39,11 +38,10 @@ metadata:
 spec:
   capacity:
     storage: 50Gi
-  flexVolume:
-    options:
-      mode: "755"
-      path: /mnt/elasticsearch-production-yii-runtime
-      server: 3766a4a783-jsy8.cn-shanghai.nas.aliyuncs.com
+  csi:
+    volumeAttributes:
+      server: "3766a4a783-jsy8.cn-shanghai.nas.aliyuncs.com"
+      path: "/mnt/elasticsearch-production-yii-runtime"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -58,14 +56,12 @@ spec:
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: process-orders
+  name: cronjob-test
 spec:
   jobTemplate:
     spec:
       template:
         spec:
           containers:
-            - image: registry-vpc.cn-shanghai.aliyuncs.com/818ps/elasticsearch_production_laravel_php:latest
-              name: process-orders
----
-
+            - image: registry-vpc.cn-shanghai.aliyuncs.com/818ps/elasticsearch_production_php:latest
+              name: cronjob-test

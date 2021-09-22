@@ -15,7 +15,7 @@ spec:
         backend:
           serviceName: backend-nginx
           servicePort: 443
-  # tls:
-  #   - hosts:
-  #       - $(ADMIN_HOST)
-  #     secretName: wildcard-818ps-com
+  tls:
+    - hosts:
+        - $(ADMIN_HOST)
+      secretName: wildcard-818ps-com
