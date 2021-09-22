@@ -54,6 +54,7 @@ class BackgroundController extends BaseController
                 [],
                 422
             );
+            yii::error(str_replace('yii\\base\\DynamicModel::', '', $e->getMessage()),__METHOD__);
         } catch (\Throwable $th) {
             $response = new Response(
                 'a_readable_error_code',
@@ -61,6 +62,7 @@ class BackgroundController extends BaseController
                 YII_DEBUG ? explode("\n", $th->getTraceAsString()) : [],
                 500
             );
+            yii::error($th->getMessage(),__METHOD__);
         }
         return $this->response($response);
     }
