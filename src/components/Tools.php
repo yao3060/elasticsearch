@@ -12,9 +12,10 @@ use Yii;
 class Tools
 {
     const REDIS_EXPIRE = 86400;
+
     /**
      * 是否回源
-     * @param int $prep
+     * @param  int  $prep
      * @return bool
      */
     public static function isReturnSource($prep = 0)
@@ -49,7 +50,7 @@ class Tools
         if (is_array($value) || is_object($value)) {
             $value = serialize($value);
         }
-        $redis = 'redis' . $db;
+        $redis = 'redis'.$db;
         return Yii::$app->$redis->set(
             $key,
             $value,
@@ -64,7 +65,7 @@ class Tools
             return null;
         }
 
-        $redis = 'redis' . $db;
+        $redis = 'redis'.$db;
         $info = Yii::$app->$redis->get($key);
         if (!$info) {
             return false;
@@ -87,7 +88,24 @@ class Tools
             return null;
         }
 
-        $redis = 'redis' . $db;
+        $redis = 'redis'.$db;
         Yii::$app->$redis->del($key);
+    }
+
+    /**
+     * 获取真实ip
+     * @return array|false|mixed|string
+     */
+    public static function getClientIP()
+    {
+        global $ip;
+        if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } elseif (getenv("REMOTE_ADDR")) {
+            $ip = getenv("REMOTE_ADDR");
+        } else {
+            $ip = "Unknow";
+        }
+        return $ip;
     }
 }
