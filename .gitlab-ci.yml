@@ -30,14 +30,16 @@ staging-install-job:
   image: composer:2
   tags:
     - 818ps_web_dev
+  only:
+    - develop
   script:
     - cd ./src
     - echo "Start install php packages"
-    - composer install --ignore-platform-reqs
+    - composer install --ignore-platform-reqs --no-scripts
     - composer dump-autoload
     - cd ../
 
-build-staging-job:
+staging-build-job:
   stage: build
   environment:
     name: staging
@@ -58,3 +60,41 @@ build-staging-job:
     - ./deploy/scripts/deploy-to-aliyun-cs.sh nginx php
     - echo "built successfully"
   # when: manual
+
+prod-install-job:
+  stage: install
+  environment:
+    name: production
+  image: composer:2
+  tags:
+    - 818ps_web_dev
+  only:
+    - master
+  script:
+    - cd ./src
+    - echo "Start install php packages"
+    - composer install --ignore-platform-reqs --no-dev --no-scripts
+    - composer dump-autoload
+    - cd ../
+
+prod-build-job:
+  stage: build
+  environment:
+    name: production
+  tags:
+    - 818ps_web_dev
+  only:
+    - master
+  script:
+    # - ./deploy/scripts/enable-docker-compose-network.sh
+    - ./deploy/scripts/update-resource-mirror.sh
+    - ./deploy/scripts/modify-dot-env-production.sh
+    - sed -i "1 s|$|-${CI_COMMIT_SHA:0:8}|" VERSION
+    - source ./.env
+    - export COMPOSE_PROJECT_NAME="${PROJECT}_${ENVIRONMENT}"
+    - export VERSION=$(cat VERSION)
+    - echo $VERSION
+    - echo "ready to build and push to Aliyun CS"
+    - ./deploy/scripts/deploy-to-aliyun-cs.sh nginx php
+    - echo "built successfully"
+  when: manual
