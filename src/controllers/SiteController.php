@@ -59,9 +59,24 @@ class SiteController extends BaseController
      */
     public function actionIndex()
     {
-        Yii::info('this is info.', __METHOD__);
-        Yii::warning('this is warning.', __METHOD__);
-        Yii::error('this is error.', __METHOD__);
+        try {
+            Yii::info('this is info.', __METHOD__);
+            Yii::warning('this is warning.', __METHOD__);
+            Yii::error([
+                'this' => 'This',
+                'is' => 'is',
+                'error' => 'error.'
+            ], __METHOD__);
+
+            throw new \Exception('this is a exception.');
+        } catch (\Throwable $th) {
+
+            Yii::error($th);
+            Yii::error($th->getTraceAsString());
+            //throw $th;
+        }
+
+
 
         return $this->asJson([
             'code' => 'welcome',
