@@ -109,4 +109,13 @@ class SiteController extends Controller
     {
         return 'this is a about action';
     }
+
+    public function actionHpa()
+    {
+        $x = 0.0001;
+        for ($i = 0; $i <= 10000000; $i++) {
+            $x += sqrt($x);
+        }
+        return "OK!";
+    }
 }

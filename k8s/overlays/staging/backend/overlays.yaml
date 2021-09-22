@@ -21,11 +21,11 @@ spec:
       containers:
         - image: registry-vpc.cn-shanghai.aliyuncs.com/818ps/elasticsearch_staging_php:latest
           name: backend-php
-          # resources:
-          #   limits:
-          #     cpu: 500m
-          #   requests:
-          #     cpu: 200m
+          resources:
+            limits:
+              cpu: 500m
+            requests:
+              cpu: 200m
 ---
 apiVersion: apps/v1
 kind: Deployment
