@@ -4,7 +4,7 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
-
+use Yii;
 /**
  * @package app\models\ES
  * author  ysp
@@ -21,6 +21,8 @@ class Seo extends BaseModel
     public function search(QueryBuilderInterface $query): array
     {
         $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
+        $log = 'Seo:redisKey:'.$query->getRedisKey();
+        yii::info($log,__METHOD__);
         if ($return && isset($return['hit']) && $return['hit']) {
             return $return;
         }

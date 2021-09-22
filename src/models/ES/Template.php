@@ -5,8 +5,8 @@ namespace app\models\ES;
 use app\components\IpsAuthority;
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
-use app\models\Templtaglink;
-use app\models\Test;
+use app\models\Backend\Templtaglink;
+use app\models\Backend\Test;
 use Yii;
 use yii\elasticsearch\Query;
 
@@ -168,15 +168,19 @@ class Template extends BaseModel
             if (!$return || !$return['total']) {
                 $redisStat['hit'] = 0;
             }
+
             $reStartTime = microtime(true);
-//            Yii::$app->redis9->incr("search_return_source_incr");
+            Yii::$app->redis9->incr("search_return_source_incr");
             unset($return);
+
             $costInfo = [];
             $costInfo['created'] = date('Y-m-d H:i:s', time());
             $esStartTime = microtime(true);
             $err = 0;
+
             try {
                 if (!empty($query->color)) {
+
                     $flg = '_col';
                     $info = (new Query())->from('818ps_pic', '818ps_pic')
                         ->source(['templ_id'])
@@ -185,7 +189,9 @@ class Template extends BaseModel
                         ->limit($query->pageSize)
                         ->createCommand($query->elasticsearchColor)
                         ->search(['timeout' => '5s'], ['track_scores' => true])['hits'];
+
                 } else {
+
                     $flg = '';
                     $info = self::find()
                         ->source(['temple_id'])
@@ -195,9 +201,11 @@ class Template extends BaseModel
                         ->limit($query->pageSize)
                         ->createCommand()
                         ->search(['timeout' => '5s'], ['track_scores' => true])['hits'];
+
                 }
                 $costInfo['err'] = 0;
             } catch (\exception $e) {
+
                 $err = 1;
                 Test::sqltest('searchKeywordFalse', $e->getMessage(), $query->keyword);
                 $info['hit'] = 0;
@@ -205,6 +213,7 @@ class Template extends BaseModel
                 $info['ids'] = [];
                 $info['score'] = [];
                 $costInfo['err'] = 1;
+
             }
 
             $esQueryTime = microtime(true) - $esStartTime;
@@ -212,26 +221,29 @@ class Template extends BaseModel
             $ip = Tools::getClientIP();
             $costInfo['name'] = 'Template' . $flg . $ip . $query->getRedisKey();
             $infoRedis = 'redis_search';
-//            Yii::$app->$infoRedis->Rpush('ES_query_time:query_time', json_encode($costInfo));
+            Yii::$app->$infoRedis->Rpush('ES_query_time:query_time', json_encode($costInfo));
 
             $return['total'] = $info['total'];
             $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
+
             foreach ($info['hits'] as $value) {
                 $return['ids'][] = $value['_id'];
                 $return['score'][$value['_id']] = $value['sort'][0];
             }
+
             if (!IpsAuthority::check(IOS_ALBUM_USER) && $err == 0) {
                 $expireTime = $info['total'] == 0 ? 7200 + rand(0, 3600) : 126000 + rand(-3600, 7200);
-//                $res = Tools::setRedis(self::$redisDb, $query->getRedisKey(), $return, $expireTime); // 35小时过期
-//                if (!$res) {
-//                    Test::sqltest('setsearchKeywordRedis', $res, $query->getRedisKey());
-//                }
+                $res = Tools::setRedis(self::$redisDb, $query->getRedisKey(), $return, $expireTime); // 35小时过期
+                if (!$res) {
+                    Test::sqltest('setsearchKeywordRedis', $res, $query->getRedisKey());
+                }
             }
+
             $redisStat['pt'] = (int)((microtime(true) - $reStartTime) * 1000);
         }
 
         $redisStat['created'] = date('Y-m-d H:i:s', time());
-//        Yii::$app->redis_monitor->Rpush('redis_stat:', json_encode($redisStat));
+        Yii::$app->redis_monitor->Rpush('redis_stat:', json_encode($redisStat));
 
         return $return;
     }

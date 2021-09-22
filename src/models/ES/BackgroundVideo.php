@@ -35,47 +35,45 @@ class BackgroundVideo extends BaseModel
 
     /**
      * 搜索背景视频
-     * @param \app\queries\ES\BackgroundVideoQuery $query
+     * @param  \app\queries\ES\BackgroundVideoQuery  $query
      * @return array
      */
     public function search(QueryBuilderInterface $query): array
     {
         $return = Tools::getRedis(self::$redisDb, $query->getRedisKey());
 
-        if (!$return || Tools::isReturnSource()) {
-            unset($return);
-
-            $return['hit'] = 0;
-            $return['ids'] = [];
-            $return['score'] = [];
-
-            try {
-
-                $info = self::find()
-                    ->source(['id'])
-                    ->query($query->query())
-                    ->orderBy($query->sort)
-                    ->offset($query->offset)
-                    ->limit($query->pageSize)
-                    ->createCommand()
-                    ->search([], ['track_scores' => true])['hits'];
-
-            } catch (\Throwable $throwable) {
-                throw new Exception($throwable->getMessage() . $throwable->getFile() . $throwable->getLine());
-            }
-
-            $total = $info['total'] ?? 0;
-
-            $return['hit'] = $total > 10000 ? 10000 : $total;
-            if (isset($info['hits']) && sizeof($info['hits'])) {
-                foreach ($info['hits'] as $value) {
-                    $return['ids'][] = $value['_id'];
-                    $return['score'][$value['_id']] = $value['sort'][0];
-                }
-            }
-
-//            Tools::setRedis(self::$redisDb, $query->getRedisKey(), $return, 86400);
+        if (!empty($return) && Tools::isReturnSource() === false) {
+            return $return;
         }
+
+        $return['hit'] = 0;
+        $return['ids'] = [];
+        $return['score'] = [];
+
+        try {
+            $info = self::find()
+                ->source(['id'])
+                ->query($query->query())
+                ->orderBy($query->sort)
+                ->offset($query->offset)
+                ->limit($query->pageSize)
+                ->createCommand()
+                ->search([], ['track_scores' => true])['hits'];
+        } catch (\Throwable $throwable) {
+            throw new Exception($throwable->getMessage().$throwable->getFile().$throwable->getLine());
+        }
+
+        $total = $info['total'] ?? 0;
+
+        $return['hit'] = $total > 10000 ? 10000 : $total;
+        if (isset($info['hits']) && sizeof($info['hits'])) {
+            foreach ($info['hits'] as $value) {
+                $return['ids'][] = $value['_id'];
+                $return['score'][$value['_id']] = $value['sort'][0];
+            }
+        }
+
+        Tools::setRedis(self::$redisDb, $query->getRedisKey(), $return, 86400);
 
         return $return;
     }

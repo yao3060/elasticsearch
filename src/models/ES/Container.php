@@ -4,7 +4,7 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
-use app\services\designers\DesignerRecommendAssetTagService;
+use Yii;
 
 /**
  * @package app\models\ES
@@ -34,6 +34,8 @@ class Container extends BaseModel
     public function search(QueryBuilderInterface $query): array
     {
         $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
+        $log = 'Container:redisKey:'.$query->getRedisKey();
+        yii::info($log,__METHOD__);
         if ($return && isset($return['hit']) && $return['hit']) {
             return $return;
         }

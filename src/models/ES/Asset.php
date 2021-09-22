@@ -25,6 +25,8 @@ class Asset extends BaseModel
     public function search(QueryBuilderInterface $query): array
     {
         $redisKey = $query->getRedisKey();
+        $log = 'Asset:redisKey:'.$query->getRedisKey();
+        yii::info($log,__METHOD__);
         $return = Tools::getRedis(self::REDIS_DB, $redisKey);
         if ($return && isset($return['hit']) && $return['hit']) {
             return $return;
