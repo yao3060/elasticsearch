@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\Backend\AssetUseTop;
 use Yii;
 use yii\filters\AccessControl;
+use yii\helpers\VarDumper;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 
@@ -77,6 +78,12 @@ class SiteController extends BaseController
         }
 
 
+
+        Yii::info('test VarDumper', VarDumper::export([
+            'hello' => 'world',
+            'hey' => 'boy',
+            'hi' => 'girl'
+        ]));
 
         return $this->asJson([
             'code' => 'welcome',
