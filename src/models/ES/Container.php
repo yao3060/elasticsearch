@@ -34,28 +34,29 @@ class Container extends BaseModel
     public function search(QueryBuilderInterface $query): array
     {
         $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
-        if (!$return) {
-            try {
-                $info = self::find()
-                    ->source(['id'])
-                    ->query($query->query())
-                    ->orderBy($query->sortBy())
-                    ->offset($query->queryOffset())
-                    ->limit($query->pageSizeSet())
-                    ->createCommand()
-                    ->search([], ['track_scores' => true])['hits'];
-            } catch (\exception $e) {
-                $info['hit'] = 0;
-                $info['ids'] = [];
-                $info['score'] = [];
-            }
-            $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
-            foreach ($info['hits'] as $value) {
-                $return['ids'][] = $value['_id'];
-                $return['score'][$value['_id']] = $value['sort'][0];
-            }
-            Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 126000 + rand(-3600, 3600));
+        if ($return && isset($return['hit']) && $return['hit']) {
+            return $return;
         }
+        try {
+            $info = self::find()
+                ->source(['id'])
+                ->query($query->query())
+                ->orderBy($query->sortBy())
+                ->offset($query->queryOffset())
+                ->limit($query->pageSizeSet())
+                ->createCommand()
+                ->search([], ['track_scores' => true])['hits'];
+        } catch (\exception $e) {
+            $info['hit'] = 0;
+            $info['ids'] = [];
+            $info['score'] = [];
+        }
+        $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
+        foreach ($info['hits'] as $value) {
+            $return['ids'][] = $value['_id'];
+            $return['score'][$value['_id']] = $value['sort'][0];
+        }
+        Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 126000 + rand(-3600, 3600));
         return $return;
     }
 

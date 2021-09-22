@@ -46,28 +46,24 @@ class VideoE extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $return = '';
-        if (!$return) {
-            unset($return);
-            try {
-                $info = self::find()
-                    ->source(['id'])
-                    ->query($query->query())
-                    ->orderBy($query->sortByTime())
-                    ->offset($query->queryOffset())
-                    ->limit($query->pageSizeSet())
-                    ->createCommand()
-                    ->search([], ['track_scores' => true])['hits'];
-            } catch (\exception $e) {
-                $info['hit'] = 0;
-                $info['ids'] = [];
-                $info['score'] = [];
-            }
-            $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
-            foreach ($info['hits'] as $value) {
-                $return['ids'][] = $value['_id'];
-                $return['score'][$value['_id']] = $value['sort'][0];
-            }
+        try {
+            $info = self::find()
+                ->source(['id'])
+                ->query($query->query())
+                ->orderBy($query->sortByTime())
+                ->offset($query->queryOffset())
+                ->limit($query->pageSizeSet())
+                ->createCommand()
+                ->search([], ['track_scores' => true])['hits'];
+        } catch (\exception $e) {
+            $info['hit'] = 0;
+            $info['ids'] = [];
+            $info['score'] = [];
+        }
+        $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
+        foreach ($info['hits'] as $value) {
+            $return['ids'][] = $value['_id'];
+            $return['score'][$value['_id']] = $value['sort'][0];
         }
         return $return;
     }

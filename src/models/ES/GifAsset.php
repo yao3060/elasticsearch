@@ -25,10 +25,14 @@ class GifAsset extends BaseModel
     {
         return 'list';
     }
-    public function attributes() {
+
+    public function attributes()
+    {
         return ['id', 'title', 'description', 'create_date', 'pr', 'width', 'height', 'class_id', 'is_zb', 'size_w380'];
     }
-    public static function sortDefault() {
+
+    public static function sortDefault()
+    {
         $source = "doc['pr'].value+(int)(_score*10)";
         $sort['_script'] = [
             'type' => 'number',
@@ -49,29 +53,29 @@ class GifAsset extends BaseModel
     public function search(QueryBuilderInterface $query): array
     {
         $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
-        if (!$return || $query->prep) {
-            unset($return);
-            try {
-                $info = self::find()
-                    ->source(['id'])
-                    ->query($query->query())
-                    ->orderBy($query->sortBy())
-                    ->offset($query->queryOffset())
-                    ->limit($query->pageSizeSet())
-                    ->createCommand()
-                    ->search([], ['track_scores' => true])['hits'];
-            } catch (\exception $e) {
-                $info['hit'] = 0;
-                $info['ids'] = [];
-                $info['score'] = [];
-            }
-            $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
-            foreach ($info['hits'] as $value) {
-                $return['ids'][] = $value['_id'];
-                $return['score'][$value['_id']] = $value['sort'][0];
-            }
-            Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 86400);
+        if ($return) {
+            return $return;
         }
+        try {
+            $info = self::find()
+                ->source(['id'])
+                ->query($query->query())
+                ->orderBy($query->sortBy())
+                ->offset($query->queryOffset())
+                ->limit($query->pageSizeSet())
+                ->createCommand()
+                ->search([], ['track_scores' => true])['hits'];
+        } catch (\exception $e) {
+            $info['hit'] = 0;
+            $info['ids'] = [];
+            $info['score'] = [];
+        }
+        $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
+        foreach ($info['hits'] as $value) {
+            $return['ids'][] = $value['_id'];
+            $return['score'][$value['_id']] = $value['sort'][0];
+        }
+        Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 86400);
         return $return;
     }
 }

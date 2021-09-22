@@ -21,49 +21,48 @@ class Background extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-
         $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
-        if (!$return || !$return['hit']) {
-            unset($return);
-            if ($query->useCount) {
-                $useInfo = AssetUseTop::getLastInfo(2);
-            } else {
-                $useInfo = '';
-            }
-            try {
-                $info = self::find()
-                    ->source(['id', 'use_count'])
-                    ->query($query->query())
-                    ->orderBy($query->sortBy())
-                    ->offset($query->queryOffset())
-                    ->limit($query->pageSizeSet())
-                    ->createCommand()
-                    ->search([], ['track_scores' => true])['hits'];
-            } catch (\exception $e) {
-                $info['hit'] = 0;
-                $info['ids'] = [];
-                $info['score'] = [];
-                $info['total'] = 0;
-                $info['hits'] = 0;
-            }
-            $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
-            if ($info['hits'] != 0) {
-                foreach ($info['hits'] as $value) {
-                    $return['ids'][] = $value['_id'];
-                    $return['score'][$value['_id']] = $value['sort'][0];
-                    if ($useInfo) {
-                        if ($value['_source']['use_count'] >= $useInfo['top1_count']) {
-                            $return['use_count'][$value['_id']] = 1;
-                        } elseif ($value['_source']['use_count'] >= $useInfo['top5_count']) {
-                            $return['use_count'][$value['_id']] = 2;
-                        } else {
-                            $return['use_count'][$value['_id']] = 3;
-                        }
+        if ($return && isset($return['hit']) && $return['hit']) {
+            return $return;
+        }
+        if ($query->useCount) {
+            $useInfo = AssetUseTop::getLastInfo(2);
+        } else {
+            $useInfo = '';
+        }
+        try {
+            $info = self::find()
+                ->source(['id', 'use_count'])
+                ->query($query->query())
+                ->orderBy($query->sortBy())
+                ->offset($query->queryOffset())
+                ->limit($query->pageSizeSet())
+                ->createCommand()
+                ->search([], ['track_scores' => true])['hits'];
+        } catch (\exception $e) {
+            $info['hit'] = 0;
+            $info['ids'] = [];
+            $info['score'] = [];
+            $info['total'] = 0;
+            $info['hits'] = 0;
+        }
+        $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
+        if ($info['hits'] != 0) {
+            foreach ($info['hits'] as $value) {
+                $return['ids'][] = $value['_id'];
+                $return['score'][$value['_id']] = $value['sort'][0];
+                if ($useInfo) {
+                    if ($value['_source']['use_count'] >= $useInfo['top1_count']) {
+                        $return['use_count'][$value['_id']] = 1;
+                    } elseif ($value['_source']['use_count'] >= $useInfo['top5_count']) {
+                        $return['use_count'][$value['_id']] = 2;
+                    } else {
+                        $return['use_count'][$value['_id']] = 3;
                     }
                 }
             }
-            Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 86400);
         }
+        Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 86400);
         return $return;
     }
 
