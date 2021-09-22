@@ -4,8 +4,8 @@ namespace app\models\ES;
 
 use app\components\IpsAuthority;
 use app\components\Tools;
-use app\models\TaskTemplateLink;
-use app\models\Templ;
+use app\models\Backend\TaskTemplateLink;
+use app\models\Backend\Templ;
 use app\queries\ES\DesignerTemplateSearchQuery;
 use Yii;
 use app\interfaces\ES\QueryBuilderInterface;
