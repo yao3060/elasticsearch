@@ -39,35 +39,36 @@ class SeoSearchWordAsset extends BaseModel
     public function seoSearch(QueryBuilderInterface $query): array
     {
         $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
-        if (!$return) {
-            try {
-                $info = self::find()
-                    ->source(['id', '_keyword', 'pinyin', 'weight'])
-                    ->query($query->query())
-                    ->limit($query->pageSizeSet())
-                    ->createCommand()
-                    ->search([], ['track_scores' => true])['hits'];
-            } catch (\exception $e) {
-                $info['hit'] = 0;
-                $info['ids'] = [];
-                $info['score'] = [];
-            }
-            if ($info['total'] > 0) {
-                foreach ($info['hits'] as $k => $v) {
-                    $return[$k]['id'] = $v['_source']['id'];
-                    $return[$k]['keyword'] = $v['_source']['_keyword'];
-                    $return[$k]['pinyin'] = $v['_source']['pinyin'];
-                    if (isset($v['_source']['weight'])){
-                        $return[$k]['weight'] = $v['_source']['weight'];
-                    }else{
-                        $return[$k]['weight'] = 0;
-                    }
-
+        if ($return && isset($return['hit']) && $return['hit']) {
+            return $return;
+        }
+        try {
+            $info = self::find()
+                ->source(['id', '_keyword', 'pinyin', 'weight'])
+                ->query($query->query())
+                ->limit($query->pageSizeSet())
+                ->createCommand()
+                ->search([], ['track_scores' => true])['hits'];
+        } catch (\exception $e) {
+            $info['hit'] = 0;
+            $info['ids'] = [];
+            $info['score'] = [];
+        }
+        if ($info['total'] > 0) {
+            foreach ($info['hits'] as $k => $v) {
+                $return[$k]['id'] = $v['_source']['id'];
+                $return[$k]['keyword'] = $v['_source']['_keyword'];
+                $return[$k]['pinyin'] = $v['_source']['pinyin'];
+                if (isset($v['_source']['weight'])){
+                    $return[$k]['weight'] = $v['_source']['weight'];
+                }else{
+                    $return[$k]['weight'] = 0;
                 }
 
             }
-            Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 86400 * 30);
+
         }
+        Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 86400 * 30);
         return $return;
     }
 

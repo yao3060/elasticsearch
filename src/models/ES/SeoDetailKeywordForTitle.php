@@ -39,26 +39,26 @@ class SeoDetailKeywordForTitle extends BaseModel
     public function Search(QueryBuilderInterface $query): array
     {
         $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
-        if (!$return) {
-            unset($return);
-            try {
-                $info = self::find()
-                    ->source(['id', '_keyword'])
-                    ->query($query->query())
-                    ->limit(2)
-                    ->createCommand()
-                    ->search([], ['track_scores' => true])['hits'];
-            } catch (\exception $e) {
-                $info['total'] = 0;
-            }
-            if ($info['total'] > 0) {
-                foreach ($info['hits'] as $k => $v) {
-                    $return[$k]['id'] = $v['_id'];
-                    $return[$k]['keyword'] = $v['_source']['_keyword'];
-                }
-            }
-            Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 86400 * 30);
+        if ($return && isset($return['hit']) && $return['hit']) {
+            return $return;
         }
+        try {
+            $info = self::find()
+                ->source(['id', '_keyword'])
+                ->query($query->query())
+                ->limit(2)
+                ->createCommand()
+                ->search([], ['track_scores' => true])['hits'];
+        } catch (\exception $e) {
+            $info['total'] = 0;
+        }
+        if ($info['total'] > 0) {
+            foreach ($info['hits'] as $k => $v) {
+                $return[$k]['id'] = $v['_id'];
+                $return[$k]['keyword'] = $v['_source']['_keyword'];
+            }
+        }
+        Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 86400 * 30);
         return $return;
     }
 

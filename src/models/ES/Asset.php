@@ -25,11 +25,10 @@ class Asset extends BaseModel
     public function search(QueryBuilderInterface $query): array
     {
         $redisKey = $query->getRedisKey();
-        $return = Tools::getRedis(self::REDIS_DB, $redisKey());
+        $return = Tools::getRedis(self::REDIS_DB, $redisKey);
         if ($return && isset($return['hit']) && $return['hit']) {
             return $return;
         }
-
         if ($query->useCount) {
             $useInfo = AssetUseTop::getLatestBy('kid_1', 1);
         } else {
@@ -65,7 +64,6 @@ class Asset extends BaseModel
             }
         }
         Tools::setRedis(self::REDIS_DB, $redisKey, $return, self::REDIS_EXPIRE);
-
         return $return;
     }
 

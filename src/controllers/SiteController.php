@@ -3,12 +3,12 @@
 namespace app\controllers;
 
 use app\models\Backend\AssetUseTop;
+use Yii;
 use yii\filters\AccessControl;
-use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 
-class SiteController extends Controller
+class SiteController extends BaseController
 {
     /**
      * {@inheritdoc}
@@ -59,6 +59,10 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        Yii::info('this is info.');
+        Yii::warning('this is warning.');
+        Yii::error('this is error.');
+
         return $this->asJson([
             'code' => 'welcome',
             'message' => 'Welcome',
@@ -66,6 +70,7 @@ class SiteController extends Controller
                 'is_prod' => is_prod(),
                 'is_local' => is_local(),
                 'AssetUseTop' => AssetUseTop::getLatestBy('kid_1', 1),
+                'profile' => Yii::$app->user->identity,
             ]
         ]);
     }

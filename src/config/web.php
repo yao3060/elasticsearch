@@ -64,7 +64,7 @@ return (function () {
         'params' => $params,
     ];
 
-    if (YII_ENV_DEV) {
+    if (is_local()) {
         // configuration adjustments for 'dev' environment
         $config['bootstrap'][] = 'debug';
         $config['modules']['debug'] = [
