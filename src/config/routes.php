@@ -50,5 +50,6 @@ return [
         'GET  v1/lottie-videos' => 'es/lottie-video/search', // 设计师动效
         'GET  v1/lottie-video-words' => 'es/lottie-video-word/search', // 设计师动效搜索词
         'GET  v1/seo-new-pages' => 'es/seo-new-page/seo-search', // seo
+        'PUT  v1/test' => 'site/test', // 测试
     ],
 ];

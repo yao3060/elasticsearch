@@ -6,6 +6,7 @@ use app\models\Backend\AssetUseTop;
 use Yii;
 use yii\filters\AccessControl;
 use yii\helpers\VarDumper;
+use yii\web\Request;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 
@@ -95,6 +96,11 @@ class SiteController extends BaseController
                 'profile' => Yii::$app->user->identity,
             ]
         ]);
+    }
+
+    public function actionTest(Request $request)
+    {
+        return $this->asJson($request->getBodyParams());
     }
 
     /**
