@@ -11,9 +11,6 @@ services:
       - php
     volumes:
       - ./src/web:/var/www/html/web:delegated
-    networks:
-      - default
-      - base_share_network
 
   php:
     build:
@@ -35,9 +32,6 @@ services:
       XDEBUG_MODE: "debug"
     volumes:
       - ./src:/var/www/html:delegated
-    networks:
-      - default
-      - base_share_network
 
   mysql:
     restart: "no"
