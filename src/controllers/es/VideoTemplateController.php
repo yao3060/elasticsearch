@@ -23,7 +23,7 @@ class VideoTemplateController extends BaseController
     public function actionSearch(Request $request)
     {
         try {
-            $validate = DynamicModel::validateData($request->getBodyParams(), [
+            $validate = DynamicModel::validateData($request->getQueryParams(), [
                 [['keyword'], 'string']
             ]);
 
