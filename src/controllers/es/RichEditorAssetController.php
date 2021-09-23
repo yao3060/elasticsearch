@@ -17,7 +17,7 @@ class RichEditorAssetController extends BaseController
     {
         try {
 
-            $validate = DynamicModel::validateData($request->getBodyParams(), [
+            $validate = DynamicModel::validateData($request->getQueryParams(), [
                 ["keyword", "string"],
                 [["page"], "integer"]
             ]);

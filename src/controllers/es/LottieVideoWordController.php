@@ -19,7 +19,7 @@ class LottieVideoWordController extends BaseController
     {
         try {
 
-            $validate = DynamicModel::validateData($request->getBodyParams(), []);
+            $validate = DynamicModel::validateData($request->getQueryParams(), []);
 
             if ($validate->hasErrors()) {
                 if ($validate->hasErrors()) {
