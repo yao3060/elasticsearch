@@ -50,19 +50,18 @@ class H5BanWords extends BaseModel
             if ($find['total'] <= 0) {
                 return false;
             }
+
             $BanWord = '';
             foreach ($find['hits'] as $item) {
                 $item['_source']['word'] = str_replace(" ", '', $item['_source']['word']);
                 if (strstr($query->word, $item['_source']['word'])) {
-                    $BanWord[] = $item['_source']['word'];
+                    $BanWord = $item['_source']['word'];
                     $is_ban_word['flag'] = true;
                     $is_ban_word['BanWord'] = $BanWord;
                 }
             }
         } catch (\exception $e) {
         }
-        var_dump($is_ban_word);
-        exit();
         $flag = $is_ban_word['flag'];
 
         return [
