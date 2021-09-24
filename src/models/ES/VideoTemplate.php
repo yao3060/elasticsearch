@@ -49,7 +49,10 @@ class VideoTemplate extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $return = Tools::getRedis(self::$redisDb, $query->getRedisKey());
+        $redisKey = $query->getRedisKey();
+        \Yii::info("[VideoTemplate:redisKey]:[$redisKey]");
+
+        $return = Tools::getRedis(self::$redisDb, $redisKey);
 
         if (!empty($return) && isset($return['hit']) && $return['hit'] && Tools::isReturnSource(
             ) === false && $query->prep != 1) {
@@ -84,7 +87,7 @@ class VideoTemplate extends BaseModel
             $return['score'][$value['_id']] = $value['sort'][0];
         }
 
-        Tools::setRedis(self::$redisDb, $query->getRedisKey(), $return, 86400);
+        Tools::setRedis(self::$redisDb, $redisKey, $return, 86400);
 
         return $return;
     }

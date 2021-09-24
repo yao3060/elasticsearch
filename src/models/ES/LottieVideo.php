@@ -34,7 +34,10 @@ class LottieVideo extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $return = Tools::getRedis(self::$redisDb, $query->getRedisKey());
+        $redisKey = $query->getRedisKey();
+        \Yii::info("[LottieVideo:redisKey]:[$redisKey]", __METHOD__);
+
+        $return = Tools::getRedis(self::$redisDb, $redisKey);
 
         if (!empty($return) && isset($return['hit']) && $return['hit'] && Tools::isReturnSource(
             ) === false && $query->prep != 1) {
@@ -70,7 +73,7 @@ class LottieVideo extends BaseModel
             }
         }
 
-        Tools::setRedis(self::$redisDb, $query->getRedisKey(), $return, 86400);
+        Tools::setRedis(self::$redisDb, $redisKey, $return, 86400);
 
         return $return;
     }

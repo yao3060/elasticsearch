@@ -287,6 +287,7 @@ class DesignerTemplate extends BaseModel
         try {
             $return = null;
             $redisKey = $query->getRedisKey();
+            \Yii::info("[DesignerTemplate:redisKey]:[$redisKey]", __METHOD__);
 
             if (!IpsAuthority::check(IOS_ALBUM_USER)) {
                 $return = Tools::getRedis(self::REDIS_DB, $redisKey);

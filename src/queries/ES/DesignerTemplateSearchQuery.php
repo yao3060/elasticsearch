@@ -106,6 +106,7 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
             ['31_23_0_', '31_23_0_', '32_27_326_'],
             $this->classId
         );
+
         $redisKey = self::REDIS_KEY . date('Y-m-d');
         if ($this->fuzzy == 1) {
             $redisKey .= ":fuzzy";
@@ -124,8 +125,9 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
 //            'class_id' => $this->classId,
 //            'size' => $this->size,
 //            'use' => $this->use,
-//            'templ_attr' => $this->templateAttr,
+//            'templ_attr' => isset($this->templateInfo['templ_attr']) ? $this->templateInfo['templ_attr'] : 0,
 //            'settlement_level' => $this->settlementLevel,
+//            'templ_info' => $this->templateInfo,
 //        ]);exit;
 
         $implodeKeys = [
@@ -153,25 +155,21 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
             $redisKey .= "_" . $this->templateTypes;
         }
 
-
-        if (!empty($this->color)) {
+        if (!empty($this->color) && $this->color) {
             $redisKey .= '_' . implode(',', array_column($this->color, 'color')) .
                 '_' . implode(',', array_column($this->color, 'weight'));
         }
 
         //获取页数 占用逻辑
-        if (isset($this->templateInfo['type']) && $this->templateInfo['type']) {
-            switch ($this->templateInfo['type']) {
-                case 'second':
-                    self::$esKey = $redisKey;
-                    $page = Yii::$app->redis8->hget(self::HASH_KEY_SECOND_PAGE, self::REDIS_KEY);
-                    return $page ?: 1;
-                default:
-                    $redisKey .= "_" . $this->page;
-                    self::$esKey = $redisKey;
-                    return $redisKey;
-            }
+        if (isset($this->templateInfo['type']) && $this->templateInfo['type'] == 'second') {
+            self::$esKey = $redisKey;
+            $page = Yii::$app->redis8->hget(self::HASH_KEY_SECOND_PAGE, self::REDIS_KEY);
+            return $page ?: 1;
         }
+
+        $redisKey .= "_" . $this->page;
+        self::$esKey = $redisKey;
+        return $redisKey;
     }
 
     protected function queryColor()

@@ -16,6 +16,7 @@ class DesignerTemplateController extends BaseController
     public function actionIndex(Request $request)
     {
         try {
+
             $items = (new DesignerTemplate)->search(
                 new DesignerTemplateSearchQuery(
                     keyword: $request->get('keyword', 0),

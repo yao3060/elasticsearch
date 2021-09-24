@@ -34,7 +34,9 @@ class SeoNewPage extends BaseModel
      */
     public function seoSearch(QueryBuilderInterface $query)
     {
-        $return = Tools::getRedis(self::$redisDb, $query->getRedisKey());
+        $redisKey = $query->getRedisKey();
+
+        $return = Tools::getRedis(self::$redisDb, $redisKey);
 
         if (!$return || Tools::isReturnSource()) {
 
@@ -67,7 +69,7 @@ class SeoNewPage extends BaseModel
                 }
             }
 
-//            Tools::setRedis(self::$redisDb, $query->getRedisKey(), $return, 86400 * 30);
+            Tools::setRedis(self::$redisDb, $redisKey, $return, 86400 * 30);
 
         }
 
