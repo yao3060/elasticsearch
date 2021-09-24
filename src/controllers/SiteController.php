@@ -98,11 +98,6 @@ class SiteController extends BaseController
         ]);
     }
 
-    public function actionTest(Request $request)
-    {
-        return $this->asJson($request->getBodyParams());
-    }
-
     /**
      * Login action.
      *
