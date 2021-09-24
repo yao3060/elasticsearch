@@ -9,6 +9,7 @@ cache:
 
 stages:
   - install
+  - test
   - build
   - deploy
 
