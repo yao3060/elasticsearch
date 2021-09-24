@@ -60,7 +60,6 @@ class SearchWordSearchQuery implements QueryBuilderInterface
     }
     public function getRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
         $redisKey = sprintf(
             'searchword200909:%s_%d_%d',
             $this->keyword,

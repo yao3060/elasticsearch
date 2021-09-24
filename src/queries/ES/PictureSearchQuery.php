@@ -55,7 +55,6 @@ class PictureSearchQuery implements QueryBuilderInterface
     }
     public function getRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
         $sceneId = is_array($this->sceneId) ? $this->sceneId : [];
         $kid = is_array($this->kid) ? $this->kid : [];
         $ratioId = isset($this->ratioId) ? $this->ratioId : '-1';

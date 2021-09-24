@@ -103,6 +103,5 @@ class VideoElementSearchQuery implements QueryBuilderInterface
     }
     public function getRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
     }
 }
