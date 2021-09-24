@@ -32,10 +32,10 @@ class AlbumController extends BaseController
                     ->search(new AlbumSearchQuery(
                         $data['keyword'],
                         $data['page'] ?? 1,
-                        $data['pageSize'] ?? 5,
-                        $data['classId'] ?? 0,
+                        $data['page_size'] ?? 5,
+                        $data['class_id'] ?? 0,
                         $data['type'] ?? 2,
-                        $data['sortType'] ?? 'default',
+                        $data['sort_type'] ?? 'default',
                         $data['update'] ?? 0,
                         $data['fuzzy'] ?? 0,
                     ));

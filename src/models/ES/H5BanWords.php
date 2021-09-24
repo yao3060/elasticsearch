@@ -65,8 +65,8 @@ class H5BanWords extends BaseModel
         $flag = $is_ban_word['flag'];
 
         return [
-            $flag,
-            $BanWord
+            'flag'=>$flag,
+            'word'=>$BanWord
         ];
     }
 

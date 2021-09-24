@@ -32,11 +32,11 @@ class GifAssetController extends BaseController
                     ->search(new GifAssetSearchQuery(
                         $data['keyword'],
                         $data['page'] ?? 1,
-                        $data['pageSize'] ?? 40,
-                        $data['classId'] ?? 0,
-                        $data['isZb'] ?? 0,
+                        $data['page_size'] ?? 40,
+                        $data['class_id'] ?? 0,
+                        $data['is_zb'] ?? 0,
                         $data['prep'] ?? 0,
-                        $data['limitSize'] ?? 0,
+                        $data['limit_size'] ?? 0,
                     ));
                 $response = new Response('get_groupWords_list', 'groupWordsList', $data);
             }

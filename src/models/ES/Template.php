@@ -149,6 +149,7 @@ class Template extends BaseModel
     public function search(QueryBuilderInterface $query): array
     {
         $redisKey = $query->getRedisKey();
+        \Yii::info("[Template:redisKey]:[$redisKey]", __METHOD__);
 
         $return = [];
 

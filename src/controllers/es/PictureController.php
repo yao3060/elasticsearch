@@ -33,12 +33,12 @@ class PictureController extends BaseController
                     ->search(new PictureSearchQuery(
                         $data['keyword'],
                         $data['page'] ?? 1,
-                        $data['pageSize'] ?? 40,
-                        $data['sceneId'] ?? 0,
-                        $data['isZb'] ?? 1,
+                        $data['page_size'] ?? 40,
+                        $data['scene_id'] ?? 0,
+                        $data['is_zb'] ?? 1,
                         $data['kid'] ?? 0,
-                        $data['vipPic'] ?? 0,
-                        $data['ratioId'] ?? 0
+                        $data['vip_pic'] ?? 0,
+                        $data['ratio_id'] ?? 0
                     ));
                 $response = new Response('get_picture_list', 'pictureList', $data);
             }

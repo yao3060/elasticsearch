@@ -33,7 +33,7 @@ class SeoSearchWordAssetController extends BaseController
                     ->seoSearch(new SeoSearchWordAssetQuery(
                         $data['keyword'],
                         $data['page'] ?? 1,
-                        $data['pageSize'] ?? 40,
+                        $data['page_size'] ?? 40,
                         $data['type'] ?? 1,
                     ));
                 $response = new Response('get_Container_list', 'ContainerList', $data);

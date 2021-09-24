@@ -32,9 +32,9 @@ class GroupWordsController extends BaseController
                     ->search(new GroupWordsSearchQuery(
                         $data['keyword'],
                         $data['page'] ?? 1,
-                        $data['pageSize'] ?? 40,
+                        $data['page_size'] ?? 40,
                         $data['search'] ?? 0,
-                        $data['searchAll'] ?? 0
+                        $data['search_all'] ?? 0
                     ));
                 $response = new Response('get_groupWords_list', 'groupWordsList', $data);
             }

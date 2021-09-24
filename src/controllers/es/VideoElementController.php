@@ -16,7 +16,7 @@ use app\controllers\BaseController;
 use Yii;
 use yii\web\Request;
 
-class VideoElementsController extends BaseController
+class VideoElementController extends BaseController
 {
     public function actionSearch(Request $request)
     {
@@ -32,10 +32,10 @@ class VideoElementsController extends BaseController
                     ->search(new VideoElementsSearchQuery(
                         $data['keyword'],
                         $data['page'] ?? 1,
-                        $data['pageSize'] ?? 40,
-                        $data['classId'] ?? 0,
+                        $data['page_size'] ?? 40,
+                        $data['class_id'] ?? 0,
                         $data['ratio'] ?? 1,
-                        $data['scopeType'] ?? 0,
+                        $data['scope_type'] ?? 0,
                         $data['owner'] ?? 0,
                     ));
                 $response = new Response('get_VideoE_list', 'VideoEList', $data);

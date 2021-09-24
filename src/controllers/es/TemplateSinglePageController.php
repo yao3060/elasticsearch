@@ -32,7 +32,7 @@ class TemplateSinglePageController extends BaseController
                     ->search(new TemplateSinglePageSearchQuery(
                         $data['c1'],
                         $data['page'] ?? 1,
-                        $data['pageSize'] ?? 50,
+                        $data['page_size'] ?? 50,
                         $data['c2'] ?? [],
                         $data['c3'] ?? []
                     ));
