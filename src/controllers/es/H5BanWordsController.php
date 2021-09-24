@@ -23,14 +23,14 @@ class H5BanWordsController extends BaseController
         $data = $request->post();
         try {
             $model = DynamicModel::validateData($data, [
-                ['word', 'required']
+                ['keyword', 'required']
             ]);
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $data = (new H5BanWords())
                     ->checkBanWord(new H5BanWordsSearchQuery(
-                        $data['word'],
+                        $data['keyword'],
                     ));
                 $response = new Response('get_h5_ban_list', 'H5BanList', $data);
             }

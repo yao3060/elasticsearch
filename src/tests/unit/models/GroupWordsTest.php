@@ -64,6 +64,7 @@ class GroupWordsTest extends \Codeception\Test\Unit
 
     public function testSearchTwo()
     {
+        //search和keyword为0时，searchAll要等1
         $items = (new GroupWords())
             ->search(new GroupWordsSearchQuery(
                 keyword: 0,
