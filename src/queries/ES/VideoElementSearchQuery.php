@@ -5,7 +5,7 @@ namespace app\queries\ES;
 
 use app\interfaces\ES\QueryBuilderInterface;
 
-class VideoElementsSearchQuery implements QueryBuilderInterface
+class VideoElementSearchQuery implements QueryBuilderInterface
 {
     function __construct(
         public $keyword = 0,
@@ -24,8 +24,12 @@ class VideoElementsSearchQuery implements QueryBuilderInterface
         if ($this->keyword) {
             $newQuery = $this->queryKeyword($this->keyword);
         }
-        if ($this->classId && $this->classId != 0) {
-            foreach ($this->classId as $key) {
+        $class_id = $this->classId ? $this->classId : [];
+        if (!is_array($class_id)) {
+            $class_id = [$class_id];
+        }
+        if ($class_id && $class_id != 0) {
+            foreach ($class_id as $key) {
                 if ($key > 0) {
                     $newQuery['bool']['must'][]['terms']['class_id'] = [$key];
                 }
@@ -103,6 +107,5 @@ class VideoElementsSearchQuery implements QueryBuilderInterface
     }
     public function getRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
     }
 }

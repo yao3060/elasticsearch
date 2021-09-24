@@ -36,7 +36,7 @@ class SeoSearchWordAssetController extends BaseController
                         $data['page_size'] ?? 40,
                         $data['type'] ?? 1,
                     ));
-                $response = new Response('get_Container_list', 'ContainerList', $data);
+                $response = new Response('get_seo_search_word_asset_list', 'SeoSearchWordAssetList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(
@@ -68,7 +68,7 @@ class SeoSearchWordAssetController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new VideoElements())
+                $data = (new VideoElement())
                     ->recommendSearch(new VideoElementsSearchQuery(
                         $data['keyword'],
                         $data['page'],

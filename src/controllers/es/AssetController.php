@@ -38,7 +38,7 @@ class AssetController extends BaseController
                         $data['sort'] ?? 0,
                         $data['use_count'] ?? 0
                     ));
-                $response = new Response('get_asset_list', 'assetList', $data);
+                $response = new Response('get_asset_list', 'AssetList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(
@@ -72,7 +72,7 @@ class AssetController extends BaseController
             } else {
                 $data = (new Asset())
                     ->recommendSearch(new AssetSearchQuery($data['keyword'], $data['page'], $data['page_size']));
-                $response = new Response('get_Recommend_list', 'Get List', $data);
+                $response = new Response('get_asset_recommend_list', 'GetRecommendList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(

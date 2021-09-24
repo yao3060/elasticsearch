@@ -58,7 +58,6 @@ class GroupWordsSearchQuery implements QueryBuilderInterface
 
     public function getRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
         $redisKey = "ES_group_word:" . date('Y-m-d') .
             ":{$this->keyword}_{$this->page}_" .
             "_{$this->pageSize}";

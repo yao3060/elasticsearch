@@ -1,8 +1,58 @@
-@BASE_URL = http://localhost:8081
+@BASE_URL = http://es-api-staging.818ps.com
 
 
 ### Get Logs
 GET {{BASE_URL}}/v1/logs?name=hanmaker&email=email@email.com&age=11 HTTP/1.1
 content-type: application/json
-# username:password
-Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=
+Accept: application/json
+
+### get Assets
+GET {{BASE_URL}}/v1/assets?keyword=你好&page=3&pageSize=30&sceneId=0&isZb=1
+Content-Type: application/json
+Accept: application/json
+
+
+### 违禁词验证
+POST {{BASE_URL}}/v1/sensitive-words/validate
+Content-Type: application/json
+Accept: application/json
+
+{
+	"keyword": "党政"
+}
+
+
+### H5 违禁词验证
+POST {{BASE_URL}}/v1/h5-sensitive-words/validate
+Content-Type: application/json
+Accept: application/json
+
+{
+	"keyword": "你好"
+}
+
+
+### 背景视频搜索
+GET {{BASE_URL}}/v1/background-videos?keyword=0
+Content-Type: application/json
+Accept: application/json
+
+### 裁剪搜索
+GET {{BASE_URL}}/v1/containers?keyword=0
+Content-Type: application/json
+Accept: application/json
+
+### 设计师模板
+GET {{BASE_URL}}/v1/designer-templates?keyword=0
+Content-Type: application/json
+Accept: application/json
+
+### Git 搜索
+GET {{BASE_URL}}/v1/gif-assets?keyword=你好
+Content-Type: application/json
+Accept: application/json
+
+### 组合字搜索 @TODO @yangshangpu search 校验
+GET {{BASE_URL}}/v1/groups?keyword=0&search=你好
+Content-Type: application/json
+Accept: application/json

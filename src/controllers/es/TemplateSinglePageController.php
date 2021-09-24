@@ -36,7 +36,7 @@ class TemplateSinglePageController extends BaseController
                         $data['c2'] ?? [],
                         $data['c3'] ?? []
                     ));
-                $response = new Response('get_groupWords_list', 'groupWordsList', $data);
+                $response = new Response('get_template_single_page_list', 'TemplateSinglePageList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(

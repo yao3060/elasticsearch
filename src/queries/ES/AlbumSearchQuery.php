@@ -53,7 +53,6 @@ class AlbumSearchQuery implements QueryBuilderInterface
 
     public function getRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
         $classId = $this->classId ? $this->classId : '0_0_0';
         $redisKey = sprintf(
             'ES_album03-20:%s_%s_%s_%s_%d_%d_%d',

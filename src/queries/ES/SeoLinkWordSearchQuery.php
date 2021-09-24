@@ -41,7 +41,6 @@ class SeoLinkWordSearchQuery implements QueryBuilderInterface
 
     public function getRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
         //$redis_key = "ES_seo_search_word:" . date('Y-m-d') . ":{$keyword}";
         return sprintf(
             'ES_seo_search_word:%s:%s',
@@ -51,7 +50,6 @@ class SeoLinkWordSearchQuery implements QueryBuilderInterface
     }
     public function getSeoRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
         //$redis_key = "ES_seo_link_word:{$keyword}:v6";;
         return sprintf(
             'ES_seo_link_word:%s:v6',

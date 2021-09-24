@@ -41,7 +41,6 @@ class SeoSearchQuery implements QueryBuilderInterface
     }
     public function getRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
         $redisKey = sprintf(
             'ES_asset2:%s:%s',
             date('Y-m-d'),
@@ -51,7 +50,6 @@ class SeoSearchQuery implements QueryBuilderInterface
     }
     public function getSeoRedisKey()
     {
-        // TODO: Implement getSeoRedisKey() method.
         $redisKey = sprintf(
             'ES_seo_similar_word:%s:%s_v10',
             $this->keyword,
