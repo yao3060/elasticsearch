@@ -8,8 +8,8 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\helpers\StringHelper;
-use app\models\ES\VideoElements;
-use app\queries\ES\VideoElementsSearchQuery;
+use app\models\ES\VideoElement;
+use app\queries\ES\VideoElementSearchQuery;
 use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
 use app\controllers\BaseController;
@@ -28,8 +28,8 @@ class VideoElementController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new VideoElements())
-                    ->search(new VideoElementsSearchQuery(
+                $data = (new VideoElement())
+                    ->search(new VideoElementSearchQuery(
                         $data['keyword'],
                         $data['page'] ?? 1,
                         $data['page_size'] ?? 40,
@@ -70,7 +70,7 @@ class VideoElementController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new VideoElements())
+                $data = (new VideoElement())
                     ->recommendSearch(new VideoElementsSearchQuery(
                         $data['keyword'],
                         $data['page'],

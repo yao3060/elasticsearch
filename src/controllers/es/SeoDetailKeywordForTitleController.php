@@ -65,7 +65,7 @@ class SeoDetailKeywordForTitleController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new VideoElements())
+                $data = (new VideoElement())
                     ->recommendSearch(new VideoElementsSearchQuery(
                         $data['keyword'],
                         $data['page'],
