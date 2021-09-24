@@ -40,7 +40,7 @@ class RichEditorAssetController extends BaseController
                 ratio: $validateAttributes['ratio'] ?? 0
             ));
 
-            return $this->response(new Response('Rt Asset Search', 'rt_asset_search', $search));
+            return $this->response(new Response('rich_editor_asset_search', 'Rich Editor Asset Search',  $search));
 
         } catch (UnknownPropertyException $unknownException) {
 
