@@ -18,23 +18,23 @@ class DesignerTemplateController extends BaseController
         try {
             $items = (new DesignerTemplate)->search(
                 new DesignerTemplateSearchQuery(
-                    keyword: $request->getBodyParam('keyword', 0),
-                    page: $request->getBodyParam('page', 1),
-                    kid1: $request->getBodyParam('kid1', 0),
-                    kid2: $request->getBodyParam('kid2', 0),
-                    sortType: $request->getBodyParam('sort_type', 'default'),
-                    tagId: $request->getBodyParam('tag_id', 0),
-                    isZb: $request->getBodyParam('is_zb', 0),
-                    pageSize: $request->getBodyParam('page_size', 100),
-                    ratio: $request->getBodyParam('ratio', null),
-                    classId: $request->getBodyParam('class_id', 0),
-                    update: $request->getBodyParam('update', 0),
-                    size: $request->getBodyParam('size', 0),
-                    fuzzy: $request->getBodyParam('fuzzy', 0),
-                    templateTypes: $request->getBodyParam('template_type', [1, 2]),
-                    templateInfo: $request->getBodyParam('templ_info', []),
-                    color: $request->getBodyParam('color', []),
-                    use: $request->getBodyParam('use', 0)
+                    keyword: $request->get('keyword', 0),
+                    page: $request->get('page', 1),
+                    kid1: $request->get('kid1', 0),
+                    kid2: $request->get('kid2', 0),
+                    sortType: $request->get('sort_type', 'default'),
+                    tagId: $request->get('tag_id', 0),
+                    isZb: $request->get('is_zb', 0),
+                    pageSize: $request->get('page_size', 100),
+                    ratio: $request->get('ratio', null),
+                    classId: $request->get('class_id', 0),
+                    update: $request->get('update', 0),
+                    size: $request->get('size', 0),
+                    fuzzy: $request->get('fuzzy', 0),
+                    templateTypes: $request->get('template_type', [1, 2]),
+                    templateInfo: $request->get('templ_info', []),
+                    color: $request->get('color', []),
+                    use: $request->get('use', 0)
                 )
             );
 

@@ -190,29 +190,29 @@ class DesignerTemplateTest extends Unit
      * @es_type 3
      * @template_type 4
      */
-//    public function testSearchCarryKeyword()
-//    {
-//        $compareKeyword = $this->prepareData(
-//            keyword: "主图",
-//            kid1: 156,
-//            kid2: 301,
-//            sortType: "default",
-//            tagId: 0,
-//            isZb: 1,
-//            page: 1,
-//            pageSize: 10000,
-//            ratio: "",
-//            classId: "0_0_0_0",
-//            templateTypes: 4,
-//            templInfo: [
-//                "picId" => ""
-//            ],
-//            color: [],
-//            produrl: getenv("UNIT_BASE_URL") . self::$urls['search_carry_keyword']
-//        );
-//
-//        $this->assertTrue($compareKeyword);
-//    }
+    public function testSearchCarryKeyword()
+    {
+        $compareKeyword = $this->prepareData(
+            keyword: "主图",
+            kid1: 156,
+            kid2: 301,
+            sortType: "default",
+            tagId: 0,
+            isZb: 1,
+            page: 1,
+            pageSize: 10000,
+            ratio: "",
+            classId: "0_0_0_0",
+            templateTypes: 4,
+            templInfo: [
+                "picId" => ""
+            ],
+            color: [],
+            produrl: getenv("UNIT_BASE_URL") . self::$urls['search_carry_keyword']
+        );
+
+        $this->assertEqualsCanonicalizing($compareKeyword['dev'], $compareKeyword['prod']);
+    }
 
     /**
      * @target 测试无搜索词
