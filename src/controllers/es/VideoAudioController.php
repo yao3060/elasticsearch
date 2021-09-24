@@ -32,12 +32,12 @@ class VideoAudioController extends BaseController
                     ->search(new VideoAudioSearchQuery(
                         $data['keyword'],
                         $data['page'] ?? 1,
-                        $data['pageSize'] ?? 40,
-                        $data['parentsId'] ?? 0,
-                        $data['classId'] ?? 0,
+                        $data['page_size'] ?? 40,
+                        $data['parents_id'] ?? 0,
+                        $data['class_id'] ?? 0,
                         $data['prep'] ?? 0,
-                        $data['isDesigner'] ?? 0,
-                        $data['isVip'] ?? 0
+                        $data['is_designer'] ?? 0,
+                        $data['is_vip'] ?? 0
                     ));
                 $response = new Response('get_videoAudio_list', 'VideoAudioList', $data);
             }

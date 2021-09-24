@@ -35,15 +35,15 @@ class BackgroundController extends BaseController
                     ->search(new BackGroundSearchQuery(
                         $data['keyword'],
                         $data['page'] ?? 1,
-                        $data['pageSize'] ?? 40,
-                        $data['sceneId'] ?? 0,
-                        $data['isZb'] ?? 0,
+                        $data['page_size'] ?? 40,
+                        $data['scene_id'] ?? 0,
+                        $data['is_zb'] ?? 0,
                         $data['sort'] ?? 0,
-                        $data['useCount'] ?? 0,
+                        $data['use_count'] ?? 0,
                         $data['kid'] ?? 0,
-                        $data['ratioId'] ?? 0,
+                        $data['ratio_id'] ?? 0,
                         $data['class'] ?? 0,
-                        $data['isBg'] ?? 0
+                        $data['is_bg'] ?? 0
                     ));
                 $response = new Response('get_BackGround_list', 'BackGroundList', $data);
             }

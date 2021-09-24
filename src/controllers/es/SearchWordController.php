@@ -32,7 +32,7 @@ class SearchWordController extends BaseController
                     ->search(new SearchWordSearchQuery(
                         $data['keyword'],
                         $data['page'] ?? 1,
-                        $data['pageSize'] ?? 40,
+                        $data['page_size'] ?? 40,
                         $data['type'] ?? 1
                     ));
                 $response = new Response('get_SearchWord_list', 'SearchWordsList', $data);
