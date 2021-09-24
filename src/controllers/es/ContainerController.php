@@ -35,7 +35,7 @@ class ContainerController extends BaseController
                         $data['page_size'] ?? 40,
                         $data['kid'] ?? 0,
                     ));
-                $response = new Response('get_Container_list', 'ContainerList', $data);
+                $response = new Response('get_container_list', 'ContainerList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(

@@ -45,7 +45,7 @@ class BackgroundController extends BaseController
                         $data['class'] ?? 0,
                         $data['is_bg'] ?? 0
                     ));
-                $response = new Response('get_BackGround_list', 'BackGroundList', $data);
+                $response = new Response('get_background_list', 'BackGroundList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(

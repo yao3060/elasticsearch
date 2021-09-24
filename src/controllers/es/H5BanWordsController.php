@@ -32,7 +32,7 @@ class H5BanWordsController extends BaseController
                     ->checkBanWord(new H5BanWordsSearchQuery(
                         $data['word'],
                     ));
-                $response = new Response('get_H5BanSearch_list', 'H5BanSearchList', $data);
+                $response = new Response('get_h5_ban_list', 'H5BanList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(

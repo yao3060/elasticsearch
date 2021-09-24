@@ -38,7 +38,7 @@ class VideoElementController extends BaseController
                         $data['scope_type'] ?? 0,
                         $data['owner'] ?? 0,
                     ));
-                $response = new Response('get_VideoE_list', 'VideoEList', $data);
+                $response = new Response('get_video_element_list', 'VideoElementList', $data,200);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(

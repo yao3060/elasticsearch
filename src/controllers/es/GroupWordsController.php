@@ -36,7 +36,7 @@ class GroupWordsController extends BaseController
                         $data['search'] ?? 0,
                         $data['search_all'] ?? 0
                     ));
-                $response = new Response('get_groupWords_list', 'groupWordsList', $data);
+                $response = new Response('get_group_words_list', 'GroupWordsList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(

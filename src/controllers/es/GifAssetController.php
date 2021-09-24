@@ -38,7 +38,7 @@ class GifAssetController extends BaseController
                         $data['prep'] ?? 0,
                         $data['limit_size'] ?? 0,
                     ));
-                $response = new Response('get_groupWords_list', 'groupWordsList', $data);
+                $response = new Response('get_gif_asset_list', 'GifAssetList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(
