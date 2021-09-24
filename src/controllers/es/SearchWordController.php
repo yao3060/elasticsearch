@@ -35,7 +35,7 @@ class SearchWordController extends BaseController
                         $data['page_size'] ?? 40,
                         $data['type'] ?? 1
                     ));
-                $response = new Response('get_SearchWord_list', 'SearchWordsList', $data);
+                $response = new Response('get_search_word_list', 'SearchWordsList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(

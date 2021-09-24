@@ -42,7 +42,6 @@ class TemplateSinglePageSearchQuery implements QueryBuilderInterface
     }
     public function getRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
         //$redis_key = 'template-sp:search:' . $c1 . ':' . implode('-', $c2) . ':' . implode('-', $c3) . "_" . $page;
         return sprintf(
             "template-sp:search:%s:%s:%s_%d",

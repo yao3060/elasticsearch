@@ -33,7 +33,7 @@ class SeoDetailKeywordForTitleController extends BaseController
                     ->Search(new SeoDetailKeywordForTitleQuery(
                         $data['keyword']
                     ));
-                $response = new Response('get_Container_list', 'ContainerList', $data);
+                $response = new Response('get_seo_detail_keyword_for_title_list', 'SeoDetailKeywordForTitleList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(
@@ -65,7 +65,7 @@ class SeoDetailKeywordForTitleController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new VideoElements())
+                $data = (new VideoElement())
                     ->recommendSearch(new VideoElementsSearchQuery(
                         $data['keyword'],
                         $data['page'],

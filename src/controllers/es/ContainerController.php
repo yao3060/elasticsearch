@@ -35,7 +35,7 @@ class ContainerController extends BaseController
                         $data['page_size'] ?? 40,
                         $data['kid'] ?? 0,
                     ));
-                $response = new Response('get_Container_list', 'ContainerList', $data);
+                $response = new Response('get_container_list', 'ContainerList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(
@@ -67,7 +67,7 @@ class ContainerController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new VideoElements())
+                $data = (new VideoElement())
                     ->recommendSearch(new VideoElementsSearchQuery(
                         $data['keyword'],
                         $data['page'],

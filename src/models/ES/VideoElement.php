@@ -10,7 +10,7 @@ use app\services\designers\DesignerRecommendAssetTagService;
  * @package app\models\ES
  * author  ysp
  */
-class VideoElements extends BaseModel
+class VideoElement extends BaseModel
 {
     /**
      * @var int redis

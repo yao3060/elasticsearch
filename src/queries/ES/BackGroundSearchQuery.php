@@ -61,7 +61,6 @@ class BackGroundSearchQuery implements QueryBuilderInterface
 
     public function getRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
         $sceneId = is_array($this->sceneId) ? $this->sceneId : [];
         $kid = is_array($this->kid) ? $this->kid : [];
         $keyword = $this->keyword ? $this->keyword : 0;

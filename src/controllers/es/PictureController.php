@@ -40,7 +40,7 @@ class PictureController extends BaseController
                         $data['vip_pic'] ?? 0,
                         $data['ratio_id'] ?? 0
                     ));
-                $response = new Response('get_picture_list', 'pictureList', $data);
+                $response = new Response('get_picture_list', 'PictureList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(

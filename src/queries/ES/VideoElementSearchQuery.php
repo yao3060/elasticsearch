@@ -5,7 +5,7 @@ namespace app\queries\ES;
 
 use app\interfaces\ES\QueryBuilderInterface;
 
-class VideoElementsSearchQuery implements QueryBuilderInterface
+class VideoElementSearchQuery implements QueryBuilderInterface
 {
     function __construct(
         public $keyword = 0,
@@ -103,6 +103,5 @@ class VideoElementsSearchQuery implements QueryBuilderInterface
     }
     public function getRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
     }
 }
