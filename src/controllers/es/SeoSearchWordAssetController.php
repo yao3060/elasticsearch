@@ -33,7 +33,7 @@ class SeoSearchWordAssetController extends BaseController
                     ->seoSearch(new SeoSearchWordAssetQuery(
                         $data['keyword'],
                         $data['page'] ?? 1,
-                        $data['pageSize'] ?? 40,
+                        $data['page_size'] ?? 40,
                         $data['type'] ?? 1,
                     ));
                 $response = new Response('get_Container_list', 'ContainerList', $data);
@@ -68,8 +68,8 @@ class SeoSearchWordAssetController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new VideoE())
-                    ->recommendSearch(new VideoESearchQuery(
+                $data = (new VideoElements())
+                    ->recommendSearch(new VideoElementsSearchQuery(
                         $data['keyword'],
                         $data['page'],
                         $data['pageSize']

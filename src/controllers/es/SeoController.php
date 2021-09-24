@@ -67,7 +67,7 @@ class SeoController extends BaseController
                 $data = (new Seo())
                     ->seoSearch(new SeoSearchQuery(
                         $data['keyword'],
-                        $data['pageSize'] ?? 40
+                        $data['page_size'] ?? 40
                     ));
                 $response = new Response('get_list', 'GetList', $data);
             }

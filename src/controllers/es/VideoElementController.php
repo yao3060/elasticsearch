@@ -1,22 +1,22 @@
 <?php
 
 /**
- * 重构ES,VideoE搜索方法
+ * 重构ES,VideoElements搜索方法
  */
 
 namespace app\controllers\es;
 
 use app\components\Response;
 use app\helpers\StringHelper;
-use app\models\ES\VideoE;
-use app\queries\ES\VideoESearchQuery;
+use app\models\ES\VideoElements;
+use app\queries\ES\VideoElementsSearchQuery;
 use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
 use app\controllers\BaseController;
 use Yii;
 use yii\web\Request;
 
-class VideoEController extends BaseController
+class VideoElementController extends BaseController
 {
     public function actionSearch(Request $request)
     {
@@ -28,14 +28,14 @@ class VideoEController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new VideoE())
-                    ->search(new VideoESearchQuery(
+                $data = (new VideoElements())
+                    ->search(new VideoElementsSearchQuery(
                         $data['keyword'],
                         $data['page'] ?? 1,
-                        $data['pageSize'] ?? 40,
-                        $data['classId'] ?? 0,
+                        $data['page_size'] ?? 40,
+                        $data['class_id'] ?? 0,
                         $data['ratio'] ?? 1,
-                        $data['scopeType'] ?? 0,
+                        $data['scope_type'] ?? 0,
                         $data['owner'] ?? 0,
                     ));
                 $response = new Response('get_VideoE_list', 'VideoEList', $data);
@@ -70,8 +70,8 @@ class VideoEController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new VideoE())
-                    ->recommendSearch(new VideoESearchQuery(
+                $data = (new VideoElements())
+                    ->recommendSearch(new VideoElementsSearchQuery(
                         $data['keyword'],
                         $data['page'],
                         $data['pageSize']

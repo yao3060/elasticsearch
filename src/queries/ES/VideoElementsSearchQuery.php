@@ -5,7 +5,7 @@ namespace app\queries\ES;
 
 use app\interfaces\ES\QueryBuilderInterface;
 
-class VideoESearchQuery implements QueryBuilderInterface
+class VideoElementsSearchQuery implements QueryBuilderInterface
 {
     function __construct(
         public $keyword = 0,

@@ -10,7 +10,7 @@ use app\services\designers\DesignerRecommendAssetTagService;
  * @package app\models\ES
  * author  ysp
  */
-class VideoE extends BaseModel
+class VideoElements extends BaseModel
 {
     /**
      * @var int redis
@@ -40,7 +40,7 @@ class VideoE extends BaseModel
 
 
     /**
-     * @param \app\queries\ES\VideoESearchQuery $query
+     * @param \app\queries\ES\VideoElementsSearchQuery $query
      * @return array 2021-09-10
      * return ['hit','ids','score'] 命中数,命中id,模板id=>分数
      */

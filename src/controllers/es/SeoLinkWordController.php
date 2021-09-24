@@ -70,7 +70,7 @@ class SeoLinkWordController extends BaseController
                     ->seoSearch(new SeoLinkWordSearchQuery(
                         $data['keyword'],
                         1,
-                        $data['pageSize'] ?? 40
+                        $data['page_size'] ?? 40
                     ));
                 $response = new Response('get_LinkWordSeo_list', 'LinkWordSeoList', $data);
             }
