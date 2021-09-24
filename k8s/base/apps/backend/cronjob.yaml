@@ -1,0 +1,34 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: cronjob-test
+  labels:
+    app: cronjob-test
+spec:
+  schedule: "*/10 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - image: null
+              name: cronjob-test
+              envFrom:
+                - configMapRef:
+                    name: public-overlays
+              env:
+                - name: DB_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: secrets
+                      key: DB_USERNAME
+                - name: DB_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: secrets
+                      key: DB_PASSWORD
+              command:
+              - /bin/sh
+              - -c
+              - date '+%Y-%m-%d %H:%M:%S'; echo Hello from the Kubernetes cluster
+          restartPolicy: OnFailure

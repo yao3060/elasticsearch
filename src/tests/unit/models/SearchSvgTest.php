@@ -5,9 +5,10 @@ namespace tests\unit\models;
 use app\components\IpsAuthority;
 use app\models\ES\Svg;
 use app\queries\ES\SvgSearchQuery;
+use Codeception\Test\Unit;
 use yii\helpers\ArrayHelper;
 
-class SearchSvgTest extends \Codeception\Test\Unit
+class SearchSvgTest extends Unit
 {
     /**
      * @var \UnitTester
@@ -21,12 +22,8 @@ class SearchSvgTest extends \Codeception\Test\Unit
 
     protected function _before()
     {
-        IpsAuthority::definedAuth(); // 初始化权限变量
+        IpsAuthority::definedAuth();
         $this->http = new \GuzzleHttp\Client();
-    }
-
-    protected function _after()
-    {
     }
 
     protected function prepareData(
@@ -58,7 +55,9 @@ class SearchSvgTest extends \Codeception\Test\Unit
         ];
     }
 
-    // tests
+    /**
+     * @target 默认，无搜索条件
+     */
     public function testSearchSVG()
     {
         $data = $this->prepareData(
@@ -66,12 +65,16 @@ class SearchSvgTest extends \Codeception\Test\Unit
             1,
             [],
             50,
-            'https://818ps.com/apiv2/search-asset-svg?p=1&k2=0&word=&pageSize=50'
+            getenv('UNIT_BASE_URL') . '/apiv2/search-asset-svg?p=1&k2=0&word=&pageSize=50'
         );
 
         $this->assertEqualsCanonicalizing($data['prod'], $data['dev'],);
     }
 
+    /**
+     * @target 搜索关键词：心
+     * @pageSize 50
+     */
     public function testSearchSVGHeart()
     {
         $data = $this->prepareData(
@@ -79,7 +82,7 @@ class SearchSvgTest extends \Codeception\Test\Unit
             1,
             [],
             50,
-            'https://818ps.com/apiv2/search-asset-svg?p=1&k2=0&word=%E5%BF%83&pageSize=50'
+            getenv('UNIT_BASE_URL') . '/apiv2/search-asset-svg?p=1&k2=0&word=%E5%BF%83&pageSize=50'
         );
         $this->assertEqualsCanonicalizing($data['prod'], $data['dev']);
     }

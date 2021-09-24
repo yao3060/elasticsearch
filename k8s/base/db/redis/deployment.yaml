@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cache
+  labels:
+    app: cache 
+spec:
+  selector:
+    matchLabels:
+      app: cache
+      tier: cache
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: cache
+        tier: cache
+    spec:
+      containers:
+      - image: redis:4.0.9-alpine
+        name: cache

@@ -20,7 +20,14 @@ COPY .docker/php/usr/local/etc/php-fpm.d/ /usr/local/etc/php-fpm.d/
 COPY ./src /var/www/html
 
 # # Run this after copy source to image instead of /start
-RUN chown -R :www-data /var/www/html/web
+RUN chown -R :www-data /var/www/html/web && \
+    mkdir -p /var/www/html/runtime && \
+    mkdir -p /var/www/html/runtime/debug && \
+    mkdir -p /var/www/html/runtime/logs && \
+    mkdir -p /var/www/html/runtime/cache && \
+    chmod -R 777 /var/www/html/runtime && \
+    chown -R www-data:www-data /var/www/html/runtime && \
+    chmod +x /var/www/html/yii
 
 # copy start script to image
 COPY .docker/php/start /start

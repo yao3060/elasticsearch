@@ -5,15 +5,15 @@ namespace app\models\ES;
 use app\components\IpsAuthority;
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
-use app\models\ESTemplate;
-use app\models\Templtaglink;
-use app\models\Test;
+use app\models\Backend\TableName;
+use app\models\Backend\Templtaglink;
+use app\models\Backend\Test;
 use Yii;
 use yii\elasticsearch\Query;
 
 class Template extends BaseModel
 {
-    public static $redis_db = "_search";
+    public static $redisDb = "_search";
 
     public static function index()
     {
@@ -68,13 +68,13 @@ class Template extends BaseModel
     public static function getMapping()
     {
         $redis_key = "ES_template:mapping";
-        $return = Tools::getRedis(self::$redis_db, $redis_key);
+        $return = Tools::getRedis(self::$redisDb, $redis_key);
 
         if ($return) return $return;
         $db = static::getDb();
         $command = $db->createCommand();
         $return = $command->getMapping(static::index(), static::type(), static::mapping());
-        Tools::setRedis(self::$redis_db, $redis_key, $return, 3600);
+        Tools::setRedis(self::$redisDb, $redis_key, $return, 3600);
         return $return;
     }
 
@@ -143,18 +143,19 @@ class Template extends BaseModel
 
     /**
      * 搜索
-     * @param QueryBuilderInterface $query
+     * @param \app\queries\ES\TemplateSearchQuery $query
      * @return array
      */
     public function search(QueryBuilderInterface $query): array
     {
         $redisKey = $query->getRedisKey();
+        \Yii::info("[Template:redisKey]:[$redisKey]", __METHOD__);
 
         $return = [];
 
         $reStartTime = microtime(true);
         if (!IpsAuthority::check(IOS_ALBUM_USER)) {
-            $return = Tools::getRedis(self::$redis_db, $redisKey);
+            $return = Tools::getRedis(self::$redisDb, $redisKey);
         }
         $redisStat['st'] = (int)((microtime(true) - $reStartTime) * 1000);
         $dbt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
@@ -164,24 +165,24 @@ class Template extends BaseModel
 
         $baseQuery = $query->query();
 
-//        if (!$return || Tools::isReturnSource() || $update == 1) {
-        if (!$return || $query->update == 1) {
+        if (!$return || Tools::isReturnSource() || $query->update == 1) {
             // 把回源从不命中中去除
             if (!$return || !$return['total']) {
                 $redisStat['hit'] = 0;
             }
+
             $reStartTime = microtime(true);
-//            Yii::$app->redis9->incr("search_return_source_incr");
-            if ($query->keyword != null) {
-                $baseQuery = self::queryKeyword($query->keyword, $query->fuzzy);
-            }
+            Yii::$app->redis9->incr("search_return_source_incr");
             unset($return);
+
             $costInfo = [];
             $costInfo['created'] = date('Y-m-d H:i:s', time());
             $esStartTime = microtime(true);
             $err = 0;
+
             try {
                 if (!empty($query->color)) {
+
                     $flg = '_col';
                     $info = (new Query())->from('818ps_pic', '818ps_pic')
                         ->source(['templ_id'])
@@ -190,7 +191,9 @@ class Template extends BaseModel
                         ->limit($query->pageSize)
                         ->createCommand($query->elasticsearchColor)
                         ->search(['timeout' => '5s'], ['track_scores' => true])['hits'];
+
                 } else {
+
                     $flg = '';
                     $info = self::find()
                         ->source(['temple_id'])
@@ -200,9 +203,11 @@ class Template extends BaseModel
                         ->limit($query->pageSize)
                         ->createCommand()
                         ->search(['timeout' => '5s'], ['track_scores' => true])['hits'];
+
                 }
                 $costInfo['err'] = 0;
             } catch (\exception $e) {
+
                 $err = 1;
                 Test::sqltest('searchKeywordFalse', $e->getMessage(), $query->keyword);
                 $info['hit'] = 0;
@@ -210,33 +215,37 @@ class Template extends BaseModel
                 $info['ids'] = [];
                 $info['score'] = [];
                 $costInfo['err'] = 1;
+
             }
 
             $esQueryTime = microtime(true) - $esStartTime;
             $costInfo['cost_time'] = $esQueryTime;
             $ip = Tools::getClientIP();
             $costInfo['name'] = 'Template' . $flg . $ip . $query->getRedisKey();
-            $info_redis = 'redis_search';
-//            Yii::$app->$info_redis->Rpush('ES_query_time:query_time', json_encode($costInfo));
+            $infoRedis = 'redis_search';
+            Yii::$app->$infoRedis->Rpush('ES_query_time:query_time', json_encode($costInfo));
 
             $return['total'] = $info['total'];
             $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
+
             foreach ($info['hits'] as $value) {
                 $return['ids'][] = $value['_id'];
                 $return['score'][$value['_id']] = $value['sort'][0];
             }
+
             if (!IpsAuthority::check(IOS_ALBUM_USER) && $err == 0) {
                 $expireTime = $info['total'] == 0 ? 7200 + rand(0, 3600) : 126000 + rand(-3600, 7200);
-//                $res = Tools::setRedis(self::$redis_db, $query->getRedisKey(), $return, $expireTime); // 35小时过期
-//                if (!$res) {
-//                    Test::sqltest('setsearchKeywordRedis', $res, $query->getRedisKey());
-//                }
+                $res = Tools::setRedis(self::$redisDb, $query->getRedisKey(), $return, $expireTime); // 35小时过期
+                if (!$res) {
+                    Test::sqltest('setsearchKeywordRedis', $res, $query->getRedisKey());
+                }
             }
+
             $redisStat['pt'] = (int)((microtime(true) - $reStartTime) * 1000);
         }
 
         $redisStat['created'] = date('Y-m-d H:i:s', time());
-//        Yii::$app->redis_monitor->Rpush('redis_stat:', json_encode($redisStat));
+        Yii::$app->redis_monitor->Rpush('redis_stat:', json_encode($redisStat));
 
         return $return;
     }
@@ -249,7 +258,7 @@ class Template extends BaseModel
     public function recommendSearch(QueryBuilderInterface $query): array
     {
         $redisKey = $query->getRedisKey();
-        $return = Tools::getRedis(self::$redis_db, $redisKey);
+        $return = Tools::getRedis(self::$redisDb, $redisKey);
 
         if (empty($return) || Tools::isReturnSource()) {
             $costInfo = [];
@@ -275,8 +284,8 @@ class Template extends BaseModel
             $costInfo['created'] = date('Y-m-d H:i:s', time());
             $costInfo['cost_time'] = $esQueryTime;
             $costInfo['name'] = 'Template' . '_recommend';
-//            $info_redis = 'redis_search';
-//            Yii::$app->$info_redis->Rpush('ES_query_time:query_time', json_encode($costInfo));
+//            $infoRedis = 'redis_search';
+//            Yii::$app->$infoRedis->Rpush('ES_query_time:query_time', json_encode($costInfo));
 
             $return = [];
             $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
@@ -284,30 +293,10 @@ class Template extends BaseModel
                 $return['ids'][] = $value['_id'];
                 $return['score'][$value['_id']] = isset($value['sort'][0]) ?? [];
             }
-//            Tools::setRedis(self::$redis_db, $redisKey, $return);
+//            Tools::setRedis(self::$redisDb, $redisKey, $return);
         }
 
         return $return;
-    }
-
-    public static function queryKeyword($keyword, $is_or = false)
-    {
-        $operator = $is_or ? 'or' : 'and';
-        $fields = ["title^16", "description^2", "hide_description^2", "brief^2", "info^1"];
-        if ($operator == 'or') {
-            $keyword = str_replace(['图片'], '', $keyword);
-            $fields = ["title^16", "description^2", "hide_description^2", "info^1"];
-        }
-        if (in_array($keyword, ['LOGO', 'logo'])) {
-            $fields = ["title^16", "description^2", "hide_description^2", "info^1"];
-        }
-        $query['bool']['must'][]['multi_match'] = [
-            'query' => $keyword,
-            'fields' => $fields,
-            'type' => 'most_fields',
-            "operator" => $operator
-        ];
-        return $query;
     }
 
     public static function getEsTableName()
@@ -317,17 +306,17 @@ class Template extends BaseModel
         if (!$es_name) {
 //        if (!$es_name || Tools::isReturnSourceVisitor()) {
             $es_name = TableName::find()->select(['es_name'])->where(['is_use' => 1])->one()['es_name'];
-            Tools::setRedis(self::$redis_db, 'es_table_name', $es_name);
+            Tools::setRedis(self::$redisDb, 'es_table_name', $es_name);
         }
         return $es_name;
     }
 
-    public static function sortDefault($keyword, $class_id = [], $index_name = null)
+    public static function sortDefault($keyword, $classId = [], $index_name = null)
     {
         $index_name = !empty($index_name) ? $index_name : self::getEsTableName();
         //        $source = "doc['pr'].value-doc['man_pr'].value+doc['man_pr_add'].value";
-        if ($class_id && is_array($class_id) == false) {
-            $class_id = explode('_', $class_id);
+        if ($classId && is_array($classId) == false) {
+            $classId = explode('_', $classId);
         }
         $source = "doc['pr'].value+(int)(_score*10)";
         if (strstr($keyword, 'h5') || strstr($keyword, 'H5')) {
@@ -355,10 +344,10 @@ class Template extends BaseModel
             //                $source .= "+doc['keyword_show_edit.{$keyword}'].value";
             //            }
 
-        } elseif ($class_id && count($class_id) >= 1) {
+        } elseif ($classId && count($classId) >= 1) {
             //标签的人工pr
             $choose_class_id = 0;
-            foreach ($class_id as $v) {
+            foreach ($classId as $v) {
                 if ($v > 0 || $v == -1) {
                     $choose_class_id = $v;
                 }

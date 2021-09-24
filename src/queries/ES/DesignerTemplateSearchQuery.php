@@ -12,8 +12,6 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
     protected $templateAttr;
     protected $settlementLevel;
 
-    const REDIS_DB = "_search";
-
     //每个搜索结果存1万条 1天过期
     const REDIS_KEY = "ES:template:second:designer:";
     // 页数，未使用
@@ -66,28 +64,16 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
         $this->use = $this->use ? $this->use : 0;
         $this->templateAttr = isset($this->templateInfo['templ_attr']) ? $this->templateInfo['templ_attr'] : 0; //ips_template_info => templ_attr 模板属性 1普通模板  2精品模板  3GIF模板  4套图模板
         $this->settlementLevel = isset($this->templateInfo['settlement_level']) && $this->templateInfo['settlement_level'] ? $this->templateInfo['settlement_level'] : 0; //ips_template_info => 结算等级 1=>A级    2=>S级'
-    }
-
-    public function query(): array
-    {
-        if (
-            !$this->keyword &&
-            !$this->tagId &&
-            $this->ratio <= 0 &&
-            in_array($this->classId, ['0_0_0_0', '0_0_0'])
-        ) {
+        if (!$this->keyword && !$this->tagId && $this->ratio <= 0 && in_array($this->classId, ['0_0_0_0', '0_0_0'])) {
             //用于排序的class_id但不影响过滤项 影响全局排序的特殊class_id为-1
             $this->sortClassId = -1;
         }
 
-        //ips_template_info => templ_attr 模板属性 1普通模板  2精品模板  3GIF模板  4套图模板
-        $this->templateAttr = $this->templateInfo['templ_attr'] ?? 0;
-
-        //ips_template_info => 结算等级 1=>A级    2=>S级'
-        $this->settlementLevel = $this->templateInfo['settlement_level'] ?? 0;
-
         $this->offset = ($this->page - 1) * $this->pageSize;
+    }
 
+    public function query(): array
+    {
         $this->queryKeyword()
             ->queryTemplateAttr()
             ->querySettlementLevel()
@@ -120,6 +106,7 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
             ['31_23_0_', '31_23_0_', '32_27_326_'],
             $this->classId
         );
+
         $redisKey = self::REDIS_KEY . date('Y-m-d');
         if ($this->fuzzy == 1) {
             $redisKey .= ":fuzzy";
@@ -138,8 +125,9 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
 //            'class_id' => $this->classId,
 //            'size' => $this->size,
 //            'use' => $this->use,
-//            'templ_attr' => $this->templateAttr,
+//            'templ_attr' => isset($this->templateInfo['templ_attr']) ? $this->templateInfo['templ_attr'] : 0,
 //            'settlement_level' => $this->settlementLevel,
+//            'templ_info' => $this->templateInfo,
 //        ]);exit;
 
         $implodeKeys = [
@@ -167,61 +155,21 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
             $redisKey .= "_" . $this->templateTypes;
         }
 
-
-        if (!empty($this->color)) {
+        if (!empty($this->color) && $this->color) {
             $redisKey .= '_' . implode(',', array_column($this->color, 'color')) .
                 '_' . implode(',', array_column($this->color, 'weight'));
         }
 
         //获取页数 占用逻辑
-        if (isset($this->templateInfo['type']) && $this->templateInfo['type']) {
-            switch ($this->templateInfo['type']) {
-                case 'second':
-                    self::$esKey = $redisKey;
-                    $page = Yii::$app->redis8->hget(self::HASH_KEY_SECOND_PAGE, self::REDIS_KEY);
-                    return $page ?: 1;
-                default:
-                    $redisKey .= "_" . $this->page;
-                    self::$esKey = $redisKey;
-                    return $redisKey;
-            }
+        if (isset($this->templateInfo['type']) && $this->templateInfo['type'] == 'second') {
+            self::$esKey = $redisKey;
+            $page = Yii::$app->redis8->hget(self::HASH_KEY_SECOND_PAGE, self::REDIS_KEY);
+            return $page ?: 1;
         }
-    }
 
-
-    /**
-     * query function
-     *
-     * @param string $keyword
-     * @param int $isOr
-     * @return $this
-     */
-    protected function queryKeyword()
-    {
-        if ($this->keyword) {
-            $operator = $this->fuzzy > 0 ? 'or' : 'and';
-            switch ($operator):
-                case 'and':
-                    $keyword = $this->keyword;
-                    $fields = ["title^16", "description^2", "hide_description^2", "brief^2", "info^1"];
-                    break;
-                case 'or':
-                    $keyword = str_replace(['图片'], '', $this->keyword);
-                    $fields = ["title^16", "description^2", "hide_description^2", "info^1"];
-                    break;
-            endswitch;
-
-            if (in_array($keyword, ['LOGO', 'logo'])) {
-                $fields = ["title^16", "description^2", "hide_description^2", "info^1"];
-            }
-            $this->query['bool']['must'][]['multi_match'] = [
-                'query' => $keyword,
-                'fields' => $fields,
-                'type' => 'most_fields',
-                "operator" => $operator
-            ];
-        }
-        return $this;
+        $redisKey .= "_" . $this->page;
+        self::$esKey = $redisKey;
+        return $redisKey;
     }
 
     protected function queryColor()

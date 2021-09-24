@@ -4,9 +4,10 @@ namespace app\tests\unit\models;
 use app\components\IpsAuthority;
 use app\models\ES\SensitiveWord;
 use app\queries\ES\SensitiveWordSearchQuery;
+use Codeception\Test\Unit;
 use GuzzleHttp\Client;
 
-class SensitiveWordTest extends \Codeception\Test\Unit
+class SensitiveWordTest extends Unit
 {
     /**
      * @var \UnitTester
@@ -16,10 +17,6 @@ class SensitiveWordTest extends \Codeception\Test\Unit
     protected function _before()
     {
         IpsAuthority::definedAuth();
-    }
-
-    protected function _after()
-    {
     }
 
     public function prepareData(
@@ -44,7 +41,7 @@ class SensitiveWordTest extends \Codeception\Test\Unit
     }
 
     /**
-     * 违禁词搜索验证
+     * @target 违规搜索词：党政
      */
     public function testValidateSensitiveWord()
     {
@@ -53,6 +50,6 @@ class SensitiveWordTest extends \Codeception\Test\Unit
             prodUrl: getenv('UNIT_BASE_URL') . '/api/get-template-list?w=' .urlencode('党政')
         );
 
-        $this->assertEquals($compare['dev'], $compare['prod']);
+        $this->assertEqualsCanonicalizing($compare['dev'], $compare['prod']);
     }
 }

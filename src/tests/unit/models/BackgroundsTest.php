@@ -22,22 +22,24 @@ class BackgroundsTest extends \Codeception\Test\Unit
     {
         IpsAuthority::definedAuth(); // 初始化权限变量
         $this->http = new \GuzzleHttp\Client();
+        //$this->secondSomeFeature();
     }
+
     protected function _after()
     {
     }
 
     // tests
-    public function testSomeFeature()
+    public function testSearchOne()
     {
         $items = (new Background())
             ->search(new BackGroundSearchQuery(
-                keyword:'你好',
-                page:1,
-                pageSize:30,
-                sceneId:0,
-                isZb:1,
-                sort:0,
+                keyword: '你好',
+                page: 1,
+                pageSize: 30,
+                sceneId: 0,
+                isZb: 1,
+                sort: 0,
                 useCount: 0,
                 kid: 0,
                 ratioId: -1,
@@ -46,7 +48,92 @@ class BackgroundsTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            'https://818ps.com/api/get-asset-list?w=%E4%BD%A0%E5%A5%BD&p=1&type=background&k1=0&k2=0&k3=0&tagId=undefined&sceneId=0&styleId=0&ratioId=-1'
+            getenv('UNIT_BASE_URL') .'/api/get-asset-list?w=%E4%BD%A0%E5%A5%BD&p=1&type=background&k1=0&k2=0&k3=0&tagId=undefined&sceneId=0&styleId=0&ratioId=-1'
+        );
+
+        $content = json_decode($response->getBody()->getContents());
+        $ids = ArrayHelper::getColumn($content, 'id');
+        sort($ids);
+        $myIds = $items['ids'];
+        sort($myIds);
+        $this->assertEquals(join(',', $ids), join(',', $myIds));
+    }
+
+    public function testSearchTwo()
+    {
+        $items = (new Background())
+            ->search(new BackGroundSearchQuery(
+                keyword: '再见',
+                page: 1,
+                pageSize: 30,
+                sceneId: 0,
+                isZb: 1,
+                sort: 0,
+                useCount: 0,
+                kid: 0,
+                ratioId: -1,
+                isBg: 0
+            ));
+        /**@var \GuzzleHttp\Psr7\Response $response */
+        $response = $this->http->request(
+            'GET',
+            getenv('UNIT_BASE_URL') .'/api/get-asset-list?w=再见&p=1&type=background&k1=0&k2=0&k3=0&tagId=undefined&sceneId=0&styleId=0&ratioId=-1'
+        );
+
+        $content = json_decode($response->getBody()->getContents());
+        $ids = ArrayHelper::getColumn($content, 'id');
+        sort($ids);
+        $myIds = $items['ids'];
+        sort($myIds);
+        $this->assertEquals(join(',', $ids), join(',', $myIds));
+    }
+    public function testSearchThree()
+    {
+        $items = (new Background())
+            ->search(new BackGroundSearchQuery(
+                keyword: '我们',
+                page: 1,
+                pageSize: 30,
+                sceneId: 0,
+                isZb: 1,
+                sort: 0,
+                useCount: 0,
+                kid: 0,
+                ratioId: -1,
+                isBg: 0
+            ));
+        /**@var \GuzzleHttp\Psr7\Response $response */
+        $response = $this->http->request(
+            'GET',
+            getenv('UNIT_BASE_URL') .'/api/get-asset-list?w=我们&p=1&type=background&k1=0&k2=0&k3=0&tagId=undefined&sceneId=0&styleId=0&ratioId=-1'
+        );
+
+        $content = json_decode($response->getBody()->getContents());
+        $ids = ArrayHelper::getColumn($content, 'id');
+        sort($ids);
+        $myIds = $items['ids'];
+        sort($myIds);
+        $this->assertEquals(join(',', $ids), join(',', $myIds));
+    }
+    public function testSearchFour()
+    {
+        $items = (new Background())
+            ->search(new BackGroundSearchQuery(
+                keyword: '中秋',
+                page: 1,
+                pageSize: 30,
+                sceneId: 0,
+                isZb: 1,
+                sort: 0,
+                useCount: 0,
+                kid: 0,
+                ratioId: -1,
+                isBg: 0
+            ));
+        /**@var \GuzzleHttp\Psr7\Response $response */
+        $response = $this->http->request(
+            'GET',
+            'https://818ps.com/api/get-asset-list?w=中秋&p=1&type=background&k1=0&k2=0&k3=0&tagId=undefined&sceneId=0&styleId=0&ratioId=-1'
         );
 
         $content = json_decode($response->getBody()->getContents());

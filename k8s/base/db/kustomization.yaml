@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources: 
+- mysql/service.yaml
+- mysql/deployment.yaml
+- mysql/volume.yaml
+- redis/service.yaml
+- redis/deployment.yaml
+
+configMapGenerator:
+- name: public-db
+  literals: 
+  - DB_CONNECTION=mysql
+
+secretGenerator:
+- name: secrets-db
+  env: secrets.txt
+  type: Opaque
+
+vars:
+- name: MYSQL_DATABASE
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: public-overlays
+  fieldref:
+    fieldpath: data.DB_DATABASE

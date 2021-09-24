@@ -25,7 +25,7 @@ class SvgController extends BaseController
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $items = (new Svg)->search(new SvgSearchQuery(
-                    keyword: $request->get('keyword', ''),
+                    keyword: $request->get('keyword', 0),
                     kid2: $request->get('kid2', []),
                     page: $request->get('page', 1),
                     pageSize: $request->get('page_size', 40)
@@ -41,7 +41,7 @@ class SvgController extends BaseController
             );
         } catch (\Throwable $th) {
             $response = new Response(
-                'a_readable_error_code',
+                'internal_server_error',
                 $th->getMessage(),
                 YII_DEBUG ? explode("\n", $th->getTraceAsString()) : [],
                 500

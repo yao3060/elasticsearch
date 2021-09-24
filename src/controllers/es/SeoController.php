@@ -29,7 +29,9 @@ class SeoController extends BaseController
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $data = (new Seo())
-                    ->search(new SeoSearchQuery($data['keyword']));
+                    ->search(new SeoSearchQuery(
+                        $data['keyword']
+                    ));
                 $response = new Response('get_seo_list', 'seoList', $data);
             }
         } catch (UnknownPropertyException $e) {
@@ -39,13 +41,15 @@ class SeoController extends BaseController
                 [],
                 422
             );
+            yii::error(str_replace('yii\\base\\DynamicModel::', '', $e->getMessage()), __METHOD__);
         } catch (\Throwable $th) {
             $response = new Response(
-                'a_readable_error_code',
+                'internal_server_error',
                 $th->getMessage(),
                 YII_DEBUG ? explode("\n", $th->getTraceAsString()) : [],
                 500
             );
+            yii::error($th->getMessage(), __METHOD__);
         }
         return $this->response($response);
     }
@@ -61,8 +65,11 @@ class SeoController extends BaseController
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $data = (new Seo())
-                    ->seoSearch(new SeoSearchQuery($data['keyword'], $data['pageSize']));
-                $response = new Response('get_list', 'GetList', $data);
+                    ->seoSearch(new SeoSearchQuery(
+                        $data['keyword'],
+                        $data['page_size'] ?? 40
+                    ));
+                $response = new Response('get_seo_list', 'GetSeoList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(
@@ -73,7 +80,7 @@ class SeoController extends BaseController
             );
         } catch (\Throwable $th) {
             $response = new Response(
-                'a_readable_error_code',
+                'internal_server_error',
                 $th->getMessage(),
                 YII_DEBUG ? explode("\n", $th->getTraceAsString()) : [],
                 500

@@ -8,9 +8,7 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\helpers\StringHelper;
-use app\models\ES\GroupWords;
 use app\models\ES\VideoAudio;
-use app\queries\ES\GroupWordsSearchQuery;
 use app\queries\ES\VideoAudioSearchQuery;
 use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
@@ -31,8 +29,16 @@ class VideoAudioController extends BaseController
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $data = (new VideoAudio())
-                    ->search(new VideoAudioSearchQuery($data['keyword'], $data['page'], $data['pageSize'], $data['parentsId'],
-                        $data['classId'], $data['prep'], $data['isDesigner'], $data['isVip']));
+                    ->search(new VideoAudioSearchQuery(
+                        $data['keyword'],
+                        $data['page'] ?? 1,
+                        $data['page_size'] ?? 40,
+                        $data['parents_id'] ?? 0,
+                        $data['class_id'] ?? 0,
+                        $data['prep'] ?? 0,
+                        $data['is_designer'] ?? 0,
+                        $data['is_vip'] ?? 0
+                    ));
                 $response = new Response('get_videoAudio_list', 'VideoAudioList', $data);
             }
         } catch (UnknownPropertyException $e) {
@@ -42,18 +48,20 @@ class VideoAudioController extends BaseController
                 [],
                 422
             );
+            yii::error(str_replace('yii\\base\\DynamicModel::', '', $e->getMessage()), __METHOD__);
         } catch (\Throwable $th) {
             $response = new Response(
-                'a_readable_error_code',
+                'internal_server_error',
                 $th->getMessage(),
                 YII_DEBUG ? explode("\n", $th->getTraceAsString()) : [],
                 500
             );
+            yii::error($th->getMessage(), __METHOD__);
         }
         return $this->response($response);
     }
 
-    public function actionRecommendSearch(Request $request)
+    /*public function actionRecommendSearch(Request $request)
     {
         $data = $request->get();
         try {
@@ -63,8 +71,12 @@ class VideoAudioController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new GroupWords())
-                    ->recommendSearch(new GroupWordsSearchQuery($data['keyword'], $data['page'], $data['pageSize']));
+                $data = (new VideoAudio())
+                    ->recommendSearch(new VideoAudioSearchQuery(
+                        $data['keyword'],
+                        $data['page'],
+                        $data['pageSize']
+                    ));
                 $response = new Response('get_Group_Recommend_list', 'Group_Recommend_List', $data);
             }
         } catch (UnknownPropertyException $e) {
@@ -76,13 +88,12 @@ class VideoAudioController extends BaseController
             );
         } catch (\Throwable $th) {
             $response = new Response(
-                'a_readable_error_code',
+                'internal_server_error',
                 $th->getMessage(),
                 YII_DEBUG ? explode("\n", $th->getTraceAsString()) : [],
                 500
             );
         }
         return $this->response($response);
-    }
-
+    }*/
 }

@@ -32,10 +32,20 @@ class BackgroundController extends BaseController
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $data = (new Background())
-                    ->search(new BackGroundSearchQuery($data['keyword'], $data['page'] ?? 1, $data['pageSize'] ?? 40,
-                        $data['sceneId'] ?? 0, $data['isZb'] ?? 0, $data['sort'] ?? 0, $data['useCount'] ?? 0, $data['kid'] ?? 0,
-                        $data['ratioId'] ?? 0, $data['class'] ?? 0, $data['isBg'] ?? 0));
-                $response = new Response('get_list', 'Get List', $data);
+                    ->search(new BackGroundSearchQuery(
+                        $data['keyword'],
+                        $data['page'] ?? 1,
+                        $data['page_size'] ?? 40,
+                        $data['scene_id'] ?? 0,
+                        $data['is_zb'] ?? 0,
+                        $data['sort'] ?? 0,
+                        $data['use_count'] ?? 0,
+                        $data['kid'] ?? 0,
+                        $data['ratio_id'] ?? 0,
+                        $data['class'] ?? 0,
+                        $data['is_bg'] ?? 0
+                    ));
+                $response = new Response('get_background_list', 'BackGroundList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(
@@ -44,13 +54,15 @@ class BackgroundController extends BaseController
                 [],
                 422
             );
+            yii::error(str_replace('yii\\base\\DynamicModel::', '', $e->getMessage()), __METHOD__);
         } catch (\Throwable $th) {
             $response = new Response(
-                'a_readable_error_code',
+                'internal_server_error',
                 $th->getMessage(),
                 YII_DEBUG ? explode("\n", $th->getTraceAsString()) : [],
                 500
             );
+            yii::error($th->getMessage(), __METHOD__);
         }
         return $this->response($response);
     }

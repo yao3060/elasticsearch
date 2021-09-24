@@ -22,6 +22,7 @@ class GroupWordsController extends BaseController
     {
         $data = $request->get();
         try {
+            // FIXME: 需要 校验 search
             $model = DynamicModel::validateData($data, [
                 ['keyword', 'required']
             ]);
@@ -29,9 +30,14 @@ class GroupWordsController extends BaseController
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $data = (new GroupWords())
-                    ->search(new GroupWordsSearchQuery($data['keyword'], $data['page'] ?? 1, $data['pageSize'] ?? 40, $data['search'] ?? 0,
-                        $data['searchAll'] ?? 0));
-                $response = new Response('get_groupWords_list', 'groupWordsList', $data);
+                    ->search(new GroupWordsSearchQuery(
+                        $data['keyword'],
+                        $data['page'] ?? 1,
+                        $data['page_size'] ?? 40,
+                        $data['search'] ?? 0,
+                        $data['search_all'] ?? 0
+                    ));
+                $response = new Response('get_group_words_list', 'GroupWordsList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(
@@ -40,13 +46,15 @@ class GroupWordsController extends BaseController
                 [],
                 422
             );
+            yii::error(str_replace('yii\\base\\DynamicModel::', '', $e->getMessage()), __METHOD__);
         } catch (\Throwable $th) {
             $response = new Response(
-                'a_readable_error_code',
+                'internal_server_error',
                 $th->getMessage(),
                 YII_DEBUG ? explode("\n", $th->getTraceAsString()) : [],
                 500
             );
+            yii::error($th->getMessage(), __METHOD__);
         }
         return $this->response($response);
     }
@@ -74,7 +82,7 @@ class GroupWordsController extends BaseController
             );
         } catch (\Throwable $th) {
             $response = new Response(
-                'a_readable_error_code',
+                'internal_server_error',
                 $th->getMessage(),
                 YII_DEBUG ? explode("\n", $th->getTraceAsString()) : [],
                 500
@@ -82,5 +90,4 @@ class GroupWordsController extends BaseController
         }
         return $this->response($response);
     }
-
 }

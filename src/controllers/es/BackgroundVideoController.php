@@ -19,13 +19,14 @@ class BackgroundVideoController extends BaseController
     {
         try {
 
-            $validate = DynamicModel::validateData($request->getBodyParams(), BackgroundVideo::validateRules());
+            $validate = DynamicModel::validateData($request->getQueryParams(), BackgroundVideo::validateRules());
 
             if ($validate->hasErrors()) {
                 return new Response('validate param errors', 'Validate Param Errors', [], 422);
             };
 
             $validateAttributes = $validate->getAttributes();
+
             $search = (new BackgroundVideo())->search(new BackgroundVideoQuery(
                 keyword: $validateAttributes['keyword'] ?? 0,
                 classId: $validateAttributes['class_id'] ?? [],

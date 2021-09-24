@@ -2,10 +2,10 @@
 
 namespace app\models\ES;
 
+use Yii;
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
-use app\models\Assettaglink;
-use app\models\AssetUseTop;
+use app\models\Backend\AssetUseTop;
 
 /**
  * Class Asset
@@ -14,95 +14,63 @@ use app\models\AssetUseTop;
  */
 class Asset extends BaseModel
 {
-    private $redisDb = 8;
+    const REDIS_DB = 8;
+    const REDIS_EXPIRE = 86400;
 
     /**
-     * @param QueryBuilderInterface $query
+     * @param \app\queries\ES\AssetSearchQuery $query
      * @return array 2021-09-03
      * return ['hit','ids','score'] 命中数,命中id,模板id=>分数
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $sceneId = is_array($query->sceneId) ? $query->sceneId : [];
-        $redisKey = sprintf(
-            'ES_asset2:%s:%s_%d_%s_%d_%d_%d_%d',
-            date('Y-m-d'),
-            $query->keyword,
-            $query->page,
-            implode('-', $sceneId),
-            $query->pageSize,
-            $query->isZb,
-            $query->sort,
-            $query->useCount
-        );
-        $return = Tools::getRedis($this->redisDb, $redisKey);
-        $pageSize = $query->pageSize;
-        if (!$return || !$return['hit']) {
-            unset($return);
-            if ($query->keyword) {
-                $newQuery = $this->queryKeyword($query->keyword);
-            }
-            if ($sceneId) {
-                $newQuery['bool']['must'][]['terms']['scene_id'] = $sceneId;
-            }
-            $newQuery['bool']['filter'][]['term']['kid_1'] = 1;
-            if ($query->page * $pageSize > 10000) {
-                $pageSize = $query->page * $pageSize - 10000;
-            }
-
-            if ($query->sort === 'bytime') {
-                $sortBy = $this->sortByTime();
-            } else {
-                $sortBy = $this->sortDefault();
-            }
-            if ($query->useCount) {
-                $useInfo = AssetUseTop::getLastInfo(1);
-                switch ($query->useCount) {
-                    case 1:
-                        $newQuery['bool']['filter'][]['range']['use_count']['gte'] = $useInfo['top1_count'];
-                        break;
-                    case 2:
-                        $newQuery['bool']['filter'][]['range']['use_count']['lt'] = $useInfo['top1_count'];
-                        break;
-                }
-            } else {
-                $useInfo = '';
-            }
-            try {
-                $info = self::find()
-                    ->source(['id', 'use_count'])
-                    ->query($newQuery)
-                    ->orderBy($sortBy)
-                    ->offset(($query->page - 1) * $pageSize)
-                    ->limit($pageSize)
-                    ->createCommand()
-                    ->search([], ['track_scores' => true])['hits'];
-            } catch (\exception $e) {
-                $info['hit'] = 0;
-                $info['ids'] = [];
-                $info['score'] = [];
-            }
-            $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
-            foreach ($info['hits'] as $value) {
-                $return['ids'][] = $value['_id'];
-                $return['score'][$value['_id']] = $value['sort'][0];
-                if ($useInfo) {
-                    if ($value['_source']['use_count'] >= $useInfo['top1_count']) {
-                        $return['use_count'][$value['_id']] = 1;
-                    } elseif ($value['_source']['use_count'] >= $useInfo['top5_count']) {
-                        $return['use_count'][$value['_id']] = 2;
-                    } else {
-                        $return['use_count'][$value['_id']] = 3;
-                    }
-                }
-            }
-            Tools::setRedis($this->redisDb, $redisKey, $return, 86400);
+        $redisKey = $query->getRedisKey();
+        $log = 'Asset:redisKey:'.$query->getRedisKey();
+        yii::info($log,__METHOD__);
+        $return = Tools::getRedis(self::REDIS_DB, $redisKey);
+        if ($return && isset($return['hit']) && $return['hit']) {
+            return $return;
         }
+        if ($query->useCount) {
+            $useInfo = AssetUseTop::getLatestBy('kid_1', 1);
+        } else {
+            $useInfo = '';
+        }
+        try {
+            $info = self::find()
+                ->source(['id', 'use_count'])
+                ->query($query->query())
+                ->orderBy($query->sortBy())
+                ->offset($query->queryOffset())
+                ->limit($query->pageSizeSet())
+                ->createCommand()
+                ->search([], ['track_scores' => true])['hits'];
+        } catch (\Exception $e) {
+            Yii::error($e->getMessage());
+            $info['hit'] = 0;
+            $info['ids'] = [];
+            $info['score'] = [];
+        }
+        $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
+        foreach ($info['hits'] as $value) {
+            $return['ids'][] = $value['_id'];
+            $return['score'][$value['_id']] = $value['sort'][0];
+            if ($useInfo) {
+                if ($value['_source']['use_count'] >= $useInfo['top1_count']) {
+                    $return['use_count'][$value['_id']] = 1;
+                } elseif ($value['_source']['use_count'] >= $useInfo['top5_count']) {
+                    $return['use_count'][$value['_id']] = 2;
+                } else {
+                    $return['use_count'][$value['_id']] = 3;
+                }
+            }
+        }
+        Tools::setRedis(self::REDIS_DB, $redisKey, $return, self::REDIS_EXPIRE);
         return $return;
     }
 
     //推荐搜索
-    public function recommendSearch(QueryBuilderInterface $query): array
+    /*public function recommendSearch(QueryBuilderInterface $query): array
     {
         if ($query->keyword) {
             $newQuery['bool']['must']['match']['title'] = $query->keyword;
@@ -113,7 +81,7 @@ class Asset extends BaseModel
                 ->source(['id'])
                 ->query($newQuery)
                 //                ->orderBy($sort)
-                ->offset(($query->page - 1) * $query->pageSize)
+                ->offset($query->queryOffset())
                 ->limit($query->pageSize)
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
@@ -132,9 +100,9 @@ class Asset extends BaseModel
             }
         }
         return $return;
-    }
+    }*/
 
-    public static function saveRecord($fields = [])
+    /*public function saveRecord($fields = [])
     {
         if (!$fields['id']) return false;
         $info = self::findOne($fields['id']);
@@ -162,45 +130,11 @@ class Asset extends BaseModel
         }
         $info->scene_id = $scene;
         $info->save();
-    }
-
-    public static function queryKeyword($keyword, $is_or = false)
-    {
-        $operator = $is_or ? 'or' : 'and';
-        $query['bool']['must'][]['multi_match'] = [
-            'query' => $keyword,
-            'fields' => ["title^5", "description^1"],
-            'type' => 'most_fields',
-            "operator" => $operator
-        ];
-        return $query;
-    }
-
-    public static function sortByTime()
-    {
-        return 'created desc';
-    }
-
-    public static function sortDefault()
-    {
-        //        $source = "doc['pr'].value-doc['man_pr'].value+doc['man_pr_add'].value";
-        $source = "doc['pr'].value+(int)(_score*10)";
-        $sort['_script'] = [
-            'type' => 'number',
-            'script' => [
-                "lang" => "painless",
-                "source" => $source
-            ],
-            'order' => 'desc'
-        ];
-        return $sort;
-    }
-
+    }*/
     public static function index()
     {
         return 'asset2';
     }
-
     public static function type()
     {
         return 'list';

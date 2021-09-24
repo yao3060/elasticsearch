@@ -6,16 +6,23 @@ use Yii;
 use yii\db\ActiveRecord;
 use app\components\Tools;
 
-class AssetUseTop extends ActiveRecord {
+/**
+ * @deprecated since version 1.0. Use app\models\Backend\AssetUseTop instead.
+ * @see \app\models\Backend\AssetUseTop
+ */
+class AssetUseTop extends ActiveRecord
+{
     // public $imageFile;
     /**
      * @inheritdoc
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return 'ips_asset_use_top';
     }
 
-    public static function getCount($kid_1) {
+    public static function getCount($kid_1)
+    {
         $total = Asset::find()->where('audit_through = 4 AND deleted = 0 AND kid_1 =1')->count();
         $top1 = ceil($total / 100 * 1);
         $top2 = ceil($total / 100 * 2);
@@ -45,7 +52,8 @@ class AssetUseTop extends ActiveRecord {
         $add->save();
     }
 
-    public static function getLastInfo($kid_1) {
+    public static function getLastInfo($kid_1)
+    {
         $find = self::find()
             ->where('kid_1 = ' . $kid_1)
             ->orderBy('day DESC')
@@ -54,5 +62,4 @@ class AssetUseTop extends ActiveRecord {
             ->one();
         return $find;
     }
-
 }

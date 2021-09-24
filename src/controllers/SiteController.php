@@ -2,17 +2,15 @@
 
 namespace app\controllers;
 
+use app\models\Backend\AssetUseTop;
 use Yii;
 use yii\filters\AccessControl;
-use yii\web\Controller;
+use yii\helpers\VarDumper;
+use yii\web\Request;
 use yii\web\Response;
 use yii\filters\VerbFilter;
-use app\models\LoginForm;
-use app\models\ContactForm;
-use app\models\ES\Picture;
-use app\queries\ES\PictureSearchQuery;
 
-class SiteController extends Controller
+class SiteController extends BaseController
 {
     /**
      * {@inheritdoc}
@@ -21,7 +19,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['logout'],
                 'rules' => [
                     [
@@ -32,7 +30,7 @@ class SiteController extends Controller
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
                 ],
@@ -63,9 +61,41 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $data = (new Picture)
-            ->search(new PictureSearchQuery('red', 2, [], [], [], 100));
-        return json_encode($data);
+        try {
+            Yii::info('this is info.', __METHOD__);
+            Yii::warning('this is warning.', __METHOD__);
+            Yii::error([
+                'this' => 'This',
+                'is' => 'is',
+                'error' => 'error.'
+            ], __METHOD__);
+
+            throw new \Exception('this is a exception.');
+        } catch (\Throwable $th) {
+
+            Yii::error($th);
+            Yii::error($th->getTraceAsString());
+            //throw $th;
+        }
+
+
+
+        Yii::info('test VarDumper', VarDumper::export([
+            'hello' => 'world',
+            'hey' => 'boy',
+            'hi' => 'girl'
+        ]));
+
+        return $this->asJson([
+            'code' => 'welcome',
+            'message' => 'Welcome',
+            'data' => [
+                'is_prod' => is_prod(),
+                'is_local' => is_local(),
+                'AssetUseTop' => AssetUseTop::getLatestBy('kid_1', 1),
+                'profile' => Yii::$app->user->identity,
+            ]
+        ]);
     }
 
     /**
@@ -75,19 +105,7 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
-        }
-
-        $model->password = '';
-        return $this->render('login', [
-            'model' => $model,
-        ]);
+        return 'this is a login action';
     }
 
     /**
@@ -97,9 +115,7 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
-        Yii::$app->user->logout();
-
-        return $this->goHome();
+        return 'this is a logout action';
     }
 
     /**
@@ -109,15 +125,7 @@ class SiteController extends Controller
      */
     public function actionContact()
     {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
-
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
+        return 'this is a contact page';
     }
 
     /**
@@ -127,6 +135,19 @@ class SiteController extends Controller
      */
     public function actionAbout()
     {
-        return $this->render('about');
+        return 'this is a about action';
+    }
+
+    public function actionHpa()
+    {
+        if (is_prod()) {
+            return 'IS PROD. Exit.';
+        }
+
+        $x = 0.0001;
+        for ($i = 0; $i <= 50000000; $i++) {
+            $x += sqrt($x);
+        }
+        return "OK!";
     }
 }
