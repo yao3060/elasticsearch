@@ -40,7 +40,7 @@ class VideoElement extends BaseModel
 
 
     /**
-     * @param \app\queries\ES\VideoElementsSearchQuery $query
+     * @param \app\queries\ES\VideoElementSearchQuery $query
      * @return array 2021-09-10
      * return ['hit','ids','score'] 命中数,命中id,模板id=>分数
      */
