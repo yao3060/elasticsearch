@@ -24,8 +24,12 @@ class VideoElementSearchQuery implements QueryBuilderInterface
         if ($this->keyword) {
             $newQuery = $this->queryKeyword($this->keyword);
         }
-        if ($this->classId && $this->classId != 0) {
-            foreach ($this->classId as $key) {
+        $class_id = $this->classId ? $this->classId : [];
+        if (!is_array($class_id)) {
+            $class_id = [$class_id];
+        }
+        if ($class_id && $class_id != 0) {
+            foreach ($class_id as $key) {
                 if ($key > 0) {
                     $newQuery['bool']['must'][]['terms']['class_id'] = [$key];
                 }
