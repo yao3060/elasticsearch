@@ -16,7 +16,7 @@ use app\controllers\BaseController;
 use Yii;
 use yii\web\Request;
 
-class VideoElementsController extends BaseController
+class VideoElementController extends BaseController
 {
     public function actionSearch(Request $request)
     {

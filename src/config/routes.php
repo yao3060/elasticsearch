@@ -31,7 +31,7 @@ return [
         'GET  v1/groups' => 'es/group-words/search', //组合字搜索
 
         'GET  v1/audiovisuals' => 'es/video-audio/search', //试听素材搜索
-        'GET  v1/video-elements' => 'es/video-elements/search', //视频元 素搜索
+        'GET  v1/video-elements' => 'es/video-element/search', //视频元 素搜索
 
         'GET  v1/containers' => 'es/container/search', //裁剪搜索
         'POST  v1/h5-sensitive-words' => 'es/h5-ban-words/h5-ban-search', //查询是否存在敏感词
