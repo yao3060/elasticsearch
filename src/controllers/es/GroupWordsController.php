@@ -22,6 +22,7 @@ class GroupWordsController extends BaseController
     {
         $data = $request->get();
         try {
+            // FIXME: 需要 校验 search
             $model = DynamicModel::validateData($data, [
                 ['keyword', 'required']
             ]);
