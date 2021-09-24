@@ -23,18 +23,18 @@ class TemplateSinglePageController extends BaseController
         $data = $request->get();
         try {
             $model = DynamicModel::validateData($data, [
-                //['c1', 'required']
+                ['c1', 'required']
             ]);
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $data = (new TemplateSinglePage())
                     ->search(new TemplateSinglePageSearchQuery(
-                        $data['c1'],
+                        $data['class_id'],
                         $data['page'] ?? 1,
                         $data['page_size'] ?? 50,
-                        $data['c2'] ?? [],
-                        $data['c3'] ?? []
+                        $data['class_level2_ids'] ?? [],
+                        $data['class_level3_ids'] ?? []
                     ));
                 $response = new Response('get_template_single_page_list', 'TemplateSinglePageList', $data);
             }
