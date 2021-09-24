@@ -1,22 +1,22 @@
 <?php
 
 /**
- * 重构ES,VideoE搜索方法
+ * 重构ES,VideoElements搜索方法
  */
 
 namespace app\controllers\es;
 
 use app\components\Response;
 use app\helpers\StringHelper;
-use app\models\ES\VideoE;
-use app\queries\ES\VideoESearchQuery;
+use app\models\ES\VideoElements;
+use app\queries\ES\VideoElementsSearchQuery;
 use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
 use app\controllers\BaseController;
 use Yii;
 use yii\web\Request;
 
-class VideoEController extends BaseController
+class VideoElementsController extends BaseController
 {
     public function actionSearch(Request $request)
     {
@@ -28,8 +28,8 @@ class VideoEController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new VideoE())
-                    ->search(new VideoESearchQuery(
+                $data = (new VideoElements())
+                    ->search(new VideoElementsSearchQuery(
                         $data['keyword'],
                         $data['page'] ?? 1,
                         $data['pageSize'] ?? 40,
@@ -70,8 +70,8 @@ class VideoEController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new VideoE())
-                    ->recommendSearch(new VideoESearchQuery(
+                $data = (new VideoElements())
+                    ->recommendSearch(new VideoElementsSearchQuery(
                         $data['keyword'],
                         $data['page'],
                         $data['pageSize']
