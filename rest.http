@@ -28,7 +28,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-	"keyword": "你好"
+	"word": "党政"
 }
 
 
@@ -52,7 +52,47 @@ GET {{BASE_URL}}/v1/gif-assets?keyword=你好
 Content-Type: application/json
 Accept: application/json
 
-### 组合字搜索 @TODO @yangshangpu search 校验
-GET {{BASE_URL}}/v1/groups?keyword=0&search=你好
+### 组合字搜索
+GET {{BASE_URL}}/v1/groups?keyword=0&search=你好&search_all=1
+Content-Type: application/json
+Accept: application/json
+
+### 设计师动效
+GET {{BASE_URL}}/v1/lottie-videos?keyword=
+Content-Type: application/json
+Accept: application/json
+
+### 设计师动效搜索词
+GET {{BASE_URL}}/v1/lottie-video-words
+Content-Type: application/json
+Accept: application/json
+
+### 图片素材搜索
+GET {{BASE_URL}}/v1/pictures?keyword=早安
+Content-Type: application/json
+Accept: application/json
+
+#### 富文本元素
+GET {{BASE_URL}}/v1/rich-editor-assets?keyword=0&page=1
+Content-Type: application/json
+Accept: application/json
+
+### SVG
+GET {{BASE_URL}}/v1/svg?keyword=0
+Content-Type: application/json
+Accept: application/json
+
+### 关键词搜索
+GET {{BASE_URL}}/v1/keywords?keyword=中秋&type=1&page_size=30
+Content-Type: application/json
+Accept: application/json
+
+### seo词库相关推荐
+GET {{BASE_URL}}/v1/seo/keyword-assets?keyword=节日
+Content-Type: application/json
+Accept: application/json
+
+### PPT模板单页分类筛选
+GET {{BASE_URL}}/v1/ppt-templates?class_id=1&class_level2_ids[]=10&class_level2_ids[]=11&class_level3_ids[]=28&class_level3_ids[]=29&class_level3_ids[]=30
 Content-Type: application/json
 Accept: application/json
