@@ -40,7 +40,9 @@ class BackgroundVideo extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $return = Tools::getRedis(self::$redisDb, $query->getRedisKey());
+        $redisKey = $query->getRedisKey();
+        \Yii::info("[DesignerTemplate:redisKey]:[$redisKey]", __METHOD__);
+        $return = Tools::getRedis(self::$redisDb, $redisKey);
 
         if (!empty($return) && Tools::isReturnSource() === false) {
             return $return;
@@ -73,7 +75,7 @@ class BackgroundVideo extends BaseModel
             }
         }
 
-        Tools::setRedis(self::$redisDb, $query->getRedisKey(), $return, 86400);
+        Tools::setRedis(self::$redisDb, $redisKey, $return, 86400);
 
         return $return;
     }

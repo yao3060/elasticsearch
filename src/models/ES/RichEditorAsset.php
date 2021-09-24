@@ -35,7 +35,10 @@ class RichEditorAsset extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $return = Tools::getRedis(self::$redisDb, $query->getRedisKey());
+        $redisKey = $query->getRedisKey();
+        \Yii::info("[RichEditorAsset:redisKey]:[$redisKey]", __METHOD__);
+
+        $return = Tools::getRedis(self::$redisDb, $redisKey);
 
         $designer = IpsAuthority::check(DESIGNER_USER);
 

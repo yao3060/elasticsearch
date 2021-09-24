@@ -87,6 +87,9 @@ class SensitiveWord extends BaseModel
     public function search(QueryBuilderInterface $query): array
     {
         $redisKey = $query->getRedisKey();
+
+        \Yii::info("[SensitiveWord:redisKey]:[$redisKey]", __METHOD__);
+
         $validateSensitiveWord = Tools::getRedis(6, $redisKey);
 
         if (!empty($validateSensitiveWord) && isset($validateSensitiveWord['hit']) && $validateSensitiveWord['hit']
