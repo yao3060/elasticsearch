@@ -1,8 +1,12 @@
-@BASE_URL = http://localhost:8081
+@BASE_URL = http://es-api-staging.818ps.com
 
 
 ### Get Logs
 GET {{BASE_URL}}/v1/logs?name=hanmaker&email=email@email.com&age=11 HTTP/1.1
 content-type: application/json
-# username:password
-Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=
+Accept: application/json
+
+### get Assets
+GET {{BASE_URL}}/v1/assets?keyword=你好&page=3&pageSize=30&sceneId=0&isZb=1
+Content-Type: application/json
+Accept: application/json
