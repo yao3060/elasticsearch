@@ -4,7 +4,7 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
-use app\models\AssetUseTop;
+use app\models\Backend\AssetUseTop;
 use Yii;
 
 /**
@@ -23,13 +23,13 @@ class Background extends BaseModel
     public function search(QueryBuilderInterface $query): array
     {
         $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
-        $log = 'Background:redisKey:'.$query->getRedisKey();
-        yii::info($log,__METHOD__);
+        $log = 'Background:redisKey:' . $query->getRedisKey();
+        yii::info($log, __METHOD__);
         if ($return && isset($return['hit']) && $return['hit']) {
             return $return;
         }
         if ($query->useCount) {
-            $useInfo = AssetUseTop::getLastInfo(2);
+            $useInfo = AssetUseTop::getLatestBy('kid_1', 2);
         } else {
             $useInfo = '';
         }

@@ -47,15 +47,15 @@ class VideoElementsController extends BaseController
                 [],
                 422
             );
-            yii::error(str_replace('yii\\base\\DynamicModel::', '', $e->getMessage()),__METHOD__);
+            yii::error(str_replace('yii\\base\\DynamicModel::', '', $e->getMessage()), __METHOD__);
         } catch (\Throwable $th) {
             $response = new Response(
-                'a_readable_error_code',
+                'internal_server_error',
                 $th->getMessage(),
                 YII_DEBUG ? explode("\n", $th->getTraceAsString()) : [],
                 500
             );
-            yii::error($th->getMessage(),__METHOD__);
+            yii::error($th->getMessage(), __METHOD__);
         }
         return $this->response($response);
     }
@@ -87,7 +87,7 @@ class VideoElementsController extends BaseController
             );
         } catch (\Throwable $th) {
             $response = new Response(
-                'a_readable_error_code',
+                'internal_server_error',
                 $th->getMessage(),
                 YII_DEBUG ? explode("\n", $th->getTraceAsString()) : [],
                 500
@@ -95,5 +95,4 @@ class VideoElementsController extends BaseController
         }
         return $this->response($response);
     }*/
-
 }

@@ -2,11 +2,7 @@
 
 namespace app\queries\ES;
 
-use app\components\IpsAuthority;
-use app\components\Tools;
-use app\interfaces\ES\QueryBuilderInterface;
 use app\models\ES\Template;
-use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 
 class TemplateSearchQuery extends BaseTemplateSearchQuery
 {
