@@ -4,7 +4,6 @@ namespace tests\unit\models;
 
 use app\components\IpsAuthority;
 use app\models\ES\Template;
-use app\queries\ES\TemplateRecommendSearchQuery;
 use app\queries\ES\TemplateSearchQuery;
 use Codeception\Test\Unit;
 use GuzzleHttp\Client;

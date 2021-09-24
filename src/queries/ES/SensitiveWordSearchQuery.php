@@ -3,7 +3,6 @@
 
 namespace app\queries\ES;
 
-use app\models\ES\SensitiveWord;
 
 class SensitiveWordSearchQuery extends BaseTemplateSearchQuery
 {
