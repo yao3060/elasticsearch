@@ -63,7 +63,7 @@ class LogController extends BaseController
         } catch (\Throwable $th) {
             $response = new Response();
             $response->status(500);
-            $response->code('a_readable_error_code');
+            $response->code('internal_server_error');
             $response->message($e->getMessage());
             $response->data(YII_DEBUG ? explode("\n", $th->getTraceAsString()) : []);
             return $this->response($response);

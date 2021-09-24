@@ -43,15 +43,15 @@ class SeoLinkWordController extends BaseController
                 [],
                 422
             );
-            yii::error(str_replace('yii\\base\\DynamicModel::', '', $e->getMessage()),__METHOD__);
+            yii::error(str_replace('yii\\base\\DynamicModel::', '', $e->getMessage()), __METHOD__);
         } catch (\Throwable $th) {
             $response = new Response(
-                'a_readable_error_code',
+                'internal_server_error',
                 $th->getMessage(),
                 YII_DEBUG ? explode("\n", $th->getTraceAsString()) : [],
                 500
             );
-            yii::error($th->getMessage(),__METHOD__);
+            yii::error($th->getMessage(), __METHOD__);
         }
         return $this->response($response);
     }
@@ -68,10 +68,10 @@ class SeoLinkWordController extends BaseController
             } else {
                 $data = (new SeoLinkWord())
                     ->seoSearch(new SeoLinkWordSearchQuery(
-                                 $data['keyword'],
-                                 1,
-                                 $data['pageSize'] ?? 40
-                             ));
+                        $data['keyword'],
+                        1,
+                        $data['pageSize'] ?? 40
+                    ));
                 $response = new Response('get_LinkWordSeo_list', 'LinkWordSeoList', $data);
             }
         } catch (UnknownPropertyException $e) {
@@ -81,17 +81,16 @@ class SeoLinkWordController extends BaseController
                 [],
                 422
             );
-            yii::error(str_replace('yii\\base\\DynamicModel::', '', $e->getMessage()),__METHOD__);
+            yii::error(str_replace('yii\\base\\DynamicModel::', '', $e->getMessage()), __METHOD__);
         } catch (\Throwable $th) {
             $response = new Response(
-                'a_readable_error_code',
+                'internal_server_error',
                 $th->getMessage(),
                 YII_DEBUG ? explode("\n", $th->getTraceAsString()) : [],
                 500
             );
-            yii::error($th->getMessage(),__METHOD__);
+            yii::error($th->getMessage(), __METHOD__);
         }
         return $this->response($response);
     }
-
 }
