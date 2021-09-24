@@ -18,7 +18,7 @@ use yii\web\Request;
 
 class H5BanWordsController extends BaseController
 {
-    public function actionH5BanSearch(Request $request)
+    public function actionValidate(Request $request)
     {
         $data = $request->post();
         try {

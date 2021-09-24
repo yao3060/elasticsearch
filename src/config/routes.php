@@ -34,7 +34,7 @@ return [
         'GET  v1/video-elements' => 'es/video-element/search', //视频元 素搜索
 
         'GET  v1/containers' => 'es/container/search', //裁剪搜索
-        'POST  v1/h5-sensitive-words' => 'es/h5-ban-words/h5-ban-search', //查询是否存在敏感词
+        'POST  v1/h5-sensitive-words/validate' => 'es/h5-ban-words/validate', //查询是否存在敏感词
 
         'GET  v1/ppt-templates' => 'es/template-single-page/search', //PPT模板单页分类筛选
         //H
