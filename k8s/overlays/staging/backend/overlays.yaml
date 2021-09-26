@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: backend-nginx
 spec:
-  replicas: 3
+  replicas: 1
   template:
     spec:
       containers:
@@ -15,7 +15,7 @@ kind: Deployment
 metadata:
   name: backend-php
 spec:
-  replicas: 3
+  replicas: 1
   template:
     spec:
       containers:
