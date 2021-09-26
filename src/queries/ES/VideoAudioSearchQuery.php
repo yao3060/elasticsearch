@@ -16,14 +16,13 @@ class VideoAudioSearchQuery implements QueryBuilderInterface
         public $prep = 0,
         public $isDesigner = 0,
         public $isVip = 0
-    )
-    {
+    ) {
     }
 
     public function query(): array
     {
         if ($this->keyword) {
-            $newQuery = $this->queryKeyword($this->keyword);
+            $newQuery = self::queryKeyword($this->keyword);
         }
         if ($this->classId) {
             foreach ($this->classId as $key) {
@@ -41,17 +40,19 @@ class VideoAudioSearchQuery implements QueryBuilderInterface
         }
         return $newQuery;
     }
+
     public static function queryKeyword($keyword, $is_or = false)
     {
         $operator = $is_or ? 'or' : 'and';
         $query['bool']['must'][]['multi_match'] = [
             'query' => $keyword,
-            'fields' => ["title^5", "description^1"],
+            'fields' => ["title^1"],
             'type' => 'most_fields',
             "operator" => $operator
         ];
         return $query;
     }
+
     public function getRedisKey()
     {
         // TODO: Implement getRedisKey() method.
@@ -65,7 +66,9 @@ class VideoAudioSearchQuery implements QueryBuilderInterface
         );
         return $redisKey;
     }
-    public function pageSizeSet(){
+
+    public function pageSizeSet()
+    {
         $pageSize = $this->pageSize;
         if ($this->page * $this->pageSize > 10000) {
             $pageSize = $this->page * $pageSize - 10000;
@@ -86,14 +89,15 @@ class VideoAudioSearchQuery implements QueryBuilderInterface
         }
         return $sort;
     }
-    public static function sortByTime()
-    {
-        return 'create_date desc';
-    }
 
     public static function sortByOrderTime()
     {
         return 'create_date asc';
+    }
+
+    public static function sortByTime()
+    {
+        return 'create_date desc';
     }
 
     public static function sortByPr()
