@@ -11,8 +11,8 @@ class AssetSearchQuery implements QueryBuilderInterface
     //搜索所需 要参数
     function __construct(
         public $keyword = 0,
-        public int $page = 1,
-        public int $pageSize = 40,
+        public  $page = 1,
+        public  $pageSize = 40,
         public  $sceneId = 0,
         public  $isZb = 1,
         public  $sort = 'DESC',

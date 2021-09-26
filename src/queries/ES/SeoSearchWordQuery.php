@@ -10,7 +10,7 @@ class SeoSearchWordQuery implements QueryBuilderInterface
     //搜索所需要参数
     function __construct(
         public $keyword = 0,
-        public int $pageSize = 40
+        public $pageSize = 40
     )
     {
     }
