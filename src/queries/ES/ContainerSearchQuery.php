@@ -9,9 +9,9 @@ class ContainerSearchQuery implements QueryBuilderInterface
 {
     function __construct(
         public $keyword = 0,
-        public int $page = 1,
-        public int $pageSize = 40,
-        public string|array $kid = '0',
+        public $page = 1,
+        public $pageSize = 40,
+        public $kid = '0',
     )
     {
     }

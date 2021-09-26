@@ -7,6 +7,7 @@ use app\interfaces\ES\QueryBuilderInterface;
 
 class SearchWordSearchQuery implements QueryBuilderInterface
 {
+    //$type 类别 1模板2背景3元素
     function __construct(
         public $keyword = 0,
         public int $page = 1,

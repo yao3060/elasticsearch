@@ -42,6 +42,9 @@ class SeoSearchWord extends BaseModel
             $return['keyword'] = $query->keyword;
         }
         Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 86400);
+        if (empty($return)){
+            $return = [];
+        }
         return $return;
     }
 

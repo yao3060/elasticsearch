@@ -23,7 +23,7 @@ class SeoSearchWordController extends BaseController
         $data = $request->get();
         try {
             $model = DynamicModel::validateData($data, [
-                ['keyword', 'required']
+                ['keyword', 'string']
             ]);
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
@@ -69,7 +69,7 @@ class SeoSearchWordController extends BaseController
                         $data['keyword'],
                         $data['page_size'] ?? 40
                     ));
-                $response = new Response('get_seo_list', 'GetSeoList', $data);
+                $response = new Response('get_seo_seoSearch_word_list', 'GetSeoList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(
