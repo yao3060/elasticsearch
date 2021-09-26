@@ -2,8 +2,8 @@
 namespace tests\unit\models;
 
 use app\components\IpsAuthority;
-use app\models\ES\H5BanWords;
-use app\queries\ES\H5BanWordsSearchQuery;
+use app\models\ES\H5SensitiveWords;
+use app\queries\ES\H5SensitiveWordsSearchQuery;
 use GuzzleHttp\Client;
 use yii\helpers\ArrayHelper;
 
@@ -33,8 +33,8 @@ class H5BanWordsTest extends \Codeception\Test\Unit
     // tests
     /*public function testSearchOne()
     {
-        $items = (new H5BanWords())
-            ->checkBanWord(new H5BanWordsSearchQuery(
+        $items = (new H5SensitiveWords())
+            ->checkBanWord(new H5SensitiveWordsSearchQuery(
                          word: '去你妈'
                      ));
         $prodUrl = getenv('UNIT_BASE_URL') .'/h5-api/prohibited-words';

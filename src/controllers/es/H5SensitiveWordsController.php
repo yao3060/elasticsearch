@@ -1,42 +1,38 @@
 <?php
 
 /**
- * 重构ES,GroupWords搜索方法
+ * 重构ES,H5BanWords搜索方法
  */
 
 namespace app\controllers\es;
 
 use app\components\Response;
 use app\helpers\StringHelper;
-use app\models\ES\TemplateSinglePage;
-use app\queries\ES\TemplateSinglePageSearchQuery;
+use app\models\ES\H5SensitiveWords;
+use app\queries\ES\H5SensitiveWordsSearchQuery;
 use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
 use app\controllers\BaseController;
 use Yii;
 use yii\web\Request;
 
-class TemplateSinglePageController extends BaseController
+class H5SensitiveWordsController extends BaseController
 {
-    public function actionSearch(Request $request)
+    public function actionValidate(Request $request)
     {
-        $data = $request->get();
+        $data = $request->post();
         try {
             $model = DynamicModel::validateData($data, [
-                ['c1', 'required']
+                ['keyword', 'required']
             ]);
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new TemplateSinglePage())
-                    ->search(new TemplateSinglePageSearchQuery(
-                        $data['class_id'],
-                        $data['page'] ?? 1,
-                        $data['page_size'] ?? 50,
-                        $data['class_level2_ids'] ?? [],
-                        $data['class_level3_ids'] ?? []
+                $data = (new H5SensitiveWords())
+                    ->checkBanWord(new H5SensitiveWordsSearchQuery(
+                        $data['keyword'],
                     ));
-                $response = new Response('get_template_single_page_list', 'TemplateSinglePageList', $data);
+                $response = new Response('get_h5_ban_list', 'H5BanList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(
