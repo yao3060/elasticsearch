@@ -23,7 +23,7 @@ class SeoSearchWordController extends BaseController
         $data = $request->get();
         try {
             $model = DynamicModel::validateData($data, [
-                ['keyword', 'required']
+                ['keyword', 'string']
             ]);
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
