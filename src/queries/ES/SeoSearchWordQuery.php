@@ -5,7 +5,7 @@ namespace app\queries\ES;
 
 use app\interfaces\ES\QueryBuilderInterface;
 
-class SeoSearchQuery implements QueryBuilderInterface
+class SeoSearchWordQuery implements QueryBuilderInterface
 {
     //搜索所需要参数
     function __construct(

@@ -17,7 +17,7 @@ return [
         'GET  v1/seo/title-keywords' => 'es/seo-detail-keyword-for-title/search', //SEO标题中的关键词
         'GET  v1/seo/link-word' => 'es/seo-link-word/search', //seo词库中 相关搜索词
         'GET  v1/seo/link-word-seo' => 'es/seo-link-word/seo-search', //seo词库中 相关搜索词
-        'GET  v1/seo/keywords' => 'es/seo/search', //seo词库中 相关搜索词
+        'GET  v1/seo/keywords' => 'es/seo-search-word/search', //seo词库中相关搜索词
         'GET  v1/keywords' => 'es/search-word/search', //关键词搜索
 
         'GET  v1/assets/recommends' => 'es/asset/recommend-search',

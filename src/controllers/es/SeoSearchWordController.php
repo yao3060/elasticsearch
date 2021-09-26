@@ -8,15 +8,15 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\helpers\StringHelper;
-use app\models\ES\Seo;
-use app\queries\ES\SeoSearchQuery;
+use app\models\ES\SeoSearchWord;
+use app\queries\ES\SeoSearchWordQuery;
 use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
 use app\controllers\BaseController;
 use Yii;
 use yii\web\Request;
 
-class SeoController extends BaseController
+class SeoSearchWordController extends BaseController
 {
     public function actionSearch(Request $request)
     {
@@ -28,11 +28,11 @@ class SeoController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new Seo())
-                    ->search(new SeoSearchQuery(
+                $data = (new SeoSearchWord())
+                    ->search(new SeoSearchWordQuery(
                         $data['keyword']
                     ));
-                $response = new Response('get_seo_list', 'seoList', $data);
+                $response = new Response('get_seo_search_word_list', 'SeoSearchWordList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(
@@ -64,8 +64,8 @@ class SeoController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new Seo())
-                    ->seoSearch(new SeoSearchQuery(
+                $data = (new SeoSearchWord())
+                    ->seoSearch(new SeoSearchWordQuery(
                         $data['keyword'],
                         $data['page_size'] ?? 40
                     ));
