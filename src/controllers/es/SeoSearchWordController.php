@@ -69,7 +69,7 @@ class SeoSearchWordController extends BaseController
                         $data['keyword'],
                         $data['page_size'] ?? 40
                     ));
-                $response = new Response('get_seo_list', 'GetSeoList', $data);
+                $response = new Response('get_seo_seoSearch_word_list', 'GetSeoList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(
