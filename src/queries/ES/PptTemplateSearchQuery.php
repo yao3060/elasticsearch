@@ -6,7 +6,7 @@ namespace app\queries\ES;
 use app\interfaces\ES\QueryBuilderInterface;
 use app\services\designers\DesignerRecommendAssetTagService;
 
-class TemplateSinglePageSearchQuery implements QueryBuilderInterface
+class PptTemplateSearchQuery implements QueryBuilderInterface
 {
     function __construct(
         public int $c1 = 0,

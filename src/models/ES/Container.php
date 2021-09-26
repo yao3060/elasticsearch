@@ -15,7 +15,7 @@ class Container extends BaseModel
     /**
      * @var int redis
      */
-    private $redisDb = 8;
+    const REDIS_DB = 8;
 
     public static function index() {
         return 'container';
@@ -33,7 +33,7 @@ class Container extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
+        $return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
         $log = 'Container:redisKey:'.$query->getRedisKey();
         yii::info($log,__METHOD__);
         if ($return && isset($return['hit']) && $return['hit']) {
@@ -58,7 +58,7 @@ class Container extends BaseModel
             $return['ids'][] = $value['_id'];
             $return['score'][$value['_id']] = $value['sort'][0];
         }
-        Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 126000 + rand(-3600, 3600));
+        Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 126000 + rand(-3600, 3600));
         return $return;
     }
 

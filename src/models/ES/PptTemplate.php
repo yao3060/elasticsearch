@@ -10,7 +10,7 @@ use Yii;
  * @package app\models\ES
  * author  ysp
  */
-class TemplateSinglePage extends BaseModel
+class PptTemplate extends BaseModel
 {
     /**
      * @var int redis
@@ -39,7 +39,7 @@ class TemplateSinglePage extends BaseModel
     }
 
     /**
-     * @param \app\queries\ES\TemplateSinglePageSearchQuery $query
+     * @param \app\queries\ES\PptTemplateSearchQuery $query
      * @return array 2021-09-23
      * return ['hit','ids','score'] 命中数,命中id,模板id=>分数
      */

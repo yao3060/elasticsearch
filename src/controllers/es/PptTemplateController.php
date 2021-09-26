@@ -1,38 +1,42 @@
 <?php
 
 /**
- * 重构ES,H5BanWords搜索方法
+ * 重构ES,GroupWords搜索方法
  */
 
 namespace app\controllers\es;
 
 use app\components\Response;
 use app\helpers\StringHelper;
-use app\models\ES\H5BanWords;
-use app\queries\ES\H5BanWordsSearchQuery;
+use app\models\ES\PptTemplate;
+use app\queries\ES\PptTemplateSearchQuery;
 use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
 use app\controllers\BaseController;
 use Yii;
 use yii\web\Request;
 
-class H5BanWordsController extends BaseController
+class PptTemplateController extends BaseController
 {
-    public function actionValidate(Request $request)
+    public function actionSearch(Request $request)
     {
-        $data = $request->post();
+        $data = $request->get();
         try {
             $model = DynamicModel::validateData($data, [
-                ['keyword', 'required']
+                ['class_id', 'required']
             ]);
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new H5BanWords())
-                    ->checkBanWord(new H5BanWordsSearchQuery(
-                        $data['keyword'],
+                $data = (new PptTemplate())
+                    ->search(new PptTemplateSearchQuery(
+                        $data['class_id'],
+                        $data['page'] ?? 1,
+                        $data['page_size'] ?? 50,
+                        $data['class_level2_ids'] ?? [],
+                        $data['class_level3_ids'] ?? []
                     ));
-                $response = new Response('get_h5_ban_list', 'H5BanList', $data);
+                $response = new Response('get_template_single_page_list', 'TemplateSinglePageList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(

@@ -3,11 +3,11 @@
 namespace tests\unit\models;
 
 use app\components\IpsAuthority;
-use app\models\ES\TemplateSinglePage;
-use app\queries\ES\TemplateSinglePageSearchQuery;
+use app\models\ES\PptTemplate;
+use app\queries\ES\PptTemplateSearchQuery;
 use yii\helpers\ArrayHelper;
 
-class TemplateSinglePageTest extends \Codeception\Test\Unit
+class PptTemplateTest extends \Codeception\Test\Unit
 {
     /**
      * @var \UnitTester
@@ -27,15 +27,12 @@ class TemplateSinglePageTest extends \Codeception\Test\Unit
     // tests
     public function testSearchOne()
     {
-        $items = (new TemplateSinglePage())
+        $items = (new PptTemplate())
             ->search(
-                new TemplateSinglePageSearchQuery(
+                new PptTemplateSearchQuery(
                     c1: 10,
                 )
             );
-        $value = array(
-            'class' => 10
-        );
         $response = $this->http->post(
             getenv('UNIT_BASE_URL') . '/apiv2/sp-search',
             [
