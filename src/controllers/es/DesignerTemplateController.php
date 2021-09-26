@@ -39,7 +39,7 @@ class DesignerTemplateController extends BaseController
                 )
             );
 
-            $response = new Response('design template index', 'DesignTemplateIndex', $items);
+            $response = new Response('design_template_index', 'DesignTemplateIndex', $items);
 
         } catch (UnknownPropertyException $unknownException) {
 
