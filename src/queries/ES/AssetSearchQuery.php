@@ -13,10 +13,10 @@ class AssetSearchQuery implements QueryBuilderInterface
         public $keyword = 0,
         public int $page = 1,
         public int $pageSize = 40,
-        public int $sceneId = 0,
-        public int $isZb = 1,
-        public string  $sort = 'DESC',
-        public int $useCount = 0
+        public  $sceneId = 0,
+        public  $isZb = 1,
+        public  $sort = 'DESC',
+        public  $useCount = 0
     )
     {
     }

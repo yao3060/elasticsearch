@@ -11,7 +11,7 @@ class ContainerSearchQuery implements QueryBuilderInterface
         public $keyword = 0,
         public int $page = 1,
         public int $pageSize = 40,
-        public string|array $kid = '0',
+        public $kid = '0',
     )
     {
     }

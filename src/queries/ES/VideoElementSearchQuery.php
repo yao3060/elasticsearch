@@ -11,10 +11,10 @@ class VideoElementSearchQuery implements QueryBuilderInterface
         public $keyword = 0,
         public int $page = 1,
         public int $pageSize = 40,
-        public string|array $classId = '0',
-        public int $ratio = 0,
-        public string $scopeType ='0',
-        public int $owner = 0,
+        public  $classId = '0',
+        public  $ratio = 0,
+        public  $scopeType ='0',
+        public  $owner = 0,
     )
     {
     }
