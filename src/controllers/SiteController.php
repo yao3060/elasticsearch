@@ -5,9 +5,8 @@ namespace app\controllers;
 use app\models\Backend\AssetUseTop;
 use Yii;
 use yii\filters\AccessControl;
-use yii\helpers\VarDumper;
-use yii\web\Request;
-use yii\web\Response;
+use app\components\Response;
+use app\helpers\StringHelper;
 use yii\filters\VerbFilter;
 
 class SiteController extends BaseController
@@ -38,20 +37,19 @@ class SiteController extends BaseController
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function actions()
+    public function actionError()
     {
-        return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
-        ];
+        /** @var \yii\web\HttpException $exception */
+        $exception = Yii::$app->errorHandler->exception;
+
+        if ($exception !== null) {
+            return $this->response(new Response(
+                StringHelper::snake($exception->getName()),
+                $exception->getMessage(),
+                YII_DEBUG ? $exception->getTrace() : [],
+                $exception->statusCode
+            ));
+        }
     }
 
     /**
@@ -63,28 +61,10 @@ class SiteController extends BaseController
     {
         try {
             Yii::info('this is info.', __METHOD__);
-            Yii::warning('this is warning.', __METHOD__);
-            Yii::error([
-                'this' => 'This',
-                'is' => 'is',
-                'error' => 'error.'
-            ], __METHOD__);
-
-            throw new \Exception('this is a exception.');
         } catch (\Throwable $th) {
-
             Yii::error($th);
             Yii::error($th->getTraceAsString());
-            //throw $th;
         }
-
-
-
-        Yii::info('test VarDumper', VarDumper::export([
-            'hello' => 'world',
-            'hey' => 'boy',
-            'hi' => 'girl'
-        ]));
 
         return $this->asJson([
             'code' => 'welcome',

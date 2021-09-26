@@ -1,4 +1,4 @@
-@BASE_URL = http://es-api-staging.818ps.com
+@BASE_URL = http://localhost:8081
 
 
 ### Get Logs
@@ -28,7 +28,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-	"word": "党政"
+	"keyword": "党政"
 }
 
 
@@ -93,6 +93,16 @@ Content-Type: application/json
 Accept: application/json
 
 ### PPT模板单页分类筛选
-GET {{BASE_URL}}/v1/ppt-templates?class_id=1&class_level2_ids[]=10&class_level2_ids[]=11&class_level3_ids[]=28&class_level3_ids[]=29&class_level3_ids[]=30
+GET {{BASE_URL}}/v1/ppt-templates?class_id=1
+Content-Type: application/json
+Accept: application/json
+
+### 视频元素搜索
+GET {{BASE_URL}}/v1/video-elements?keyword=可爱&class_id=188&scope_type=lottie
+Content-Type: application/json
+Accept: application/json
+
+### 片段视频
+GET {{BASE_URL}}/v1/video-templates?keyword=
 Content-Type: application/json
 Accept: application/json
