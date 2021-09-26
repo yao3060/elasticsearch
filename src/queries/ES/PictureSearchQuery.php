@@ -9,13 +9,13 @@ class PictureSearchQuery implements QueryBuilderInterface
 {
     function __construct(
         public $keyword = 0,
-        public int $page = 1,
-        public int $pageSize = 40,
-        public array|string $sceneId = [],
-        public int  $isZb = 1,
-        public array|string $kid = [],
-        public int $vipPic = 0,
-        public int $ratioId = 0
+        public $page = 1,
+        public $pageSize = 40,
+        public $sceneId = [],
+        public $isZb = 1,
+        public $kid = [],
+        public $vipPic = 0,
+        public $ratioId = 0
     )
     {
     }
@@ -26,7 +26,7 @@ class PictureSearchQuery implements QueryBuilderInterface
         $kid = is_array($this->kid) ? $this->kid : [];
         $ratioId = isset($this->ratioId) ? $this->ratioId : '-1';
         if ($this->keyword) {
-            $newQuery = $this->queryKeyword($this->keyword);
+            $newQuery = self::queryKeyword($this->keyword);
         }
         if ($ratioId > -1) {
             $newQuery['bool']['must'][]['match']['ratio'] = $ratioId;
