@@ -9,13 +9,13 @@ class VideoAudioSearchQuery implements QueryBuilderInterface
 {
     function __construct(
         public $keyword = 0,
-        public int $page = 1,
-        public int $pageSize = 40,
-        public int $parentsId = 0,
-        public string $classId = '0',
-        public int $prep = 0,
-        public int $isDesigner = 0,
-        public int $isVip = 0
+        public $page = 1,
+        public $pageSize = 40,
+        public $parentsId = 0,
+        public $classId = '0',
+        public $prep = 0,
+        public $isDesigner = 0,
+        public $isVip = 0
     )
     {
     }
