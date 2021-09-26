@@ -42,7 +42,7 @@ class SeoSearchWordQuery implements QueryBuilderInterface
     public function getRedisKey()
     {
         $redisKey = sprintf(
-            'ES_asset2:%s:%s',
+            'ES_seo_search_word:%s:%s',
             date('Y-m-d'),
             $this->keyword
         );
