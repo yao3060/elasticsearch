@@ -67,11 +67,15 @@ class ContainerSearchQuery implements QueryBuilderInterface
     {
         // TODO: Implement getRedisKey() method.
         //$redis_key = "ES_container:" . ":{$keyword}_{$page}_" . implode('-', $kid) . "_{$pagesize}";
+        $kid = $this->kid ? $this->kid : [];
+        if (!is_array($kid)) {
+            $kid = [$kid];
+        }
         return sprintf(
             'ES_container:%s_%d_%s_%d',
             $this->keyword,
             $this->page,
-            $this->kid,
+            implode('-', $kid),
             $this->pageSize,
         );
     }
