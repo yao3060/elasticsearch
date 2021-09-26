@@ -24,7 +24,7 @@ class GroupWordController extends BaseController
         try {
             // FIXME: 需要 校验 search
             $model = DynamicModel::validateData($data, [
-                ['keyword', 'required']
+                ['keyword', 'string']
             ]);
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
