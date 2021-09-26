@@ -34,7 +34,7 @@ class VideoElementController extends BaseController
                         $data['page'] ?? 1,
                         $data['page_size'] ?? 40,
                         $data['class_id'] ?? 0,
-                        $data['ratio'] ?? 1,
+                        $data['ratio'] ?? 0,
                         $data['scope_type'] ?? 0,
                         $data['owner'] ?? 0,
                     ));
