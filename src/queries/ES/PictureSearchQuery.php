@@ -26,7 +26,7 @@ class PictureSearchQuery implements QueryBuilderInterface
         $kid = is_array($this->kid) ? $this->kid : [];
         $ratioId = isset($this->ratioId) ? $this->ratioId : '-1';
         if ($this->keyword) {
-            $newQuery = $this->queryKeyword($this->keyword);
+            $newQuery = self::queryKeyword($this->keyword);
         }
         if ($ratioId > -1) {
             $newQuery['bool']['must'][]['match']['ratio'] = $ratioId;
