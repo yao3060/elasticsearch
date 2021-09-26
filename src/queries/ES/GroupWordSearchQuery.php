@@ -6,7 +6,7 @@ namespace app\queries\ES;
 use app\interfaces\ES\QueryBuilderInterface;
 use app\services\designers\DesignerRecommendAssetTagService;
 
-class GroupWordsSearchQuery implements QueryBuilderInterface
+class GroupWordSearchQuery implements QueryBuilderInterface
 {
     function __construct(
         public $keyword = 0,

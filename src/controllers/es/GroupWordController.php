@@ -8,15 +8,15 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\helpers\StringHelper;
-use app\models\ES\GroupWords;
-use app\queries\ES\GroupWordsSearchQuery;
+use app\models\ES\GroupWord;
+use app\queries\ES\GroupWordSearchQuery;
 use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
 use app\controllers\BaseController;
 use Yii;
 use yii\web\Request;
 
-class GroupWordsController extends BaseController
+class GroupWordController extends BaseController
 {
     public function actionSearch(Request $request)
     {
@@ -29,8 +29,8 @@ class GroupWordsController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new GroupWords())
-                    ->search(new GroupWordsSearchQuery(
+                $data = (new GroupWord())
+                    ->search(new GroupWordSearchQuery(
                         $data['keyword'],
                         $data['page'] ?? 1,
                         $data['page_size'] ?? 40,
@@ -69,8 +69,8 @@ class GroupWordsController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new GroupWords())
-                    ->recommendSearch(new GroupWordsSearchQuery($data['keyword'], $data['page'], $data['pageSize']));
+                $data = (new GroupWord())
+                    ->recommendSearch(new GroupWordSearchQuery($data['keyword'], $data['page'], $data['pageSize']));
                 $response = new Response('get_Group_Recommend_list', 'Group_Recommend_List', $data);
             }
         } catch (UnknownPropertyException $e) {

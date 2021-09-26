@@ -27,14 +27,14 @@ return [
         'GET  v1/gif-assets' => 'es/gif-asset/search', //搜索
         'GET  v1/pictures' => 'es/picture/search', //图片素材搜索
 
-        'GET  v1/groups/recommends' => 'es/group-words/recommend-search',
-        'GET  v1/groups' => 'es/group-words/search', //组合字搜索
+        'GET  v1/groups/recommends' => 'es/group-word/recommend-search',
+        'GET  v1/groups' => 'es/group-word/search', //组合字搜索
 
         'GET  v1/audiovisuals' => 'es/video-audio/search', //试听素材搜索
         'GET  v1/video-elements' => 'es/video-element/search', //视频元素搜索
 
         'GET  v1/containers' => 'es/container/search', //裁剪搜索
-        'POST  v1/h5-sensitive-words/validate' => 'es/h5-sensitive-words/validate', //查询是否存在敏感词
+        'POST  v1/h5-sensitive-words/validate' => 'es/h5-sensitive-word/validate', //查询是否存在敏感词
 
         'GET  v1/ppt-templates' => 'es/ppt-template/search', //PPT模板单页分类筛选
         //H

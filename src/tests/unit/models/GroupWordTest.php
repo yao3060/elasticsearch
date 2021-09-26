@@ -3,11 +3,11 @@
 namespace tests\unit\models;
 
 use app\components\IpsAuthority;
-use app\models\ES\GroupWords;
-use app\queries\ES\GroupWordsSearchQuery;
+use app\models\ES\GroupWord;
+use app\queries\ES\GroupWordSearchQuery;
 use yii\helpers\ArrayHelper;
 
-class GroupWordsTest extends \Codeception\Test\Unit
+class GroupWordTest extends \Codeception\Test\Unit
 {
     /**
      * @var \UnitTester
@@ -31,8 +31,8 @@ class GroupWordsTest extends \Codeception\Test\Unit
     // tests
     public function testSearchOne()
     {
-        $items = (new GroupWords())
-            ->search(new GroupWordsSearchQuery(
+        $items = (new GroupWord())
+            ->search(new GroupWordSearchQuery(
                 keyword: 0,
                 page: 1,
                 pageSize: 30,
@@ -65,8 +65,8 @@ class GroupWordsTest extends \Codeception\Test\Unit
     public function testSearchTwo()
     {
         //search和keyword为0时，searchAll要等1
-        $items = (new GroupWords())
-            ->search(new GroupWordsSearchQuery(
+        $items = (new GroupWord())
+            ->search(new GroupWordSearchQuery(
                 keyword: 0,
                 page: 1,
                 pageSize: 30,
@@ -98,8 +98,8 @@ class GroupWordsTest extends \Codeception\Test\Unit
 
     public function testSearchThree()
     {
-        $items = (new GroupWords())
-            ->search(new GroupWordsSearchQuery(
+        $items = (new GroupWord())
+            ->search(new GroupWordSearchQuery(
                 keyword: 0,
                 page: 2,
                 pageSize: 30,
@@ -135,8 +135,8 @@ class GroupWordsTest extends \Codeception\Test\Unit
     }
     public function testSearchFour()
     {
-        $items = (new GroupWords())
-            ->search(new GroupWordsSearchQuery(
+        $items = (new GroupWord())
+            ->search(new GroupWordSearchQuery(
                 keyword: 0,
                 page: 2,
                 pageSize: 30,

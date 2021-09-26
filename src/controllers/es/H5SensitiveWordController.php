@@ -8,15 +8,15 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\helpers\StringHelper;
-use app\models\ES\H5SensitiveWords;
-use app\queries\ES\H5SensitiveWordsSearchQuery;
+use app\models\ES\H5SensitiveWord;
+use app\queries\ES\H5SensitiveWordSearchQuery;
 use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
 use app\controllers\BaseController;
 use Yii;
 use yii\web\Request;
 
-class H5SensitiveWordsController extends BaseController
+class H5SensitiveWordController extends BaseController
 {
     public function actionValidate(Request $request)
     {
@@ -28,8 +28,8 @@ class H5SensitiveWordsController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new H5SensitiveWords())
-                    ->checkBanWord(new H5SensitiveWordsSearchQuery(
+                $data = (new H5SensitiveWord())
+                    ->checkBanWord(new H5SensitiveWordSearchQuery(
                         $data['keyword'],
                     ));
                 $response = new Response('get_h5_ban_list', 'H5BanList', $data);

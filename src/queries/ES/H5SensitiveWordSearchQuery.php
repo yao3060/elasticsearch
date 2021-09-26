@@ -5,7 +5,7 @@ namespace app\queries\ES;
 
 use app\interfaces\ES\QueryBuilderInterface;
 
-class H5SensitiveWordsSearchQuery implements QueryBuilderInterface
+class H5SensitiveWordSearchQuery implements QueryBuilderInterface
 {
     function __construct(
         public $word = 0,

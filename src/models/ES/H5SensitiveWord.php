@@ -9,7 +9,7 @@ use app\interfaces\ES\QueryBuilderInterface;
  * @package app\models\ES
  * author  ysp
  */
-class H5SensitiveWords extends BaseModel
+class H5SensitiveWord extends BaseModel
 {
     /**
      * @var int redis
@@ -32,7 +32,7 @@ class H5SensitiveWords extends BaseModel
     }
 
     /**
-     * @param \app\queries\ES\H5SensitiveWordsSearchQuery $query
+     * @param \app\queries\ES\H5SensitiveWordSearchQuery $query
      * @return array 2021-09-18
      */
     public function checkBanWord(QueryBuilderInterface $query)

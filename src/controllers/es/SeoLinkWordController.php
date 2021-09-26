@@ -8,9 +8,9 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\helpers\StringHelper;
-use app\models\ES\GroupWords;
+use app\models\ES\GroupWord;
 use app\models\ES\SeoLinkWord;
-use app\queries\ES\GroupWordsSearchQuery;
+use app\queries\ES\GroupWordSearchQuery;
 use app\queries\ES\SeoLinkWordSearchQuery;
 use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;

@@ -46,7 +46,7 @@ class PptTemplate extends BaseModel
     public function search(QueryBuilderInterface $query): array
     {
         $return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
-        $log = 'GroupWords:redisKey:'.$query->getRedisKey();
+        $log = 'GroupWord:redisKey:'.$query->getRedisKey();
         yii::info($log,__METHOD__);
         if ($return && isset($return['hit']) && $return['hit'] && !Tools::isReturnSource()) {
             return $return;

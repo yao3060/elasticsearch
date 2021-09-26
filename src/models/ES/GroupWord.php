@@ -10,7 +10,7 @@ use Yii;
  * @package app\models\ES
  * author  ysp
  */
-class GroupWords extends BaseModel
+class GroupWord extends BaseModel
 {
     /**
      * @var int redis
@@ -49,14 +49,14 @@ class GroupWords extends BaseModel
     }
 
     /**
-     * @param \app\queries\ES\GroupWordsSearchQuery $query
+     * @param \app\queries\ES\GroupWordSearchQuery $query
      * @return array 2021-09-08
      * return ['hit','ids','score'] 命中数,命中id,模板id=>分数
      */
     public function search(QueryBuilderInterface $query): array
     {
         $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
-        $log = 'GroupWords:redisKey:'.$query->getRedisKey();
+        $log = 'GroupWord:redisKey:'.$query->getRedisKey();
         yii::info($log,__METHOD__);
         if ($return && isset($return['hit']) && $return['hit']) {
             return $return;
