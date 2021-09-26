@@ -17,15 +17,21 @@ class VideoAudioSearchQuery implements QueryBuilderInterface
         public $isDesigner = 0,
         public $isVip = 0
     ) {
+
     }
 
     public function query(): array
     {
+        $newQuery = [];
         if ($this->keyword) {
-            $newQuery = self::queryKeyword($this->keyword);
+            $newQuery = $this->queryKeyword($this->keyword);
         }
-        if ($this->classId) {
-            foreach ($this->classId as $key) {
+        $class_id = $this->classId ? $this->classId : [];
+        if (!is_array($class_id)) {
+            $class_id = [$class_id];
+        }
+        if ($class_id) {
+            foreach ($class_id as $key) {
                 if ($key > 0) {
                     $newQuery['bool']['must'][]['terms']['class_id'] = [$key];
                 }
@@ -41,7 +47,7 @@ class VideoAudioSearchQuery implements QueryBuilderInterface
         return $newQuery;
     }
 
-    public static function queryKeyword($keyword, $is_or = false)
+    public function queryKeyword($keyword, $is_or = false)
     {
         $operator = $is_or ? 'or' : 'and';
         $query['bool']['must'][]['multi_match'] = [
@@ -55,13 +61,17 @@ class VideoAudioSearchQuery implements QueryBuilderInterface
 
     public function getRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
+        $class_id = $this->classId ? $this->classId : [];
+        if (!is_array($class_id)) {
+            $class_id = [$class_id];
+        }
         $redisKey = sprintf(
-            'ES_video:audio:%s:%d_%s_%d_%d',
+            'ES_video:audio:%s:%s_%s_%d_%s_%d',
             date('Y-m-d'),
             $this->parentsId,
             $this->keyword,
             $this->page,
+            implode('-', $class_id),
             $this->pageSize
         );
         return $redisKey;
@@ -79,7 +89,6 @@ class VideoAudioSearchQuery implements QueryBuilderInterface
     public function sortBy()
     {
         if ($this->isVip == 1) {
-            $newQuery['bool']['must'][]['term']['is_vip'] = 1;
             $sort = $this->sortByOrderTime();
         } else {
             $sort = $this->sortByTime();
@@ -90,17 +99,17 @@ class VideoAudioSearchQuery implements QueryBuilderInterface
         return $sort;
     }
 
-    public static function sortByOrderTime()
+    public function sortByOrderTime()
     {
         return 'create_date asc';
     }
 
-    public static function sortByTime()
+    public function sortByTime()
     {
         return 'create_date desc';
     }
 
-    public static function sortByPr()
+    public function sortByPr()
     {
         return 'pr desc';
     }
