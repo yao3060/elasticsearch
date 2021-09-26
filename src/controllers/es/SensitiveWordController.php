@@ -40,7 +40,7 @@ class SensitiveWordController extends BaseController
                 keyword: $validateAttributes['keyword'] ?? '',
             ));
 
-            $response = new Response('sensitive word validate', 'Sensitive Word Validate', $search);
+            $response = new Response('sensitive_word_validate', 'Sensitive Word Validate', $search);
 
         } catch (UnauthorizedHttpException $unknownException) {
 
