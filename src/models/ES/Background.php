@@ -13,7 +13,7 @@ use Yii;
  */
 class Background extends BaseModel
 {
-    private $redisDb = 8;
+    const REDIS_DB = 8;
 
     /**
      * @param \app\queries\ES\BackGroundSearchQuery $query
@@ -22,7 +22,7 @@ class Background extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
+        $return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
         $log = 'Background:redisKey:' . $query->getRedisKey();
         yii::info($log, __METHOD__);
         if ($return && isset($return['hit']) && $return['hit']) {
@@ -65,7 +65,7 @@ class Background extends BaseModel
                 }
             }
         }
-        Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 86400);
+        Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 86400);
         return $return;
     }
 

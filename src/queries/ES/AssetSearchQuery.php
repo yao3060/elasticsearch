@@ -73,12 +73,12 @@ class AssetSearchQuery implements QueryBuilderInterface
         }
         return $offset;
     }
-    protected function sortByTime()
+    public function sortByTime()
     {
         return 'created desc';
     }
 
-    protected function sortDefault()
+    public function sortDefault()
     {
         $source = "doc['pr'].value+(int)(_score*10)";
         $sort['_script'] = [
@@ -91,7 +91,7 @@ class AssetSearchQuery implements QueryBuilderInterface
         ];
         return $sort;
     }
-    protected function queryKeyword($keyword, $is_or = false)
+    public function queryKeyword($keyword, $is_or = false)
     {
         $operator = $is_or ? 'or' : 'and';
         $query['bool']['must'][]['multi_match'] = [

@@ -9,13 +9,13 @@ class PictureSearchQuery implements QueryBuilderInterface
 {
     function __construct(
         public $keyword = 0,
-        public int $page = 1,
-        public int $pageSize = 40,
-        public array|string $sceneId = [],
-        public int  $isZb = 1,
-        public array|string $kid = [],
-        public int $vipPic = 0,
-        public int $ratioId = 0
+        public $page = 1,
+        public $pageSize = 40,
+        public $sceneId = [],
+        public $isZb = 1,
+        public $kid = [],
+        public $vipPic = 0,
+        public $ratioId = 0
     )
     {
     }
@@ -42,7 +42,7 @@ class PictureSearchQuery implements QueryBuilderInterface
         }
         return $newQuery;
     }
-    public static function queryKeyword($keyword, $is_or = false)
+    public function queryKeyword($keyword, $is_or = false)
     {
         $operator = $is_or ? 'or' : 'and';
         $query['bool']['must'][]['multi_match'] = [

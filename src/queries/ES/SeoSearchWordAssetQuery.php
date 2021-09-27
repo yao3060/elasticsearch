@@ -9,9 +9,9 @@ class SeoSearchWordAssetQuery implements QueryBuilderInterface
 {
     function __construct(
         public $keyword = 0,
-        public int $page = 1,
-        public int $pageSize = 40,
-        public int $type = 1,
+        public $page = 1,
+        public $pageSize = 40,
+        public $type = 1,
     )
     {
     }
@@ -21,7 +21,7 @@ class SeoSearchWordAssetQuery implements QueryBuilderInterface
         $newQuery = $this->similarQueryKeyword($this->keyword, $this->type);
         return $newQuery;
     }
-    public static function similarQueryKeyword($keyword, $type = 1)
+    public function similarQueryKeyword($keyword, $type = 1)
     {
         $query['bool']['must'][]['multi_match'] = [
             'query' => $keyword,

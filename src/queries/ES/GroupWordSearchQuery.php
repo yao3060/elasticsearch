@@ -10,10 +10,10 @@ class GroupWordSearchQuery implements QueryBuilderInterface
 {
     function __construct(
         public $keyword = 0,
-        public int $page = 1,
-        public int $pageSize = 40,
-        public string $search = '0',
-        public string $searchAll = '0',
+        public  $page = 1,
+        public  $pageSize = 40,
+        public  $search = '0',
+        public  $searchAll = '0',
     )
     {
     }
@@ -44,7 +44,7 @@ class GroupWordSearchQuery implements QueryBuilderInterface
         }
         return $newQuery;
     }
-    public static function queryKeyword($keyword, $is_or = false)
+    public function queryKeyword($keyword, $is_or = false)
     {
         $operator = $is_or ? 'or' : 'and';
         $query['bool']['must'][]['multi_match'] = [
