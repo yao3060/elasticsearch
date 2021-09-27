@@ -32,7 +32,7 @@ class JsonStreamTarget extends Streamlog
         $logData['username'] =  Yii::$app->user->identity ? Yii::$app->user->identity->username : '-';
 
         $request = Yii::$app->getRequest();
-        $logData['id'] = $request instanceof Request ? $request->getUserIP() : '-';
+        $logData['ip'] = $request instanceof Request ? $request->getUserIP() : '-';
 
         $logData['level'] = Logger::getLevelName($level);
         $logData['category'] = $category;
