@@ -32,12 +32,12 @@ class VideoAudio extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        //$return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
+        $return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
         $log = 'VideoAudio:redisKey:'.$query->getRedisKey();
         yii::info($log,__METHOD__);
-        /*if ($return) {
+        if ($return) {
             return $return;
-        }*/
+        }
         try {
             $info = self::find()
                 ->source(['id'])
