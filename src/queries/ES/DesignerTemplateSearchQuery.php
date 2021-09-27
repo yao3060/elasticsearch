@@ -26,7 +26,7 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
         public $page = 1,
         public $kid1 = 0,
         public $kid2 = 0,
-        public string $sortType = 'default',
+        public $sortType = 'default',
         public $tagId = 0,
         public $isZb = 1,
         public $pageSize = 100,
@@ -111,24 +111,6 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
         if ($this->fuzzy == 1) {
             $redisKey .= ":fuzzy";
         }
-
-        // $redisKey:主图厨房用具_156_301_default_0_1_10000__0_0_0_0_0_0_0_0_4_1
-
-//        var_dump([
-//            'keyword' => $this->keyword,
-//            'kid_1' => $this->kid1,
-//            'kid_2' => $this->kid2,
-//            'sortType' => $this->sortType,
-//            'tag_id' => $this->tagId,
-//            'is_zb' => $this->isZb,
-//            'pagesize' => $this->pageSize,
-//            'class_id' => $this->classId,
-//            'size' => $this->size,
-//            'use' => $this->use,
-//            'templ_attr' => isset($this->templateInfo['templ_attr']) ? $this->templateInfo['templ_attr'] : 0,
-//            'settlement_level' => $this->settlementLevel,
-//            'templ_info' => $this->templateInfo,
-//        ]);exit;
 
         $implodeKeys = [
             $this->keyword,
@@ -225,7 +207,7 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
                 $this->sort = $this->sortByHot();
                 break;
 
-            default: // @todo
+            default:
                 $this->sort = $this->sortDefault(
                     $this->keyword,
                     $this->sortClassId,
