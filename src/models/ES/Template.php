@@ -284,16 +284,20 @@ class Template extends BaseModel
             $costInfo['created'] = date('Y-m-d H:i:s', time());
             $costInfo['cost_time'] = $esQueryTime;
             $costInfo['name'] = 'Template' . '_recommend';
-//            $infoRedis = 'redis_search';
-//            Yii::$app->$infoRedis->Rpush('ES_query_time:query_time', json_encode($costInfo));
+            $infoRedis = 'redis_search';
+            Yii::$app->$infoRedis->Rpush('ES_query_time:query_time', json_encode($costInfo));
 
             $return = [];
-            $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
-            foreach ($info['hits'] as $value) {
-                $return['ids'][] = $value['_id'];
-                $return['score'][$value['_id']] = isset($value['sort'][0]) ?? [];
+            if (isset($info['hits']) && $info['hits']) {
+                $total = $info['total'] ?? 0;
+                $return['hit'] = $total > 10000 ? 10000 : $total;
+                foreach ($info['hits'] as $value) {
+                    $return['ids'][] = $value['_id'];
+                    $return['score'][$value['_id']] = isset($value['sort'][0]) ?? [];
+                }
             }
-//            Tools::setRedis(self::$redisDb, $redisKey, $return);
+
+            Tools::setRedis(self::$redisDb, $redisKey, $return);
         }
 
         return $return;
