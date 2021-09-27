@@ -25,7 +25,7 @@ class SeoLinkWordSearchQuery implements QueryBuilderInterface
         }
         return $newQuery;
     }
-    public  function similarQueryKeyword($keyword) {
+    public function similarQueryKeyword($keyword) {
         $query['bool']['must'][]['multi_match'] = [
             'query' => $keyword,
             'fields' => ["_keyword^1","keyword^1"],

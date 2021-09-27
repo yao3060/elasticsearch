@@ -27,7 +27,7 @@ services:
 
   cache:
     image: redis:5.0-alpine
-    container_name: ${COMPOSE_PROJECT_NAME}_laravel_cache
+    container_name: ${COMPOSE_PROJECT_NAME}_cache
     restart: always
     expose:
       - "6379"

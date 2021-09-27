@@ -15,7 +15,7 @@ class GifAsset extends BaseModel
     /**
      * @var int redis
      */
-    private $redisDb = 8;
+    const REDIS_DB = 8;
 
     public static function index()
     {
@@ -31,21 +31,6 @@ class GifAsset extends BaseModel
     {
         return ['id', 'title', 'description', 'create_date', 'pr', 'width', 'height', 'class_id', 'is_zb', 'size_w380'];
     }
-
-    public static function sortDefault()
-    {
-        $source = "doc['pr'].value+(int)(_score*10)";
-        $sort['_script'] = [
-            'type' => 'number',
-            'script' => [
-                "lang" => "painless",
-                "source" => $source
-            ],
-            'order' => 'desc'
-        ];
-        return $sort;
-    }
-
     /**
      * @param \app\queries\ES\GifAssetSearchQuery $query
      * @return array 2021-09-17
@@ -53,7 +38,7 @@ class GifAsset extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
+        $return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
         $log = 'GifAsset:redisKey:'.$query->getRedisKey();
         yii::info($log,__METHOD__);
         if ($return) {
@@ -80,7 +65,7 @@ class GifAsset extends BaseModel
             $return['ids'][] = $value['_id'];
             $return['score'][$value['_id']] = $value['sort'][0];
         }
-        Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 86400);
+        Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 86400);
         return $return;
     }
 }

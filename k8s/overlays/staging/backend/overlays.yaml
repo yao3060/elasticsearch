@@ -3,17 +3,12 @@ kind: Deployment
 metadata:
   name: backend-nginx
 spec:
-  replicas: 1
+  replicas: 3
   template:
     spec:
       containers:
         - image: registry-vpc.cn-shanghai.aliyuncs.com/818ps/elasticsearch_staging_nginx:latest
           name: backend-nginx
-          resources:
-            limits:
-              cpu: 500m
-            requests:
-              cpu: 200m
 ---
 apiVersion: apps/v1
 kind: Deployment
