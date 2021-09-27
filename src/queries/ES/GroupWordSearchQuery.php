@@ -9,7 +9,7 @@ use app\services\designers\DesignerRecommendAssetTagService;
 class GroupWordSearchQuery implements QueryBuilderInterface
 {
     function __construct(
-        public $keyword = 0,
+        public  $keyword = 0,
         public  $page = 1,
         public  $pageSize = 40,
         public  $search = '0',
