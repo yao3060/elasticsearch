@@ -59,6 +59,9 @@ class GifAsset extends BaseModel
         if ($return) {
             return $return;
         }
+        $return['hit'] = 0;
+        $return['ids'] = [];
+        $return['score'] = [];
         try {
             $info = self::find()
                 ->source(['id'])
@@ -69,11 +72,10 @@ class GifAsset extends BaseModel
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
         } catch (\exception $e) {
-            $info['hit'] = 0;
-            $info['ids'] = [];
-            $info['score'] = [];
+            \Yii::error($e->getMessage(), __METHOD__);
+            throw new Exception($e->getMessage());
         }
-        $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
+        $return['hit'] = $info['total'] ?? 0 > 10000 ? 10000 : $info['total'];
         foreach ($info['hits'] as $value) {
             $return['ids'][] = $value['_id'];
             $return['score'][$value['_id']] = $value['sort'][0];

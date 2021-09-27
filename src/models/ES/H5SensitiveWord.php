@@ -14,7 +14,7 @@ class H5SensitiveWord extends BaseModel
     /**
      * @var int redis
      */
-    private $redisDb = 8;
+    const REDIS_DB = 8;
 
     public static function index()
     {
@@ -61,9 +61,10 @@ class H5SensitiveWord extends BaseModel
                 }
             }
         } catch (\exception $e) {
+            \Yii::error($e->getMessage(), __METHOD__);
+            throw new Exception($e->getMessage());
         }
         $flag = $is_ban_word['flag'];
-
         return [
             'flag'=>$flag,
             'word'=>$BanWord

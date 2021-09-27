@@ -27,15 +27,18 @@ class Asset extends BaseModel
         $redisKey = $query->getRedisKey();
         $log = 'Asset:redisKey:'.$query->getRedisKey();
         yii::info($log,__METHOD__);
-        //$return = Tools::getRedis(self::REDIS_DB, $redisKey);
-        /*if ($return && isset($return['hit']) && $return['hit']) {
+        $return = Tools::getRedis(self::REDIS_DB, $redisKey);
+        if ($return && isset($return['hit']) && $return['hit']) {
             return $return;
-        }*/
+        }
         if ($query->useCount) {
             $useInfo = AssetUseTop::getLatestBy('kid_1', 1);
         } else {
             $useInfo = '';
         }
+        $return['hit'] = 0;
+        $return['ids'] = [];
+        $return['score'] = [];
         try {
             $info = self::find()
                 ->source(['id', 'use_count'])
@@ -46,12 +49,10 @@ class Asset extends BaseModel
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
         } catch (\Exception $e) {
-            Yii::error($e->getMessage());
-            $info['hit'] = 0;
-            $info['ids'] = [];
-            $info['score'] = [];
+            \Yii::error($e->getMessage(), __METHOD__);
+            throw new Exception($e->getMessage());
         }
-        $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
+        $return['hit'] = $info['total'] ?? 0 > 10000 ? 10000 : $info['total'];
         foreach ($info['hits'] as $value) {
             $return['ids'][] = $value['_id'];
             $return['score'][$value['_id']] = $value['sort'][0];

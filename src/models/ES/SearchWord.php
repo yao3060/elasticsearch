@@ -15,7 +15,7 @@ class SearchWord extends BaseModel
     /**
      * @var int redis
      */
-    private $redisDb = 5;
+    const REDIS_DB = 5;
 
     public static function index()
     {
@@ -60,7 +60,7 @@ class SearchWord extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
+        $return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
         $log = 'SearchWord:redisKey:'.$query->getRedisKey();
         yii::info($log,__METHOD__);
         if ($return && isset($return['hit']) && $return['hit']) {
@@ -78,6 +78,8 @@ class SearchWord extends BaseModel
             $info['hit'] = 0;
             $info['ids'] = [];
             $info['score'] = [];
+            \Yii::error($e->getMessage(), __METHOD__);
+            throw new Exception($e->getMessage());
         }
         $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
         foreach ($info['hits'] as $value) {
@@ -89,7 +91,7 @@ class SearchWord extends BaseModel
             $return['pinyin'][$this_id] = $value['_source']['pinyin'];
             $return['score'][$this_id] = $value['sort'][0];
         }
-        Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 126000);
+        Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 126000);
         return $return;
     }
 
