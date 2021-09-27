@@ -93,7 +93,7 @@ class TemplateController extends BaseController
 
             $template = new Template();
 
-            $validate = DynamicModel::validateData($request->getBodyParams(), $template->recommendRules());
+            $validate = DynamicModel::validateData($request->getQueryParams(), $template->recommendRules());
 
             if ($validate->hasErrors()) {
                 return $this->response(new Response(

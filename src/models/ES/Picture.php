@@ -32,7 +32,7 @@ class Picture extends BaseModel
     }
 
     /**
-     * @param QueryBuilderInterface $query
+     * @param \app\queries\ES\PictureSearchQuery $query
      * @return array 2021-09-08
      * return ['hit','ids','score'] 命中数,命中id,模板id=>分 数
      */
@@ -44,6 +44,9 @@ class Picture extends BaseModel
         if ($return && isset($return['hit']) && $return['hit']) {
             return $return;
         }
+        $return['hit'] = 0;
+        $return['ids'] = [];
+        $return['score'] = [];
         try {
             $info = self::find()
                 ->source(['id'])
@@ -54,11 +57,10 @@ class Picture extends BaseModel
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
         } catch (\exception $e) {
-            $info['hit'] = 0;
-            $info['ids'] = [];
-            $info['score'] = [];
+            \Yii::error($e->getMessage(), __METHOD__);
+            throw new Exception($e->getMessage());
         }
-        $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
+        $return['hit'] = $info['total'] ?? 0 > 10000 ? 10000 : $info['total'];
         foreach ($info['hits'] as $value) {
             $return['ids'][] = $value['_id'];
             //$return['is_vip_asset'][$value['_id']] = $value['is_vip_asset'];

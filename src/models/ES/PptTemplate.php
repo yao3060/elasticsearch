@@ -51,6 +51,12 @@ class PptTemplate extends BaseModel
         if ($return && isset($return['hit']) && $return['hit'] && !Tools::isReturnSource()) {
             return $return;
         }
+        $info = [
+            'hit' => 0,
+            'ids' => [],
+            'score' => [],
+            'total' => 0,
+        ];
         try {
             $info = self::find()
                 ->source(['temple_id'])
@@ -61,19 +67,12 @@ class PptTemplate extends BaseModel
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
         } catch (\exception $e) {
-            $info['hit'] = 0;
-            $info['ids'] = [];
-            $info['score'] = [];
-            $info = [
-                'hit' => 0,
-                'ids' => [],
-                'score' => [],
-                'total' => 0,
-            ];
+            \Yii::error($e->getMessage(), __METHOD__);
+            throw new Exception($e->getMessage());
         }
         $data = [
             'total' => $info['total'],
-            'hit' => $info['total'] > 10000 ? 10000 : $info['total'],
+            'hit' => $info['total'] ?? 0 > 10000 ? 10000 : $info['total'],
         ];
         foreach ($info['hits'] as $value) {
             $data['ids'][] = $value['_id'];

@@ -15,7 +15,7 @@ class SeoSearchWordAsset extends BaseModel
     /**
      * @var int redis
      */
-    private $redisDb = 8;
+    const REDIS_DB = 8;
 
     public static function index()
     {
@@ -39,12 +39,15 @@ class SeoSearchWordAsset extends BaseModel
      */
     public function seoSearch(QueryBuilderInterface $query): array
     {
-        $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
+        $return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
         $log = 'SeoSearchWordAsset:redisKey:'.$query->getRedisKey();
         yii::info($log,__METHOD__);
         if ($return && isset($return['hit']) && $return['hit']) {
             return $return;
         }
+        $return['hit'] = 0;
+        $return['ids'] = [];
+        $return['score'] = [];
         try {
             $info = self::find()
                 ->source(['id', '_keyword', 'pinyin', 'weight'])
@@ -53,9 +56,8 @@ class SeoSearchWordAsset extends BaseModel
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
         } catch (\exception $e) {
-            $info['hit'] = 0;
-            $info['ids'] = [];
-            $info['score'] = [];
+            \Yii::error($e->getMessage(), __METHOD__);
+            throw new Exception($e->getMessage());
         }
         if ($info['total'] > 0) {
             foreach ($info['hits'] as $k => $v) {
@@ -71,7 +73,7 @@ class SeoSearchWordAsset extends BaseModel
             }
 
         }
-        Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 86400 * 30);
+        Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 86400 * 30);
         return $return;
     }
 

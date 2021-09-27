@@ -15,7 +15,7 @@ class SeoDetailKeywordForTitle extends BaseModel
     /**
      * @var int  redis
      */
-    private $redisDb = 8;
+    const REDIS_DB = 8;
 
     public static function index()
     {
@@ -39,7 +39,7 @@ class SeoDetailKeywordForTitle extends BaseModel
      */
     public function Search(QueryBuilderInterface $query): array
     {
-        $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
+        $return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
         $log = 'SeoDetailKeywordForTitle:redisKey:'.$query->getRedisKey();
         yii::info($log,__METHOD__);
         if ($return && isset($return['hit']) && $return['hit']) {
@@ -54,6 +54,8 @@ class SeoDetailKeywordForTitle extends BaseModel
                 ->search([], ['track_scores' => true])['hits'];
         } catch (\exception $e) {
             $info['total'] = 0;
+            \Yii::error($e->getMessage(), __METHOD__);
+            throw new Exception($e->getMessage());
         }
         if ($info['total'] > 0) {
             foreach ($info['hits'] as $k => $v) {
@@ -61,7 +63,7 @@ class SeoDetailKeywordForTitle extends BaseModel
                 $return[$k]['keyword'] = $v['_source']['_keyword'];
             }
         }
-        Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 86400 * 30);
+        Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 86400 * 30);
         return $return;
     }
 

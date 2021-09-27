@@ -33,6 +33,11 @@ class Background extends BaseModel
         } else {
             $useInfo = '';
         }
+        $return['hit'] = 0;
+        $return['ids'] = [];
+        $return['score'] = [];
+        $return['total'] = 0;
+        $return['hits'] = 0;
         try {
             $info = self::find()
                 ->source(['id', 'use_count'])
@@ -43,13 +48,10 @@ class Background extends BaseModel
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
         } catch (\exception $e) {
-            $info['hit'] = 0;
-            $info['ids'] = [];
-            $info['score'] = [];
-            $info['total'] = 0;
-            $info['hits'] = 0;
+            \Yii::error($e->getMessage(), __METHOD__);
+            throw new Exception($e->getMessage());
         }
-        $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
+        $return['hit'] = $info['total'] ?? 0 > 10000 ? 10000 : $info['total'];
         if ($info['hits'] != 0) {
             foreach ($info['hits'] as $value) {
                 $return['ids'][] = $value['_id'];

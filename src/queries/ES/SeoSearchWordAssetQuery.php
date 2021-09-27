@@ -41,7 +41,6 @@ class SeoSearchWordAssetQuery implements QueryBuilderInterface
     }
     public function getRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
         // $redis_key = "ES_seo_similar_word_asset:v4:{$type}:{$keyword}";
         return sprintf(
             'ES_seo_similar_word_asset:v4:%d_%s',
