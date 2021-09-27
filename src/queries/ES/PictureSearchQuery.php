@@ -26,7 +26,7 @@ class PictureSearchQuery implements QueryBuilderInterface
         $kid = is_array($this->kid) ? $this->kid : [];
         $ratioId = isset($this->ratioId) ? $this->ratioId : '-1';
         if ($this->keyword) {
-            $newQuery = self::queryKeyword($this->keyword);
+            $newQuery = $this->queryKeyword($this->keyword);
         }
         if ($ratioId > -1) {
             $newQuery['bool']['must'][]['match']['ratio'] = $ratioId;
@@ -42,7 +42,7 @@ class PictureSearchQuery implements QueryBuilderInterface
         }
         return $newQuery;
     }
-    public static function queryKeyword($keyword, $is_or = false)
+    public function queryKeyword($keyword, $is_or = false)
     {
         $operator = $is_or ? 'or' : 'and';
         $query['bool']['must'][]['multi_match'] = [

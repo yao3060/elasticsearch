@@ -10,9 +10,9 @@ class SearchWordSearchQuery implements QueryBuilderInterface
     //$type 类别 1模板2背景3元素
     function __construct(
         public $keyword = 0,
-        public int $page = 1,
-        public int $pageSize = 40,
-        public int $type = 1
+        public $page = 1,
+        public $pageSize = 40,
+        public $type = 1
     )
     {
     }
@@ -24,7 +24,7 @@ class SearchWordSearchQuery implements QueryBuilderInterface
         $newQuery['bool']['filter'][]['range']['results']['gte'] = 1;
         return $newQuery;
     }
-    public static function queryKeyword($keyword)
+    public function queryKeyword($keyword)
     {
         if (mb_strlen($keyword) > 1) {
             $query['bool']['must'][]['match']['keyword'] = [
@@ -46,7 +46,7 @@ class SearchWordSearchQuery implements QueryBuilderInterface
         return $pageSize;
     }
 
-    public static function sortDefault()
+    public function sortDefault()
     {
         $source = "doc['count'].value*500+doc['results'].value*1";
         $sort['_script'] = [

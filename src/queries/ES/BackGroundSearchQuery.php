@@ -11,16 +11,16 @@ class BackGroundSearchQuery implements QueryBuilderInterface
     //搜索所需要参数
     function __construct(
         public $keyword = 0,
-        public int $page = 1,
-        public int $pageSize = 40,
-        public string $sceneId = '0',
-        public int $isZb = 1,
-        public string|int $sort = 'DESC',
-        public int $useCount = 0,
-        public string|int $kid = 0,
-        public int $ratioId = 0,
-        public int $class = 0,
-        public int $isBg = 0
+        public  $page = 1,
+        public  $pageSize = 40,
+        public  $sceneId = '0',
+        public  $isZb = 1,
+        public  $sort = 'DESC',
+        public  $useCount = 0,
+        public  $kid = 0,
+        public  $ratioId = 0,
+        public  $class = 0,
+        public  $isBg = 0
     ) {
     }
 
@@ -112,7 +112,7 @@ class BackGroundSearchQuery implements QueryBuilderInterface
         return $offset;
     }
 
-    public static function queryKeyword($keyword, $is_or = false)
+    public function queryKeyword($keyword, $is_or = false)
     {
         $operator = $is_or ? 'or' : 'and';
         $query['bool']['must'][]['multi_match'] = [
@@ -124,12 +124,12 @@ class BackGroundSearchQuery implements QueryBuilderInterface
         return $query;
     }
 
-    public static function sortByTime()
+    public function sortByTime()
     {
         return 'created desc';
     }
 
-    public static function sortDefault()
+    public function sortDefault()
     {
         $source = "doc['pr'].value+(int)(_score*10)";
         $sort['_script'] = [

@@ -9,11 +9,11 @@ use app\services\designers\DesignerRecommendAssetTagService;
 class PptTemplateSearchQuery implements QueryBuilderInterface
 {
     function __construct(
-        public int $c1 = 0,
-        public int $page = 1,
-        public int $pageSize = 50,
-        public array|string $c2 = [],
-        public array|string $c3 = [],
+        public  $c1 = 0,
+        public  $page = 1,
+        public  $pageSize = 50,
+        public  $c2 = [],
+        public  $c3 = [],
     )
     {
     }

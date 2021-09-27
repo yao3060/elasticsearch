@@ -10,8 +10,8 @@ class SeoLinkWordSearchQuery implements QueryBuilderInterface
 {
     function __construct(
         public $keyword = 0,
-        public int $page = 1,
-        public int $pageSize = 40,
+        public $page = 1,
+        public $pageSize = 40,
     )
     {
     }
@@ -25,7 +25,7 @@ class SeoLinkWordSearchQuery implements QueryBuilderInterface
         }
         return $newQuery;
     }
-    public static function similarQueryKeyword($keyword) {
+    public  function similarQueryKeyword($keyword) {
         $query['bool']['must'][]['multi_match'] = [
             'query' => $keyword,
             'fields' => ["_keyword^1","keyword^1"],
@@ -69,7 +69,7 @@ class SeoLinkWordSearchQuery implements QueryBuilderInterface
         $sort = $this->sortDefault();
         return $sort;
     }
-    public static function sortDefault() {
+    public function sortDefault() {
         $source = "(int)(_score)";
         $sort['_script'] = [
             'type' => 'number',

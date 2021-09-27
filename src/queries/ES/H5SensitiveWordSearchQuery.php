@@ -17,7 +17,7 @@ class H5SensitiveWordSearchQuery implements QueryBuilderInterface
         $newQuery = $this->queryWord($this->word);
         return $newQuery;
     }
-    public static function queryWord($word)
+    public function queryWord($word)
     {
         $query['bool']['must'][]['match']['word'] = [
             'query' => $word,
@@ -28,7 +28,6 @@ class H5SensitiveWordSearchQuery implements QueryBuilderInterface
 
     public function getRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
     }
 
 }

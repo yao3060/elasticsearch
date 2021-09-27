@@ -29,7 +29,7 @@ class SeoSearchWordQuery implements QueryBuilderInterface
         $newQuery['bool']['filter'][]['range']['count']['gte'] = '3';
         return $newQuery;
     }
-    public static function similarQueryKeyword($keyword)
+    public function similarQueryKeyword($keyword)
     {
         $query['bool']['must'][]['multi_match'] = [
             'query' => $keyword,

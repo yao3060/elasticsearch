@@ -73,7 +73,7 @@ class VideoElementSearchQuery implements QueryBuilderInterface
         }
         return $newQuery;
     }
-    public static function queryKeyword($keyword, $is_or = false)
+    public function queryKeyword($keyword, $is_or = false)
     {
         $operator = $is_or ? 'or' : 'and';
         $query['bool']['must'][]['multi_match'] = [
@@ -84,7 +84,7 @@ class VideoElementSearchQuery implements QueryBuilderInterface
         ];
         return $query;
     }
-    public static function sortByTime()
+    public function sortByTime()
     {
         return 'create_date desc';
     }

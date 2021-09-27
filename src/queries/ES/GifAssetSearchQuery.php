@@ -10,12 +10,12 @@ class GifAssetSearchQuery implements QueryBuilderInterface
 {
     function __construct(
         public $keyword = 0,
-        public int $page = 1,
-        public int $pageSize = 40,
-        public string|array $classId = '0',
-        public int $isZb = 0,
-        public int $prep = 0,
-        public int $limitSize = 0,
+        public  $page = 1,
+        public  $pageSize = 40,
+        public  $classId = '0',
+        public  $isZb = 0,
+        public  $prep = 0,
+        public  $limitSize = 0,
     )
     {
     }

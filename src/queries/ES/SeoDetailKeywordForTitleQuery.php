@@ -28,7 +28,7 @@ class SeoDetailKeywordForTitleQuery implements QueryBuilderInterface
         return $newQuery;
     }
 
-    public static function similarQueryKeyword($keyword, $type = 1)
+    public function similarQueryKeyword($keyword, $type = 1)
     {
         $query['bool']['must'][]['multi_match'] = [
             'query' => $keyword,
@@ -41,7 +41,6 @@ class SeoDetailKeywordForTitleQuery implements QueryBuilderInterface
 
     public function getRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
         // $redis_key = "ES_seo_detail_keyword_for_title:" . date('Y-m-d') . ":{$keyword}";
         return sprintf(
             'ES_seo_detail_keyword_for_title:%s:%s',

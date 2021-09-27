@@ -31,7 +31,7 @@ class ContainerSearchQuery implements QueryBuilderInterface
         }
 
     }
-    public static function queryKeyword($keyword, $is_or = false)
+    public function queryKeyword($keyword, $is_or = false)
     {
         $operator = $is_or ? 'or' : 'and';
         $query['bool']['must'][]['multi_match'] = [
@@ -42,7 +42,7 @@ class ContainerSearchQuery implements QueryBuilderInterface
         ];
         return $query;
     }
-    public static function sortBy()
+    public function sortBy()
     {
         return 'man_pr_add desc';
     }
