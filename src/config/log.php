@@ -7,18 +7,18 @@ return  [
     'targets' => [
         [
             'class' => \yii\log\FileTarget::class,
-            'levels' => [],
+            'levels' => ['error', 'warning', 'info'],
         ],
         [
             'class' => JsonStreamTarget::class,
             'url' => 'php://stdout',
-            'levels' => ['info', 'trace'],
+            'levels' => [],
             'logVars' => [],
         ],
         [
             'class' => JsonStreamTarget::class,
             'url' => 'php://stderr',
-            'levels' => ['error', 'warning'],
+            'levels' => [],
             'logVars' => [],
         ],
     ],
