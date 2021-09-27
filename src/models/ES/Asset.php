@@ -27,10 +27,10 @@ class Asset extends BaseModel
         $redisKey = $query->getRedisKey();
         $log = 'Asset:redisKey:'.$query->getRedisKey();
         yii::info($log,__METHOD__);
-        $return = Tools::getRedis(self::REDIS_DB, $redisKey);
-        if ($return && isset($return['hit']) && $return['hit']) {
+        //$return = Tools::getRedis(self::REDIS_DB, $redisKey);
+        /*if ($return && isset($return['hit']) && $return['hit']) {
             return $return;
-        }
+        }*/
         if ($query->useCount) {
             $useInfo = AssetUseTop::getLatestBy('kid_1', 1);
         } else {

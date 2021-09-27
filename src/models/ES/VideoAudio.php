@@ -14,7 +14,7 @@ class VideoAudio extends BaseModel
     /**
      * @var int redis
      */
-    private $redisDb = 8;
+    const REDIS_DB = 8;
 
     public static function index()
     {
@@ -32,12 +32,12 @@ class VideoAudio extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
+        //$return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
         $log = 'VideoAudio:redisKey:'.$query->getRedisKey();
         yii::info($log,__METHOD__);
-        if ($return) {
+        /*if ($return) {
             return $return;
-        }
+        }*/
         try {
             $info = self::find()
                 ->source(['id'])
@@ -57,7 +57,7 @@ class VideoAudio extends BaseModel
             $return['ids'][] = $value['_id'];
             $return['score'][$value['_id']] = $value['sort'][0];
         }
-        Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 86400);
+        Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 86400);
         return $return;
     }
 }

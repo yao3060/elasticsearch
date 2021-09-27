@@ -71,7 +71,7 @@ class VideoAudioSearchQuery implements QueryBuilderInterface
             $this->parentsId,
             $this->keyword,
             $this->page,
-            implode('-', $class_id),
+            ' '.implode('-', $class_id).' ',
             $this->pageSize
         );
         return $redisKey;
