@@ -35,7 +35,7 @@ class SeoNewPageController extends BaseController
                 pageSize: $validateAttributes['page_size'] ?? 10
             ));
 
-            $response = new Response('seo_search_list', 'SeoSearchWord Search List', $search);
+            $response = new Response('seo_new_page_list', 'SeoNewPageList', $search);
 
         } catch (UnknownPropertyException $unknownException) {
 
