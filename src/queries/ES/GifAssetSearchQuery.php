@@ -57,7 +57,6 @@ class GifAssetSearchQuery implements QueryBuilderInterface
 
     public function getRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
         //$redis_key = "ES_gif_asset: date('Y-m-d'):{$keyword}_{$page}_ ".implode('-', $class_id)." _{$pageSize}_{$is_zb}";
         $classId = is_array($this->classId) ? $this->classId : [];
         return sprintf(
