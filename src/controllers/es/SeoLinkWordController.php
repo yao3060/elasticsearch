@@ -32,7 +32,7 @@ class SeoLinkWordController extends BaseController
                     ->search(new SeoLinkWordSearchQuery(
                         $data['keyword'],
                     ));
-                $response = new Response('LinkWord_list', 'LinkWordList', $data);
+                $response = new Response('get_seo_link_word_list', 'SeoLinkWordList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(
@@ -70,7 +70,7 @@ class SeoLinkWordController extends BaseController
                         1,
                         $data['page_size'] ?? 40
                     ));
-                $response = new Response('get_LinkWordSeo_list', 'LinkWordSeoList', $data);
+                $response = new Response('get_seo_link_word_search_list', 'LinkWordSeoList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(
