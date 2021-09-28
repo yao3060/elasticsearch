@@ -20,6 +20,13 @@ spec:
       containers:
         - image: null
           name: backend-nginx
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
           ports:
             - containerPort: 80
           command:
@@ -58,6 +65,13 @@ spec:
       containers:
         - image: null
           name: backend-php
+          resources:
+            requests:
+              memory: "1024Mi"
+              cpu: "250m"
+            limits:
+              memory: "2048Mi"
+              cpu: "1500m"
           volumeMounts:
             #        - name: php-env
             #          mountPath: "/var/www/html/.env"
