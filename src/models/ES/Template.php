@@ -315,11 +315,6 @@ class Template extends BaseModel
         return $es_name;
     }
 
-    public static function sortByHot()
-    {
-        return 'edit desc';
-    }
-
     public function rules()
     {
         return [
@@ -332,25 +327,5 @@ class Template extends BaseModel
         return [
             [['keyword'], 'string']
         ];
-    }
-
-    public static function sortByTime()
-    {
-        return 'created desc';
-    }
-
-    public static function sortByYesday()
-    {
-        return 'web_dl desc';
-    }
-
-    public static function sortByWeekday()
-    {
-        return 'week_web_dl desc';
-    }
-
-    public static function sortByMonth()
-    {
-        return 'month_web_dl desc';
     }
 }

@@ -200,15 +200,15 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
     {
         switch ($this->sortType) {
             case 'bytime':
-                $this->sort = $this->sortByTime();
+                $this->sortByTime();
                 break;
 
             case 'byhot':
-                $this->sort = $this->sortByHot();
+                $this->sortByHot();
                 break;
 
             default:
-                $this->sort = $this->sortDefault(
+                $this->sortDefault(
                     $this->keyword,
                     $this->sortClassId,
                     static::index()
