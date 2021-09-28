@@ -131,25 +131,22 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
     {
         switch ($this->sortType) {
             case 'bytime':
-                $this->sort = Template::sortByTime();
+                $this->sortByTime();
                 break;
             case 'byyesday':
-                $this->sort = Template::sortByYesday();
-                $this->query['bool']['filter'][]['range']['web_dl']['gt'] = 0; //获取昨日有下载量的模板
+                $this->sortByYesterday();
                 break;
             case 'byweekday':
-                $this->sort = Template::sortByWeekday();
-                $this->query['bool']['filter'][]['range']['week_web_dl']['gt'] = 0;
+                $this->sortByWeekday();
                 break;
             case 'bymonth':
-                $this->sort = Template::sortByMonth();
-                $this->query['bool']['filter'][]['range']['month_web_dl']['gt'] = 0;
+                $this->sortByMonth();
                 break;
             case 'byhot':
-                $this->sort = Template::sortByHot();
+                $this->sortByHot();
                 break;
             default:
-                $this->sort = Template::sortDefault($this->keyword, $this->sortClassId);
+                $this->sortDefault($this->keyword, $this->sortClassId);
                 break;
         }
 

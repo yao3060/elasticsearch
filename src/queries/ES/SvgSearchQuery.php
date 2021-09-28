@@ -3,8 +3,6 @@
 
 namespace app\queries\ES;
 
-use Yii;
-
 class SvgSearchQuery extends BaseTemplateSearchQuery
 {
     public function __construct(
@@ -29,7 +27,6 @@ class SvgSearchQuery extends BaseTemplateSearchQuery
     {
         $this->queryKeyword();
 
-        Yii::info($this->query);
         return $this->query;
     }
 

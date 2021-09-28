@@ -51,6 +51,9 @@ class SeoLinkWord extends BaseModel
         if ($return && isset($return['hit']) && $return['hit']) {
             return $return;
         }
+        $return['hit'] = 0;
+        $return['ids'] = [];
+        $return['score'] = [];
         try {
             $info = self::find()
                 ->source(['id', 'keyword'])
