@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: backend-nginx
 spec:
-  replicas: 3
+  replicas: 1
   template:
     spec:
       containers:
@@ -24,11 +24,6 @@ spec:
           env:
           - name: aliyun_logs_elasticsearch-staging-php-stdout
             value: stdout
-          resources:
-            limits:
-              cpu: 500m
-            requests:
-              cpu: 200m
       volumes:
         - name: yii-runtime
           persistentVolumeClaim:
