@@ -49,6 +49,7 @@ class PptTemplate extends BaseModel
         $log = 'GroupWord:redisKey:'.$query->getRedisKey();
         yii::info($log,__METHOD__);
         if ($return && isset($return['hit']) && $return['hit'] && !Tools::isReturnSource()) {
+            Yii::info('bypass by redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
         $info = [

@@ -43,6 +43,7 @@ class SeoDetailKeywordForTitle extends BaseModel
         $log = 'SeoDetailKeywordForTitle:redisKey:'.$query->getRedisKey();
         yii::info($log,__METHOD__);
         if ($return && isset($return['hit']) && $return['hit']) {
+            Yii::info('bypass by redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
         try {
