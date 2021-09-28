@@ -21,9 +21,9 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
         return 'edit desc';
     }
 
-    public function sortDefault($keyword, $classId = [], $indexName = null, string $esTableName)
+    public function sortDefault($keyword, $classId = [], $indexName = null)
     {
-        $indexName = !empty($indexName) ? $indexName : $esTableName;
+        $indexName = !empty($indexName) ? $indexName : Template::getEsTableName();
         //        $source = "doc['pr'].value-doc['man_pr'].value+doc['man_pr_add'].value";
         if ($classId && is_array($classId) == false) {
             $classId = explode('_', $classId);
@@ -38,7 +38,7 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
             $hot_keyword = [];
             if (isset($mapping[$indexName]['mappings']['list']['properties']['hot_keyword']['properties']) && $mapping[$indexName]['mappings']['list']['properties']['hot_keyword']['properties']) {
                 foreach ($mapping[$indexName]['mappings']['list']['properties']['hot_keyword']['properties'] as $kk => $property) {
-                    if ($property['type'] == 'long') {
+                    if (isset($property['type']) && $property['type'] == 'long') {
                         $hot_keyword[] = (string)$kk;
                     }
                 }

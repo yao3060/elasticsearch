@@ -211,8 +211,7 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
                 $this->sort = $this->sortDefault(
                     $this->keyword,
                     $this->sortClassId,
-                    static::index(),
-                    Template::getEsTableName()
+                    static::index()
                 );
         }
     }

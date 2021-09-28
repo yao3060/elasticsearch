@@ -315,67 +315,6 @@ class Template extends BaseModel
         return $es_name;
     }
 
-    public static function sortDefault($keyword, $classId = [], $index_name = null)
-    {
-        $index_name = !empty($index_name) ? $index_name : self::getEsTableName();
-        //        $source = "doc['pr'].value-doc['man_pr'].value+doc['man_pr_add'].value";
-        if ($classId && is_array($classId) == false) {
-            $classId = explode('_', $classId);
-        }
-        $source = "doc['pr'].value+(int)(_score*10)";
-        if (strstr($keyword, 'h5') || strstr($keyword, 'H5')) {
-            $source .= "+10000-((int)(doc['template_type'].value-5)*(int)(doc['template_type'].value-5)*400)";
-        }
-
-        if ($keyword) {
-            //关键词人工pr
-            $mapping = Template::getMapping();
-            $hot_keyword = [];
-            foreach ($mapping[$index_name]['mappings']['list']['properties']['hot_keyword']['properties'] as $kk => $property) {
-                if (isset($property['type']) && $property['type'] == 'long') {
-                    $hot_keyword[] = (string)$kk;
-                }
-            }
-
-            if (in_array((string)$keyword, $hot_keyword, true)) {
-                $source .= "+doc['hot_keyword.{$keyword}'].value";
-            }
-
-            // 根据展示点击率调整pr
-            //            $optimize_keyword = array_keys($mapping[$index_name']['mappings']['list']['properties']['keyword_show_edit']['properties']);
-            //            $optimize_keyword = explode('!!!', implode('!!!', $optimize_keyword));//强制转换为string类型
-            //            if (in_array((string)$keyword, $optimize_keyword)) {
-            //                $source .= "+doc['keyword_show_edit.{$keyword}'].value";
-            //            }
-
-        } elseif ($classId && count($classId) >= 1) {
-            //标签的人工pr
-            $choose_class_id = 0;
-            foreach ($classId as $v) {
-                if ($v > 0 || $v == -1) {
-                    $choose_class_id = $v;
-                }
-            }
-            if ($choose_class_id > 0 || $choose_class_id == -1) {
-                $mapping = Template::getMapping();
-                $class_sort = array_keys($mapping[$index_name]['mappings']['list']['properties']['class_sort']['properties']);
-                $class_sort = explode('!!!', implode('!!!', $class_sort));//强制转换为string类型
-                if (in_array((string)$choose_class_id, $class_sort)) {
-                    $source .= "+doc['class_sort.{$choose_class_id}'].value";
-                }
-            }
-        }
-        $sort['_script'] = [
-            'type' => 'number',
-            'script' => [
-                "lang" => "painless",
-                "source" => $source
-            ],
-            'order' => 'desc'
-        ];
-        return $sort;
-    }
-
     public static function sortByHot()
     {
         return 'edit desc';

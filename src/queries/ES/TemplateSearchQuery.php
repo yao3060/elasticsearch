@@ -149,7 +149,7 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
                 $this->sort = Template::sortByHot();
                 break;
             default:
-                $this->sort = Template::sortDefault($this->keyword, $this->sortClassId);
+                $this->sort = $this->sortDefault($this->keyword, $this->sortClassId);
                 break;
         }
 
