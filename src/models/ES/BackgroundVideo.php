@@ -45,6 +45,7 @@ class BackgroundVideo extends BaseModel
         $return = Tools::getRedis(self::$redisDb, $redisKey);
 
         if (!empty($return) && Tools::isReturnSource() === false) {
+            \Yii::info("background video search data source from redis", __METHOD__);
             return $return;
         }
 
@@ -61,18 +62,18 @@ class BackgroundVideo extends BaseModel
                 ->limit($query->pageSize)
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
+
+            $total = $info['total'] ?? 0;
+
+            $return['hit'] = $total > 10000 ? 10000 : $total;
+            if (isset($info['hits']) && sizeof($info['hits'])) {
+                foreach ($info['hits'] as $value) {
+                    $return['ids'][] = $value['_id'];
+                    $return['score'][$value['_id']] = $value['sort'][0] ?? [];
+                }
+            }
         } catch (\Throwable $throwable) {
             throw new Exception($throwable->getMessage().$throwable->getFile().$throwable->getLine());
-        }
-
-        $total = $info['total'] ?? 0;
-
-        $return['hit'] = $total > 10000 ? 10000 : $total;
-        if (isset($info['hits']) && sizeof($info['hits'])) {
-            foreach ($info['hits'] as $value) {
-                $return['ids'][] = $value['_id'];
-                $return['score'][$value['_id']] = $value['sort'][0];
-            }
         }
 
         Tools::setRedis(self::$redisDb, $redisKey, $return, 86400);
