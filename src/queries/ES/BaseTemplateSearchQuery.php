@@ -355,4 +355,21 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
         }
         return $this;
     }
+
+    public function __call($method, $args)
+    {
+        $hasMethod = explode('has', $method);
+
+        if (isset($hasMethod[1]) && $hasMethod[1]) {
+
+            $property = $hasMethod[1];
+
+            // validate property exists
+            if (property_exists($this, lcfirst($property)) && !empty($this->{$property})) {
+                return true;
+            }
+
+            return false;
+        }
+    }
 }

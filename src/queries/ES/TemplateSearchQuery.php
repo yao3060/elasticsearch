@@ -68,6 +68,11 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
 
     }
 
+    public function isFuzzy()
+    {
+        return $this->fuzzy == 1;
+    }
+
     /**
      * joint redis key
      */
@@ -76,7 +81,8 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
         $this->beforeAssignment();
 
         $redisKey = "ES_template12-23:";
-        if ($this->fuzzy == 1) {
+
+        if ($this->isFuzzy()) {
             $redisKey .= ":fuzzy";
         }
 
@@ -88,22 +94,26 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
 
         $redisKey .= ":" . implode('_', $implodeKeyArr);
 
-        if (!empty($this->templateTypes) && is_array($this->templateTypes)) {
+        if ($this->hasTemplateTypes() && is_array($this->templateTypes)) {
             $redisKey .= '_' . implode('|', $this->templateTypes);
         } else if ($this->templateTypes > 0) {
             $redisKey .= "_" . $this->templateTypes;
         }
-        if ($this->color) {
+
+        if ($this->hasColor()) {
             $redisKey .= '_' . implode(',', array_column($this->color, 'color')) .
                 '_' . implode(',', array_column($this->color, 'weight'));
         }
-        if (!empty($this->width)) {
+
+        if ($this->hasWidth()) {
             $redisKey .= "_w={$this->width}";
         }
-        if (!empty($this->height)) {
+
+        if ($this->hasHeight()) {
             $redisKey .= "_h={$this->height}";
         }
-        if (!empty($this->classIntersectionSearch)) {
+
+        if ($this->hasClassIntersectionSearch()) {
             $redisKey .= "_cis={$this->classIntersectionSearch}";
         }
 
@@ -174,7 +184,7 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
             ->querySortType();
 
         //颜色搜索
-        if ($this->color) {
+        if ($this->hasColor()) {
             return $this->formatColor(array_column($this->color, 'color'), array_column($this->color, 'weight'));
         }
 

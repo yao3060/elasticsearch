@@ -32,8 +32,6 @@ class SensitiveWordSearchQuery extends BaseTemplateSearchQuery
 
     public function getRedisKey()
     {
-        $redis_key = "is_ban_word_v2:" . $this->keyword;
-
-        return $redis_key;
+        return "is_ban_word_v2:" . $this->keyword;
     }
 }
