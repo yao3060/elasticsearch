@@ -36,7 +36,8 @@ staging-install-job:
     - cd ./src
     - echo "Start install php packages"
     - composer install --ignore-platform-reqs --no-scripts
-    - composer dump-autoload
+    # Optimizes PSR0 and PSR4 packages to be loaded with classmaps too, good for production.
+    - composer dump-autoload -o
     - cd ../
 
 staging-build-job:
