@@ -362,11 +362,17 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
 
         if (isset($hasMethod[1]) && $hasMethod[1]) {
 
-            $property = $hasMethod[1];
+            $property = $hasMethod[1] ?? '';
 
-            // validate property exists
-            if (property_exists($this, lcfirst($property)) && !empty($this->{$property})) {
-                return true;
+            if (!empty($property)) {
+
+                $property = lcfirst($property);
+
+                // validate property exists
+                if (property_exists($this, $property) && !empty($this->{$property})) {
+                    return true;
+                }
+
             }
 
             return false;
