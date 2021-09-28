@@ -25,10 +25,11 @@ class Asset extends BaseModel
     public function search(QueryBuilderInterface $query): array
     {
         $redisKey = $query->getRedisKey();
-        $log = 'Asset:redisKey:'.$query->getRedisKey();
-        yii::info($log,__METHOD__);
+        $log = 'Asset:redisKey:' . $redisKey;
+        yii::info($log, __METHOD__);
         $return = Tools::getRedis(self::REDIS_DB, $redisKey);
         if ($return && isset($return['hit']) && $return['hit']) {
+            Yii::info('bypass by redis, redis key:' . $redisKey, __METHOD__);
             return $return;
         }
         if ($query->useCount) {
@@ -50,7 +51,7 @@ class Asset extends BaseModel
                 ->search([], ['track_scores' => true])['hits'];
         } catch (\Exception $e) {
             \Yii::error($e->getMessage(), __METHOD__);
-            throw new Exception($e->getMessage());
+            throw new \Exception($e->getMessage());
         }
         $return['hit'] = $info['total'] ?? 0 > 10000 ? 10000 : $info['total'];
         foreach ($info['hits'] as $value) {

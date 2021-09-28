@@ -42,6 +42,7 @@ class GifAsset extends BaseModel
         $log = 'GifAsset:redisKey:'.$query->getRedisKey();
         yii::info($log,__METHOD__);
         if ($return) {
+            Yii::info('bypass by redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
         $return['hit'] = 0;
