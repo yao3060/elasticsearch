@@ -41,6 +41,22 @@ class Tools
         return false;
     }
 
+    /**
+     * 缓存是否回源
+     * @return bool
+     */
+    public static function isReturnSourceVisitor($prep = 0)
+    {
+        if (($prep == 1 || (isset($_GET['prep']) && $_GET['prep'] == 1))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * set redis value
+     */
     public static function setRedis($db = 2, $key, $value, $time = 86400)
     {
         if (!is_prod()) {
@@ -59,6 +75,9 @@ class Tools
         );
     }
 
+    /**
+     * get redis value
+     */
     public static function getRedis($db = 2, $key)
     {
         if (!is_prod()) {
@@ -82,6 +101,9 @@ class Tools
         }
     }
 
+    /**
+     * delete redis key
+     */
     public static function delRedis($db = 2, $key)
     {
         if (!is_prod()) {
