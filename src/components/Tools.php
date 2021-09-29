@@ -66,7 +66,7 @@ class Tools
         if (is_array($value) || is_object($value)) {
             $value = serialize($value);
         }
-        $redis = 'redis'.$db;
+        $redis = 'redis' . $db;
         return Yii::$app->$redis->set(
             $key,
             $value,
@@ -84,7 +84,7 @@ class Tools
             return null;
         }
 
-        $redis = 'redis'.$db;
+        $redis = 'redis' . $db;
         $info = Yii::$app->$redis->get($key);
         if (!$info) {
             return false;
@@ -110,17 +110,19 @@ class Tools
             return null;
         }
 
-        $redis = 'redis'.$db;
+        $redis = 'redis' . $db;
         Yii::$app->$redis->del($key);
     }
 
     /**
+     * @deprecated since version 1.0 Use $request->getUserIP() instead.
+     *
      * 获取真实ip
      * @return array|false|mixed|string
      */
     public static function getClientIP()
     {
-        global $ip;
+        global $ip; // TODO: remove it
         if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
         } elseif (getenv("REMOTE_ADDR")) {

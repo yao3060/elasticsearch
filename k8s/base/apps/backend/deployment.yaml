@@ -70,8 +70,8 @@ spec:
               memory: "256Mi"
               cpu: "250m"
             limits:
-              memory: "1024Mi"
-              cpu: "1000m"
+              memory: "512Mi"
+              cpu: "500m"
           volumeMounts:
             #        - name: php-env
             #          mountPath: "/var/www/html/.env"
