@@ -16,9 +16,16 @@ use yii\web\UnauthorizedHttpException;
 class SensitiveWordController extends BaseController
 {
     /**
-     * 违禁词验证
-     * @param Request $request
-     * @return \yii\web\Response
+     * @api {post} /v1/sensitive-words/validate Validate Sensitive Word
+     * @apiName SensitiveWordValidate
+     * @apiGroup SensitiveWord
+     *
+     * @apiParam (请求参数) {String} keyword 搜索关键词
+     *
+     * @apiSuccess (应答字段) {String} code 返回状态码
+     * @apiSuccess (应答字段) {String} message 返回消息
+     * @apiSuccess (应答字段) {Object[]} data 返回数据
+     * @apiSuccess (应答字段) {Boolean=true, false} data.flag 是否违禁词 true:是 false:不是
      */
     public function actionValidate(Request $request)
     {
