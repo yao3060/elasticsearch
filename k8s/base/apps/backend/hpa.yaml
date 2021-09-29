@@ -7,7 +7,7 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: backend-nginx
-  minReplicas: 1
+  minReplicas: 2
   maxReplicas: 10
   metrics:
   - type: Resource
@@ -26,8 +26,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: backend-php
-  minReplicas: 1
-  maxReplicas: 20
+  minReplicas: 5
+  maxReplicas: 50
   metrics:
   - type: Resource
     resource:

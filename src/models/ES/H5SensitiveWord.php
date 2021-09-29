@@ -3,6 +3,7 @@
 namespace app\models\ES;
 
 use app\components\Tools;
+use yii\base\Exception;
 use app\interfaces\ES\QueryBuilderInterface;
 
 /**
@@ -60,7 +61,7 @@ class H5SensitiveWord extends BaseModel
                     $is_ban_word['BanWord'] = $BanWord;
                 }
             }
-        } catch (\exception $e) {
+        } catch (Exception $e) {
             \Yii::error($e->getMessage(), __METHOD__);
             throw new Exception($e->getMessage());
         }

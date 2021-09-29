@@ -4,6 +4,7 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
+use yii\base\Exception;
 use Yii;
 
 /**
@@ -52,7 +53,7 @@ class Container extends BaseModel
                 ->limit($query->pageSizeSet())
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
-        } catch (\exception $e) {
+        } catch (Exception $e) {
             \Yii::error($e->getMessage(), __METHOD__);
             throw new Exception($e->getMessage());
         }

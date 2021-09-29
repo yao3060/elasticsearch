@@ -3,6 +3,7 @@
 namespace app\models\ES;
 
 use app\components\Tools;
+use yii\base\Exception;
 use app\interfaces\ES\QueryBuilderInterface;
 use Yii;
 /**
@@ -48,7 +49,7 @@ class VideoAudio extends BaseModel
                 ->limit($query->pageSizeSet())
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
-        } catch (\exception $e) {
+        } catch (Exception $e) {
             $info['hit'] = 0;
             $info['ids'] = [];
             $info['score'] = [];

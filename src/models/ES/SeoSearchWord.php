@@ -3,6 +3,7 @@
 namespace app\models\ES;
 
 use app\components\Tools;
+use yii\base\Exception;
 use app\interfaces\ES\QueryBuilderInterface;
 use Yii;
 /**
@@ -33,7 +34,7 @@ class SeoSearchWord extends BaseModel
                 ->query($query->query())
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
-        } catch (\exception $e) {
+        } catch (Exception $e) {
             $info['total'] = 0;
             $return['is_seo_search_keyword'] = false;
         }
@@ -60,7 +61,7 @@ class SeoSearchWord extends BaseModel
                     ->limit($query->pageSize)
                     ->createCommand()
                     ->search([], ['track_scores' => true])['hits'];
-            } catch (\exception $e) {
+            } catch (Exception $e) {
                 $info['hit'] = 0;
                 $info['ids'] = [];
                 $info['score'] = [];

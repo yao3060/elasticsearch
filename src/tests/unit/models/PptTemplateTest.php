@@ -41,7 +41,6 @@ class PptTemplateTest extends \Codeception\Test\Unit
                 ]
             ]
         );
-
         $content = json_decode($response->getBody()->getContents());
         $ids = ArrayHelper::getColumn($content->data->list, 'id');
         sort($ids);

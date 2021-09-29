@@ -3,6 +3,7 @@
 namespace app\models\ES;
 
 use app\components\Tools;
+use yii\base\Exception;
 use app\interfaces\ES\QueryBuilderInterface;
 use Yii;
 
@@ -52,7 +53,7 @@ class PptTemplate extends BaseModel
             Yii::info('bypass by redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
-        $info = [
+        $data = [
             'hit' => 0,
             'ids' => [],
             'score' => [],
@@ -67,7 +68,7 @@ class PptTemplate extends BaseModel
                 ->orderBy(['id' => SORT_DESC])
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
-        } catch (\exception $e) {
+        } catch (Exception $e) {
             \Yii::error($e->getMessage(), __METHOD__);
             throw new Exception($e->getMessage());
         }
@@ -80,6 +81,6 @@ class PptTemplate extends BaseModel
             $data['score'][$value['_id']] = $value['sort'][0];
         }
         Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $data, self::REDIS_EXPIRE);
-        return $return;
+        return $data;
     }
 }

@@ -4,6 +4,7 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
+use yii\base\Exception;
 use Yii;
 
 /**
@@ -53,7 +54,7 @@ class SeoDetailKeywordForTitle extends BaseModel
                 ->limit(2)
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
-        } catch (\exception $e) {
+        } catch (Exception $e) {
             $info['total'] = 0;
             \Yii::error($e->getMessage(), __METHOD__);
             throw new Exception($e->getMessage());
