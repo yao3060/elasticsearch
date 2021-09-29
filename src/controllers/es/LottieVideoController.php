@@ -17,47 +17,51 @@ class LottieVideoController extends BaseController
     public function actionSearch(Request $request)
     {
         try {
-
-            $validate = DynamicModel::validateData($request->getQueryParams(), [
-                [['keyword'], 'string']
-            ]);
+            $validate = DynamicModel::validateData(
+                $request->getQueryParams(),
+                [
+                    [['keyword'], 'string']
+                ]
+            );
 
             if ($validate->hasErrors()) {
-                return $this->response(new Response(
-                    'validate params error',
-                    'Validate Params Error',
-                    $validate->errors,
-                    422));
+                return $this->response(
+                    new Response(
+                        'validate params error',
+                        'Validate Params Error',
+                        $validate->errors,
+                        422
+                    )
+                );
             }
 
             $validateAttributes = $validate->getAttributes();
 
-            $search = (new LottieVideo())->search(new LottieVideoSearchQuery(
-                keyword: $validateAttributes['keyword'] ?? 0,
-                classId: $validateAttributes['class_id'] ?? [],
-                page: $validateAttributes['page'] ?? 1,
-                pageSize: $validateAttributes['page_size'] ?? 40,
-                prep: $validateAttributes['prep'] ?? 0
-            ));
+            $search = (new LottieVideo())->search(
+                new LottieVideoSearchQuery(
+                    keyword: $validateAttributes['keyword'] ?? 0,
+                    classId: $validateAttributes['class_id'] ?? [],
+                    page: $validateAttributes['page'] ?? 1,
+                    pageSize: $validateAttributes['page_size'] ?? 40,
+                    prep: $validateAttributes['prep'] ?? 0
+                )
+            );
 
             $response = new Response('lottie_video_search', 'Lottie Video Search', $search);
-
         } catch (UnknownPropertyException $unknownException) {
-
             $response = new Response(
                 StringHelper::snake($unknownException->getName()),
                 StringHelper::replaceModelName($unknownException->getMessage()),
                 [],
-                422);
-
+                422
+            );
         } catch (\Throwable $throwable) {
-
             $response = new Response(
                 'Internal Server Error',
                 $throwable->getMessage(),
                 YII_DEBUG ? explode("\n", $throwable->getTraceAsString()) : [],
-                500);
-
+                500
+            );
         }
 
         return $this->response($response);

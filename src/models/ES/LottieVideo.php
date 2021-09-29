@@ -41,6 +41,7 @@ class LottieVideo extends BaseModel
 
         if (!empty($return) && isset($return['hit']) && $return['hit'] && Tools::isReturnSource(
             ) === false && $query->prep != 1) {
+            \Yii::info("lottie video search data source from redis", __METHOD__);
             return $return;
         }
 
@@ -58,19 +59,18 @@ class LottieVideo extends BaseModel
                 ->limit($query->pageSize)
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
+            if (isset($info['hits']) && sizeof($info['hits'])) {
+                $total = $info['total'] ?? 0;
+
+                $return['hit'] = $total > 10000 ? 10000 : $total;
+                foreach ($info['hits'] as $value) {
+                    $return['ids'][] = $value['_id'];
+                    $return['score'][$value['_id']] = $value['sort'][0] ?? [];
+                }
+            }
         } catch (\exception $e) {
             \Yii::error($e->getMessage(), __METHOD__);
             throw new Exception($e->getMessage());
-        }
-
-        if (isset($info['hits']) && sizeof($info['hits'])) {
-            $total = $info['total'] ?? 0;
-
-            $return['hit'] = $total > 10000 ? 10000 : $total;
-            foreach ($info['hits'] as $value) {
-                $return['ids'][] = $value['_id'];
-                $return['score'][$value['_id']] = $value['sort'][0];
-            }
         }
 
         Tools::setRedis(self::$redisDb, $redisKey, $return, 86400);

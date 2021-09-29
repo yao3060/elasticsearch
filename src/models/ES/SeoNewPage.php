@@ -28,7 +28,7 @@ class SeoNewPage extends BaseModel
     }
 
     /**
-     * @param \app\queries\ES\SeoNewPageSeoSearchQuery $query
+     * @param  \app\queries\ES\SeoNewPageSeoSearchQuery  $query
      * @return array|false|mixed
      * @throws Exception
      */
@@ -38,22 +38,22 @@ class SeoNewPage extends BaseModel
 
         $return = Tools::getRedis(self::$redisDb, $redisKey);
 
-        if (!$return || Tools::isReturnSource()) {
-            $return['hit'] = 0;
-            $return['ids'] = [];
-            $return['score'] = [];
+        if (!empty($return) && isset($return['hit']) && $return['hit'] && Tools::isReturnSource() === false) {
+            \Yii::info("seo new page data source from redis", __METHOD__);
+            return $return;
+        }
 
-            try {
-                $info = self::find()
-                    ->source(['id', '_keyword'])
-                    ->query($query->query())
-                    ->limit($query->pageSize)
-                    ->createCommand()
-                    ->search([], ['track_scores' => true])['hits'];
-            } catch (\exception $e) {
-                throw new Exception($e->getMessage());
-            }
+        $return['hit'] = 0;
+        $return['ids'] = [];
+        $return['score'] = [];
 
+        try {
+            $info = self::find()
+                ->source(['id', '_keyword'])
+                ->query($query->query())
+                ->limit($query->pageSize)
+                ->createCommand()
+                ->search([], ['track_scores' => true])['hits'];
             $total = $info['total'] ?? [];
 
             if (isset($info['hits']) && $info['hits'] && $total > 0) {
@@ -62,9 +62,11 @@ class SeoNewPage extends BaseModel
                     $return[$k]['keyword'] = $v['_source']['_keyword'];
                 }
             }
-
-            Tools::setRedis(self::$redisDb, $redisKey, $return, 86400 * 30);
+        } catch (\exception $e) {
+            throw new Exception($e->getMessage());
         }
+
+        Tools::setRedis(self::$redisDb, $redisKey, $return, 86400 * 30);
 
         return $return;
     }
