@@ -46,15 +46,16 @@ staging-build-apidoc-job:
   stage: build-apidoc
   environment:
     name: staging
-  image: docker:dind
+  image: yao3060/apidoc
   tags:
     - 818ps_web_dev
   only:
     - develop
   script:
     - echo "Start generate Apidoc"
+    - rm -f apidoc
     - ls -la
-    - ./apidoc
+    - apidoc -i src/controllers/ -o ./src/web/apidocs/
 
 staging-build-job:
   stage: build

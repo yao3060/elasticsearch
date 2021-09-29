@@ -9,6 +9,6 @@ chmod -R 777 ./src/web/apidocs/
 
 docker run --rm \
   -v $(pwd):/home/node/apidoc \
-  yao3060/apidoc -i src/controllers/ -o ./src/web/apidocs/
+  apidoc/apidoc -i src/controllers/ -o ./src/web/apidocs/
 
 echo "Apidoc generated"
