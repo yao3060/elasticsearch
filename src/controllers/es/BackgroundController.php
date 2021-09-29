@@ -9,7 +9,7 @@ namespace app\controllers\es;
 use app\components\Response;
 use app\helpers\StringHelper;
 use app\models\ES\Background;
-use app\queries\ES\BackGroundSearchQuery;
+use app\queries\ES\BackgroundSearchQuery;
 use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
 use app\controllers\BaseController;
@@ -32,7 +32,7 @@ class BackgroundController extends BaseController
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $data = (new Background())
-                    ->search(new BackGroundSearchQuery(
+                    ->search(new BackgroundSearchQuery(
                         $data['keyword'],
                         $data['page'] ?? 1,
                         $data['page_size'] ?? 40,

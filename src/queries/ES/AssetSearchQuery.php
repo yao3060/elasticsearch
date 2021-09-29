@@ -4,7 +4,7 @@
 namespace app\queries\ES;
 
 use app\interfaces\ES\QueryBuilderInterface;
-use app\models\AssetUseTop;
+use \app\models\Backend\AssetUseTop;
 
 class AssetSearchQuery implements QueryBuilderInterface
 {
@@ -17,8 +17,7 @@ class AssetSearchQuery implements QueryBuilderInterface
         public  $isZb = 1,
         public  $sort = 'DESC',
         public  $useCount = 0
-    )
-    {
+    ) {
     }
 
     public function query(): array
@@ -31,7 +30,7 @@ class AssetSearchQuery implements QueryBuilderInterface
         }
         $newQuery['bool']['filter'][]['term']['kid_1'] = 1;
         if ($this->useCount) {
-            $useInfo = AssetUseTop::getLastInfo(1);
+            $useInfo = AssetUseTop::getLatestBy('kid_1', 1);
             switch ($this->useCount) {
                 case 1:
                     $newQuery['bool']['filter'][]['range']['use_count']['gte'] = $useInfo['top1_count'];
@@ -45,7 +44,8 @@ class AssetSearchQuery implements QueryBuilderInterface
         }
         return  $newQuery;
     }
-    public function pageSizeSet(){
+    public function pageSizeSet()
+    {
         $pageSize = $this->pageSize;
         if ($this->page * $this->pageSize > 10000) {
             $pageSize = $this->page * $pageSize - 10000;

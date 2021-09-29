@@ -17,7 +17,7 @@ class Background extends BaseModel
     const REDIS_DB = 8;
 
     /**
-     * @param \app\queries\ES\BackGroundSearchQuery $query
+     * @param \app\queries\ES\BackgroundSearchQuery $query
      * @return array 2021-09-06
      * return ['hit','ids','score'] 命中数,命中id,模板id=>分数
      */

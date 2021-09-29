@@ -12,8 +12,7 @@ class ContainerSearchQuery implements QueryBuilderInterface
         public $page = 1,
         public $pageSize = 40,
         public $kid = '0',
-    )
-    {
+    ) {
     }
 
     public function query(): array
@@ -24,12 +23,11 @@ class ContainerSearchQuery implements QueryBuilderInterface
         if ($this->kid) {
             $newQuery['bool']['must'][]['terms']['kid_2'] = $this->kid;
         }
-        if (isset($newQuery) && $newQuery){
+        if (isset($newQuery) && $newQuery) {
             return $newQuery;
-        }else{
+        } else {
             return array();
         }
-
     }
     public function queryKeyword($keyword, $is_or = false)
     {
@@ -46,7 +44,8 @@ class ContainerSearchQuery implements QueryBuilderInterface
     {
         return 'man_pr_add desc';
     }
-    public function pageSizeSet(){
+    public function pageSizeSet()
+    {
         $pageSize = $this->pageSize;
         if ($this->page * $this->pageSize > 10000) {
             $pageSize = $this->page * $pageSize - 10000;
@@ -65,7 +64,6 @@ class ContainerSearchQuery implements QueryBuilderInterface
     }
     public function getRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
         //$redis_key = "ES_container:" . ":{$keyword}_{$page}_" . implode('-', $kid) . "_{$pagesize}";
         $kid = $this->kid ? $this->kid : [];
         if (!is_array($kid)) {

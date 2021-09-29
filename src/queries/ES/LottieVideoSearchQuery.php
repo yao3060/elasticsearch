@@ -73,6 +73,6 @@ class LottieVideoSearchQuery extends BaseTemplateSearchQuery
         if (!is_array($this->classId)) {
             $this->classId = [$this->classId];
         }
-        $this->offset = ($this->page - 1) * $this->pageSize;
+        $this->offset = ((int)$this->page - 1) * (int) $this->pageSize;
     }
 }
