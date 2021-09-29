@@ -6,6 +6,7 @@ use Yii;
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
 use app\models\Backend\AssetUseTop;
+use yii\base\Exception;
 
 /**
  * Class Asset
@@ -49,9 +50,9 @@ class Asset extends BaseModel
                 ->limit($query->pageSizeSet())
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             \Yii::error($e->getMessage(), __METHOD__);
-            throw new \Exception($e->getMessage());
+            throw new Exception($e->getMessage());
         }
         $return['hit'] = $info['total'] ?? 0 > 10000 ? 10000 : $info['total'];
         foreach ($info['hits'] as $value) {

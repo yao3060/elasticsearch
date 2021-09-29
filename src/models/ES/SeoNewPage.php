@@ -62,7 +62,7 @@ class SeoNewPage extends BaseModel
                     $return[$k]['keyword'] = $v['_source']['_keyword'];
                 }
             }
-        } catch (\exception $e) {
+        } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
 

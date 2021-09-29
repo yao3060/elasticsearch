@@ -4,7 +4,7 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
-use app\services\designers\DesignerRecommendAssetTagService;
+use yii\base\Exception;
 
 /**
  * @package app\models\ES
@@ -55,7 +55,7 @@ class VideoElement extends BaseModel
                 ->limit($query->pageSizeSet())
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
-        } catch (\exception $e) {
+        } catch (Exception $e) {
             $info['hit'] = 0;
             $info['ids'] = [];
             $info['score'] = [];

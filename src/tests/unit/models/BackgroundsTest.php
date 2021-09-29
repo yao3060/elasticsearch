@@ -34,8 +34,8 @@ class BackgroundsTest extends \Codeception\Test\Unit
     {
         $items = (new Background())
             ->search(new BackGroundSearchQuery(
-                keyword: '你好',
-                page: 1,
+                keyword: '国庆',
+                page: 3,
                 pageSize: 30,
                 sceneId: 0,
                 isZb: 1,
@@ -48,7 +48,7 @@ class BackgroundsTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            getenv('UNIT_BASE_URL') .'/api/get-asset-list?w=%E4%BD%A0%E5%A5%BD&p=1&type=background&k1=0&k2=0&k3=0&tagId=undefined&sceneId=0&styleId=0&ratioId=-1'
+            getenv('UNIT_BASE_URL') .'/api/get-asset-list?w=国庆&p=3&type=background&k1=0&k2=0&k3=0&tagId=undefined&sceneId=0&styleId=0&ratioId=-1'
         );
 
         $content = json_decode($response->getBody()->getContents());

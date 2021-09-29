@@ -59,7 +59,7 @@ class Svg extends BaseModel
                     $return['score'][$value['_id']] = $value['sort'][0];
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             \Yii::error($e->getMessage(), __METHOD__);
             throw new Exception($e->getMessage());
         }

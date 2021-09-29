@@ -266,7 +266,7 @@ class Template extends BaseModel
                     Test::sqltest('setsearchKeywordRedis', $res, $query->getRedisKey());
                 }
             }
-        } catch (\exception $e) {
+        } catch (Exception $e) {
             Test::sqltest('searchKeywordFalse', $e->getMessage(), $query->keyword);
             throw new Exception($e->getMessage());
         }

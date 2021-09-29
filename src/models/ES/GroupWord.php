@@ -5,6 +5,7 @@ namespace app\models\ES;
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
 use Yii;
+use yii\base\Exception;
 
 /**
  * @package app\models\ES
@@ -74,7 +75,7 @@ class GroupWord extends BaseModel
                 ->limit($query->pageSizeSet())
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
-        } catch (\exception $e) {
+        } catch (Exception $e) {
             \Yii::error($e->getMessage(), __METHOD__);
             throw new Exception($e->getMessage());
         }
