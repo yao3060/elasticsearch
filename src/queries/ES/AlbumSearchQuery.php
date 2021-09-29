@@ -10,13 +10,13 @@ class AlbumSearchQuery implements QueryBuilderInterface
     //搜索所需要参数
     function __construct(
         public $keyword = 0,
-        public int $page = 1,
-        public int $pageSize = 5,
-        public string $classId = '',
-        public int $type = 2,
-        public string $sortType = 'default',
-        public int $update = 0,
-        public int $fuzzy = 0,
+        public $page = 1,
+        public $pageSize = 5,
+        public $classId = '',
+        public $type = 2,
+        public $sortType = 'default',
+        public $update = 0,
+        public $fuzzy = 0,
     )
     {
     }
@@ -27,8 +27,8 @@ class AlbumSearchQuery implements QueryBuilderInterface
             $newQuery = $this->queryKeyword($this->keyword, $this->fuzzy);
         }
         if ($this->type) {
-            //$newQuery['bool']['must'][]['terms']['type'] = $this->type;原来的查询语句应该是有错误的
-            $newQuery['bool']['must'][]['match']['type'] = $this->type;
+            $newQuery['bool']['must'][]['terms']['type'] = $this->type;
+            //$newQuery['bool']['must'][]['match']['type'] = $this->type;
         }
         if ($this->classId) {
             $class_id = explode('_', $this->classId);
