@@ -52,7 +52,7 @@ class PptTemplate extends BaseModel
             Yii::info('bypass by redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
-        $return = [
+        $data = [
             'hit' => 0,
             'ids' => [],
             'score' => [],
@@ -80,6 +80,6 @@ class PptTemplate extends BaseModel
             $data['score'][$value['_id']] = $value['sort'][0];
         }
         Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $data, self::REDIS_EXPIRE);
-        return $return;
+        return $data;
     }
 }
