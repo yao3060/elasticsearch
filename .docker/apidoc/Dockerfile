@@ -1,5 +1,5 @@
 # Dockerfile for apidoc
-FROM node:12-alpine
+FROM node:16-alpine
 
 LABEL org.label-schema.name="apidoc" \
     org.label-schema.description="apidoc Docker image" \
@@ -11,7 +11,7 @@ LABEL org.label-schema.name="apidoc" \
 
 ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
 
-ENV PATH=$PATH:/home/node/.npm-global/bin
+ENV PATH=$PATH:$NPM_CONFIG_PREFIX/bin
 
 USER node
 
@@ -20,9 +20,5 @@ RUN mkdir -p /home/node/apidoc
 WORKDIR /home/node/apidoc
 
 RUN npm install --only=prod -g apidoc
-
-# try other template
-# RUN wget -O apidoc-template.zip https://github.com/ahmed-dinar/apidoc-template/archive/master.zip \
-#     && unzip apidoc-template.zip -d /tmp/
 
 ENTRYPOINT ["apidoc"]
