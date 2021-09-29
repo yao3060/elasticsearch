@@ -58,7 +58,7 @@ class LottieVideoController extends BaseController
         } catch (\Throwable $throwable) {
             $response = new Response(
                 'Internal Server Error',
-                $throwable->getMessage(),
+                $throwable->getMessage() . $throwable->getFile() . $throwable->getLine(),
                 YII_DEBUG ? explode("\n", $throwable->getTraceAsString()) : [],
                 500
             );

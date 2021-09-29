@@ -2,8 +2,6 @@
 
 namespace app\queries\ES;
 
-use app\models\ES\Template;
-
 class TemplateSearchQuery extends BaseTemplateSearchQuery
 {
     public $sortClassId;
@@ -163,6 +161,38 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
         return $this;
     }
 
+    public function queryTemplateTypes()
+    {
+        if (is_array($this->templateTypes) && count($this->templateTypes) > 1 && in_array(5, $this->templateTypes)) {
+            //有H5就添加长页H5(不改变key,除了单独搜索H5类型)
+            $this->templateTypes[] = 7;
+        }
+
+        if ($this->hasTemplateTypes() && is_array($this->templateTypes)) {
+            // 如果搜索全部类型模板则去掉该条件
+            if(count($this->templateTypes) < 7){
+                $this->query['bool']['must'][]['terms']['template_type'] = $this->templateTypes;
+            }
+        } else if ($this->templateTypes>0){
+            $this->query['bool']['must'][]['match']['template_type'] = $this->templateTypes;
+        }
+
+        return $this;
+    }
+
+    public function queryTagId()
+    {
+        if ($this->hasTagId()) {
+            $tag_id = explode('_', $this->tagId);
+            foreach ($tag_id as &$item) {
+                $item = (int)$item;
+            }
+            $this->query['bool']['filter'][]['terms']['tag_id'] = $tag_id;
+        }
+
+        return $this;
+    }
+
     /**
      * return query
      */
@@ -176,7 +206,7 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
             ->queryRatio()
             ->queryClassIds()
             ->queryTemplateTypes()
-            ->queryTagIds()
+            ->queryTagId()
             ->queryIsZb()
             ->queryIosAlbumUser()
             ->queryWidth()
