@@ -52,7 +52,7 @@ class PptTemplate extends BaseModel
             Yii::info('bypass by redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
-        $info = [
+        $return = [
             'hit' => 0,
             'ids' => [],
             'score' => [],
