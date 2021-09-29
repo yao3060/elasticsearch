@@ -21,4 +21,8 @@ WORKDIR /home/node/apidoc
 
 RUN npm install --only=prod -g apidoc
 
-ENTRYPOINT ["apidoc"]
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+CMD ["apidoc"]
