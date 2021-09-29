@@ -53,9 +53,9 @@ staging-build-apidoc-job:
     - develop
   script:
     - echo "Start generate Apidoc"
-    - cd ./src
+    - rm -f apidoc
     - ls -la
-    - apidoc -i controllers/ -o ./web/apidocs/
+    - apidoc -i src/controllers/ -o ./src/web/apidocs/
 
 staging-build-job:
   stage: build
