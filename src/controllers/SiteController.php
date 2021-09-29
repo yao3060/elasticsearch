@@ -105,7 +105,7 @@ class SiteController extends BaseController
      */
     public function actionContact()
     {
-        return 'this is a contact page';
+        return $this->asJson(['message' => 'this is a contact page']);
     }
 
     /**
@@ -115,7 +115,7 @@ class SiteController extends BaseController
      */
     public function actionAbout()
     {
-        return 'this is a about action';
+        return $this->asJson(['message' => 'this is a about action']);
     }
 
     public function actionHpa()
@@ -124,10 +124,11 @@ class SiteController extends BaseController
             return 'IS PROD. Exit.';
         }
 
-        $x = 0.0001;
-        for ($i = 0; $i <= 50000000; $i++) {
-            $x += sqrt($x);
+        $x = 0;
+        $times = 9000000;
+        for ($i = 0; $i <= $times; $i++) {
+            $x += sqrt($times);
         }
-        return "OK!";
+        return "Sum of $times time sqrt($times):$x" . PHP_EOL;
     }
 }
