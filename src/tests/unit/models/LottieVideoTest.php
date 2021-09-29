@@ -33,7 +33,7 @@ class LottieVideoTest extends \Codeception\Test\Unit
         $keyword = 0,
         $classId = [],
         $page = 1,
-        $pageSize = 40,
+        $pageSize = 60,
         $prep = 0,
         $produrl = ''
     )
@@ -60,7 +60,6 @@ class LottieVideoTest extends \Codeception\Test\Unit
             $ids = array_column($ids, 'id');
             sort($ids);
         }
-
         return [
             'dev' => $searchIds,
             'prod' => $ids
