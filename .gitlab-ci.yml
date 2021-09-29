@@ -57,6 +57,7 @@ staging-build-job:
     - export COMPOSE_PROJECT_NAME="${PROJECT}_${ENVIRONMENT}"
     - export VERSION=$(cat VERSION)
     - echo $VERSION
+    - ./apidoc
     - echo "ready to build and push to Aliyun CS"
     - ./deploy/scripts/deploy-to-aliyun-cs.sh nginx php
     - echo "built successfully"
