@@ -6,6 +6,7 @@ cache:
   key: ${CI_PROJECT_NAME}_3
   paths:
     - src/vendor
+    - src/web/apidocs
 
 stages:
   - install
@@ -52,6 +53,7 @@ staging-build-apidoc-job:
     - develop
   script:
     - echo "Start generate Apidoc"
+    - ls -la
     - ./apidoc
 
 staging-build-job:
