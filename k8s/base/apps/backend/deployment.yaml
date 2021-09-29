@@ -22,11 +22,9 @@ spec:
           name: backend-nginx
           resources:
             requests:
-              memory: "128Mi"
-              cpu: "100m"
+              cpu: "50m"
             limits:
-              memory: "256Mi"
-              cpu: "250m"
+              cpu: "100m"
           ports:
             - containerPort: 80
           command:
@@ -56,9 +54,6 @@ spec:
         tier: backend-php
     spec:
       volumes:
-        #      - name: php-env
-        #        configMap:
-        #          name:  backend-php-env
         - name: yii-runtime
           persistentVolumeClaim:
             claimName: null
@@ -67,15 +62,10 @@ spec:
           name: backend-php
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "250m"
+              cpu: "50m"
             limits:
-              memory: "512Mi"
-              cpu: "500m"
+              cpu: "100m"
           volumeMounts:
-            #        - name: php-env
-            #          mountPath: "/var/www/html/.env"
-            #          subPath: env
             - name: yii-runtime
               mountPath: /var/www/html/runtime
           envFrom:
