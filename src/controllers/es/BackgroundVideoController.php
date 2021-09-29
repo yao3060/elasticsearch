@@ -16,7 +16,7 @@ use yii\web\Request;
 class BackgroundVideoController extends BaseController
 {
     /**
-     * @api {get} /v1/templates/recommends Get Background Video
+     * @api {get} /v1/background-videos Get Background Video
      * @apiName GetBackgroundVideo
      * @apiGroup BackgroundVideo
      *
@@ -32,7 +32,6 @@ class BackgroundVideoController extends BaseController
      * @apiSuccess (应答字段) {String} data.hit 命中数
      * @apiSuccess (应答字段) {String[]} data.ids 模板id集合
      * @apiSuccess (应答字段) {String[]} data.score 计算分数
-     * @apiSuccess (应答字段) {Number} data.total 模板数量
      */
     public function actionSearch(Request $request)
     {

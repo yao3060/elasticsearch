@@ -14,7 +14,7 @@ class DesignerTemplateController extends BaseController
 {
 
     /**
-     * @api {get} /v1/designer-templates Get DesignerTemplate
+     * @api {get} /v1/designer-templates Get Designer Template
      * @apiName GetDesignerTemplate
      * @apiGroup DesignerTemplate
      *
