@@ -4,9 +4,9 @@
 namespace app\queries\ES;
 
 use app\interfaces\ES\QueryBuilderInterface;
-use app\models\AssetUseTop;
+use app\models\Backend\AssetUseTop;
 
-class BackGroundSearchQuery implements QueryBuilderInterface
+class BackgroundSearchQuery implements QueryBuilderInterface
 {
     //搜索所需要参数
     function __construct(
@@ -46,7 +46,7 @@ class BackGroundSearchQuery implements QueryBuilderInterface
             $newQuery['bool']['must'][]['match']['kid_1'] = 2;
         }
         if ($this->useCount) {
-            $useInfo = AssetUseTop::getLastInfo(2);
+            $useInfo = AssetUseTop::getLatestBy('kid_1', 2);
             switch ($this->useCount) {
                 case 1:
                     $newQuery['bool']['filter'][]['range']['use_count']['gte'] = $useInfo['top1_count'];

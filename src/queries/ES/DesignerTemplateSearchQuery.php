@@ -2,8 +2,6 @@
 
 namespace app\queries\ES;
 
-use app\models\ES\Template;
-use phpDocumentor\Reflection\Types\Boolean;
 use Yii;
 
 class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
@@ -142,7 +140,7 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
             $this->classId
         );
 
-        $redisKey = self::REDIS_KEY.date('Y-m-d');
+        $redisKey = self::REDIS_KEY . date('Y-m-d');
 
         if ($this->isFuzzy()) {
             $redisKey .= ":fuzzy";
@@ -164,20 +162,20 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
             $this->settlementLevel
         ];
 
-        $redisKey .= ':'.implode('_', $implodeKeys);
+        $redisKey .= ':' . implode('_', $implodeKeys);
 
         //templateTypes = [1,2]
         if (!empty($this->templateTypes) && is_array($this->templateTypes)) {
-            $redisKey .= '_'.implode('|', $this->templateTypes);
+            $redisKey .= '_' . implode('|', $this->templateTypes);
         } else {
             if ($this->templateTypes > 0) {
-                $redisKey .= "_".$this->templateTypes;
+                $redisKey .= "_" . $this->templateTypes;
             }
         }
 
         if (!empty($this->color) && $this->color) {
-            $redisKey .= '_'.implode(',', array_column($this->color, 'color')).
-                '_'.implode(',', array_column($this->color, 'weight'));
+            $redisKey .= '_' . implode(',', array_column($this->color, 'color')) .
+                '_' . implode(',', array_column($this->color, 'weight'));
         }
 
         //获取页数 占用逻辑
@@ -187,7 +185,7 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
             return $page ?: 1;
         }
 
-        $redisKey .= "_".$this->page;
+        $redisKey .= "_" . $this->page;
 
         self::$esKey = $redisKey;
 

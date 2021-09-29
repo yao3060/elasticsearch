@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\components\AppLogTarget;
 use Yii;
 use app\components\IpsAuthority;
 use app\interfaces\ResponseInterface;
@@ -15,35 +14,6 @@ class BaseController extends Controller
     {
         parent::init();
         IpsAuthority::definedAuth(); // 初始化权限变量
-
-//        Yii::$app->on(yii\web\Application::EVENT_BEFORE_REQUEST, function ($event) {
-//            \Yii::info(str_repeat("=", 100));
-//        });
-//
-//        Yii::$app->on(yii\web\Application::EVENT_AFTER_REQUEST, function ($event) {
-//            \Yii::info(str_repeat("=", 100));
-//        });
-//        Yii::$app->on(
-//            yii\web\Application::EVENT_AFTER_REQUEST,
-//            function ($event) {
-//                $moduleId = Yii::$app->controller->module->id;
-//                if (in_array($moduleId, array('ips-elasticsearch'))) {
-//                    $requestParams = Yii::$app->request->getBodyParams();
-//                    $route = Yii::$app->controller->getRoute();
-//                    $requestUrl = Yii::$app->request->getHostInfo().Yii::$app->request->getUrl();
-//
-//                    $data = ob_get_contents();
-//
-//
-////                    \Yii::beginProfile(str_repeat("=", 100));
-//                    \Yii::info($requestUrl, $route);
-//                    \Yii::info('Params：'.json_encode($requestParams));
-//                    \Yii::info('Return：'.$data);
-////                    \Yii::endProfile(str_repeat("=", 100));
-//
-//                }
-//            }
-//        );
     }
 
     public function beforeAction($action)

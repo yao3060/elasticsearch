@@ -1,8 +1,9 @@
 <?php
+
 namespace app\services\designers;
 
 use app\components\Tools;
-use app\models\DesignerRecommendAssetTag;
+use app\models\Backend\DesignerRecommendAssetTag;
 
 /**
  * 设计师服务
@@ -16,28 +17,29 @@ class DesignerRecommendAssetTagService
      * @param $type
      * @return array
      */
-    public static function getRecommendAssetTags($type): array {
-        $redisKey = "designer_recommend_left_asset_tags_v1:".$type;
+    public static function getRecommendAssetTags($type): array
+    {
+        $redisKey = "designer_recommend_left_asset_tags_v1:" . $type;
 
-        $list = Tools::getRedis(9,$redisKey);
-        if(!$list) {
+        $list = Tools::getRedis(9, $redisKey);
+        if (!$list) {
             $list = DesignerRecommendAssetTag::find()
-                ->where(['deleted'=>0])
-                ->andWhere(['type'=>$type])
+                ->where(['deleted' => 0])
+                ->andWhere(['type' => $type])
                 ->orderBy('sort desc')
                 ->select(['id', 'name', 'kw'])
                 ->asArray()->all();
 
-            Tools::setRedis(9,$redisKey,$list,86400);
+            Tools::setRedis(9, $redisKey, $list, 86400);
         }
 
         return $list;
     }
 
-    public static function getRecommendAssetKws($type) {
+    public static function getRecommendAssetKws($type)
+    {
         $assetTags = self::getRecommendAssetTags($type);
 
         return array_column($assetTags, 'kw');
     }
-
 }
