@@ -1,5 +1,4 @@
-#!/usr/bin/env bash
-set -aeuo pipefail
+#!/bin/sh
 
 # first build the image after cloning this repository
 # docker build -t apidoc/apidoc ./.docker/apidoc

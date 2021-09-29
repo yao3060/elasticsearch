@@ -6,9 +6,11 @@ cache:
   key: ${CI_PROJECT_NAME}_3
   paths:
     - src/vendor
+    - src/web/apidocs
 
 stages:
   - install
+  - build-apidoc
   - build
   - deploy
 
@@ -40,6 +42,20 @@ staging-install-job:
     - composer dump-autoload -o
     - cd ../
 
+staging-build-apidoc-job:
+  stage: build-apidoc
+  environment:
+    name: staging
+  image: docker:dind
+  tags:
+    - 818ps_web_dev
+  only:
+    - develop
+  script:
+    - echo "Start generate Apidoc"
+    - ls -la
+    - ./apidoc
+
 staging-build-job:
   stage: build
   environment:
@@ -57,7 +73,6 @@ staging-build-job:
     - export COMPOSE_PROJECT_NAME="${PROJECT}_${ENVIRONMENT}"
     - export VERSION=$(cat VERSION)
     - echo $VERSION
-    - ./apidoc
     - echo "ready to build and push to Aliyun CS"
     - ./deploy/scripts/deploy-to-aliyun-cs.sh nginx php
     - echo "built successfully"
