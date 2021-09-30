@@ -70,7 +70,7 @@ class SeoSearchWordAsset extends BaseModel
             foreach ($info['hits'] as $v) {
                 $data[] = [
                     'id' => $v['_source']['id'] ?? 0,
-                    'keyword' => $v['_source']['keyword'] ?? '',
+                    'keyword' => $v['_source']['_keyword'] ?? '',
                     'pinyin' => $v['_source']['pinyin'] ?? '',
                     'weight' => $v['_source']['weight'] ?? 0
                 ];
