@@ -3,8 +3,6 @@
 
 namespace app\queries\ES;
 
-use app\interfaces\ES\QueryBuilderInterface;
-
 class SeoSearchWordAssetQuery extends BaseTemplateSearchQuery
 {
     function __construct(
