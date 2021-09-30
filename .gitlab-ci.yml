@@ -11,9 +11,9 @@ cache:
 include:
   - template: Code-Quality.gitlab-ci.yml
 
-# runner is outdated, please upgrade your runner
+
 stages:
-  # - test
+  # - test # runner is outdated, please upgrade your runner
   - install
   - build-apidoc
   - build
@@ -30,12 +30,12 @@ after_script:
 
 ###########################################################################
 
-code_quality:
-  stage: test
-  artifacts:
-    paths: [gl-code-quality-report.json]
-  script:
-    - echo "do code_quality test"
+# code_quality:
+#   stage: test
+#   artifacts:
+#     paths: [gl-code-quality-report.json]
+#   script:
+#     - echo "do code_quality test"
 
 staging-install-job:
   stage: install
