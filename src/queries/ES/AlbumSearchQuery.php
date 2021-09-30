@@ -55,7 +55,7 @@ class AlbumSearchQuery implements QueryBuilderInterface
     {
         $classId = $this->classId ? $this->classId : '0_0_0';
         $redisKey = sprintf(
-            'ES_album03-20:%s_%s_%s_%s_%d_%d_%d',
+            'ES_album03-20:%s:%s_%s_%s_%d_%d_%d',
             date('Y-m-d'),
             $this->keyword,
             $this->sortType,

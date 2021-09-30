@@ -29,6 +29,9 @@ class Album extends BaseModel
             Yii::info('bypass by redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
+        $info['hit'] = 0;
+        $info['ids'] = [];
+        $info['score'] = [];
         try {
             $info = self::find()
                 ->source(['id'])
@@ -39,11 +42,9 @@ class Album extends BaseModel
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
         } catch (Exception $e) {
-            $info['hit'] = 0;
-            $info['ids'] = [];
-            $info['score'] = [];
+            throw new Exception($e->getMessage());
         }
-        $return['total'] = $info['total'];
+        $return['total'] = $info['total'] ?? 0;
         $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
         foreach ($info['hits'] as $value) {
             $return['ids'][] = $value['_id'];
