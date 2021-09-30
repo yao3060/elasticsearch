@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -aeuo pipefail
+
+# Doc: https://hub.docker.com/r/codeclimate/codeclimate
+
+docker run -ti --rm \
+  --env CODECLIMATE_CODE="$PWD" \
+  --volume "$PWD/src":/code \
+  --volume /var/run/docker.sock:/var/run/docker.sock \
+  --volume /tmp/cc:/tmp/cc \
+  codeclimate/codeclimate $@

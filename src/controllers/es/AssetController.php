@@ -71,7 +71,7 @@ class AssetController extends BaseController
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $data = (new Asset())
-                    ->recommendSearch(new AssetSearchQuery($data['keyword'], $data['page'], $data['page_size']));
+                    ->search(new AssetSearchQuery($data['keyword'], $data['page'], $data['page_size']));
                 $response = new Response('get_asset_recommend_list', 'GetRecommendList', $data);
             }
         } catch (UnknownPropertyException $e) {

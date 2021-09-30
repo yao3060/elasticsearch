@@ -38,6 +38,7 @@ class Background extends BaseModel
         $return['hit'] = 0;
         $return['ids'] = [];
         $return['score'] = [];
+        // FIXME: @yangshangpu  原来程序里并没有下面的两个参数
         $return['total'] = 0;
         $return['hits'] = 0;
         try {

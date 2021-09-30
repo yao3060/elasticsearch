@@ -11,11 +11,11 @@ return [
 
         //Y
         'GET  v1/albums' => 'es/album/search', // 关键词专题搜索
-        'GET  v1/seo/keywords' => 'es/seo-search-word/search', //seo词库中相关搜索词
+        'GET  v1/seo/keywords' => 'es/seo-search-word/search', // 是否是SEO关键词 ·is_seo_search_keyword·
         'GET  v1/seo/recommends' => 'es/seo-search-word/seo-search', // SEO推荐关键词
         'GET  v1/seo/keyword-assets' => 'es/seo-search-word-asset/search', //seo词库相关推荐
         'GET  v1/seo/title-keywords' => 'es/seo-detail-keyword-for-title/search', //SEO标题中的关键词
-        'GET  v1/seo/link-word' => 'es/seo-link-word/search', //seo词库中 相关搜索词
+        // 'GET  v1/seo/link-word' => 'es/seo-link-word/search', //seo词库中 相关搜索词
         'GET  v1/seo/link-word-seo' => 'es/seo-link-word/seo-search', //seo词库中 相关搜索词
 
         'GET  v1/keywords' => 'es/search-word/search', //关键词搜索

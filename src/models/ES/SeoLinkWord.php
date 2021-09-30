@@ -74,7 +74,12 @@ class SeoLinkWord extends BaseModel
         return $return;
     }
 
-    //Seo搜索
+    /**
+     * Seo搜索
+     *
+     * @param \app\queries\ES\SeoLinkWordSearchQuery $query
+     * @return array
+     */
     public function seoSearch(QueryBuilderInterface $query): array
     {
         $return = Tools::getRedis(self::REDIS_DB, $query->getSeoRedisKey());
@@ -83,6 +88,8 @@ class SeoLinkWord extends BaseModel
         if ($return && isset($return['hit']) && $return['hit']) {
             return $return;
         }
+
+        // FIXME: @yangshangpu 这儿代码有问题
         $return['hit'] = 0;
         $return['ids'] = [];
         $return['score'] = [];
@@ -110,6 +117,4 @@ class SeoLinkWord extends BaseModel
         Tools::setRedis(self::REDIS_DB, $query->getSeoRedisKey(), $return, 86400 * 30);
         return $return;
     }
-
-
 }

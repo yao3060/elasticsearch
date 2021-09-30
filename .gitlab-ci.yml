@@ -11,8 +11,9 @@ cache:
 include:
   - template: Code-Quality.gitlab-ci.yml
 
+# runner is outdated, please upgrade your runner
 stages:
-  - test
+  # - test
   - install
   - build-apidoc
   - build
