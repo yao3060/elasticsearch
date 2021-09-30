@@ -6,7 +6,6 @@ use yii\helpers\Json;
 use codemix\streamlog\Target as Streamlog;
 use yii\log\Logger;
 use Yii;
-use yii\web\Request;
 
 /**
  * A log target for streams in URL format.
@@ -28,11 +27,10 @@ class JsonStreamTarget extends Streamlog
         // Begin assembling the data that we will JSON-encode for the log.
         $logData['timestamp'] = $this->getTime($timestamp);
 
-        $logData['user_id'] =  Yii::$app->user->id ? Yii::$app->user->id : '-';
-        $logData['username'] =  Yii::$app->user->identity ? Yii::$app->user->identity->username : '-';
+        $logData['user_id'] =  Yii::$app->user?->id ?? '-';
+        $logData['username'] =  Yii::$app->user?->identity?->username ?? '-';
 
-        $request = Yii::$app->getRequest();
-        $logData['ip'] = $request instanceof Request ? $request->getUserIP() : '-';
+        $logData['ip'] = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? Yii::$app->getRequest()?->getUserIP();
 
         $logData['level'] = Logger::getLevelName($level);
         $logData['category'] = $category;

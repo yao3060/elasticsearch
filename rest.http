@@ -5,6 +5,11 @@
 GET {{BASE_URL}}/v1/logs?name=hanmaker&email=email@email.com&age=11 HTTP/1.1
 content-type: application/json
 Accept: application/json
+X-UserId: 1111
+X-Username: yyyy
+X-UserType: 1
+X-Roles: user
+X-Forwarded-For: 135.124.123.123
 
 ### get Assets
 GET {{BASE_URL}}/v1/assets?keyword=你好&page=3&pageSize=30&sceneId=0&isZb=1
@@ -46,6 +51,11 @@ Accept: application/json
 GET {{BASE_URL}}/v1/designer-templates?keyword=0
 Content-Type: application/json
 Accept: application/json
+X-UserId: 1111
+X-Username: yyyy
+X-UserType: 1
+X-Roles: user
+x_forward_for: 123.123.123.13
 
 ### Git 搜索
 GET {{BASE_URL}}/v1/gif-assets?keyword=你好

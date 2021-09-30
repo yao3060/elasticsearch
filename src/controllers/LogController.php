@@ -14,10 +14,8 @@ class LogController extends BaseController
     public function actionIndex(Request $request)
     {
         try {
-            $model = DynamicModel::validateData($request->getBodyParams(), [
+            $model = DynamicModel::validateData($request->get(), [
                 ['name', 'string'],
-                ['email', 'email'],
-                ['age', 'integer', 'min' => 10, 'max' => 20],
             ]);
             if ($model->hasErrors()) {
                 return  $this->response(new Response(
