@@ -8,8 +8,8 @@ cache:
     - src/vendor
     - src/web/apidocs
 
-include:
-  - template: Code-Quality.gitlab-ci.yml
+# include:
+#   - template: Code-Quality.gitlab-ci.yml
 
 
 stages:
