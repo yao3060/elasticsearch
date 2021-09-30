@@ -47,6 +47,7 @@ class SeoDetailKeywordForTitle extends BaseModel
             Yii::info('bypass by redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
+        $repsonseData = [];
         try {
             $info = self::find()
                 ->source(['id', '_keyword'])
@@ -55,18 +56,21 @@ class SeoDetailKeywordForTitle extends BaseModel
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
         } catch (Exception $e) {
-            $info['total'] = 0;
+
             \Yii::error($e->getMessage(), __METHOD__);
             throw new Exception($e->getMessage());
         }
-        if ($info['total'] > 0) {
-            foreach ($info['hits'] as $k => $v) {
-                $return[$k]['id'] = $v['_id'];
-                $return[$k]['keyword'] = $v['_source']['_keyword'];
+        $total = $info['total'] ?? 0;
+        if ($total > 0 && isset($info['hits']) && $info['hits']) {
+            foreach ($info['hits'] as $v) {
+                $repsonseData[] = [
+                    'id' => $v['_id'] ?? 0,
+                    'keyword'=> $v['_source']['_keyword'] ?? ''
+                ];
             }
         }
-        Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 86400 * 30);
-        return $return;
+        Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $repsonseData, 86400 * 30);
+        return $repsonseData;
     }
 
 }
