@@ -1,5 +1,15 @@
 @BASE_URL = http://localhost:8081
 
+### Test
+GET {{BASE_URL}}/?test=1 HTTP/1.1
+content-type: application/json
+Accept: application/json
+X-UserId: 1111
+X-Username: yyyy
+X-UserType: 1
+X-Roles: user
+X-FORWARDED-FOR: 1.1.1.1
+X-ORIGINAL-FORWARDED-FOR: 2.2.2.2
 
 ### Get Logs
 GET {{BASE_URL}}/v1/logs?name=hanmaker&email=email@email.com&age=11 HTTP/1.1
@@ -9,7 +19,8 @@ X-UserId: 1111
 X-Username: yyyy
 X-UserType: 1
 X-Roles: user
-X-Forwarded-For: 135.124.123.123
+X-FORWARDED-FOR: 1.1.1.1
+# X-ORIGINAL-FORWARDED-FOR: 1.1.1.1
 
 ### get Assets
 GET {{BASE_URL}}/v1/assets?keyword=你好&page=3&pageSize=30&sceneId=0&isZb=1
