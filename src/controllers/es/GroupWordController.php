@@ -69,6 +69,8 @@ class GroupWordController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
+                // TODO: @yangshangpu `pageSize` 改成 `page_size`
+                // FIXME: @yangshangpu `GroupWord::recommendSearch` 被注释掉了，不能调用
                 $data = (new GroupWord())
                     ->recommendSearch(new GroupWordSearchQuery($data['keyword'], $data['page'], $data['pageSize']));
                 $response = new Response('get_Group_Recommend_list', 'Group_Recommend_List', $data);

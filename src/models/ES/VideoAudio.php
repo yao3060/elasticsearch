@@ -6,6 +6,7 @@ use app\components\Tools;
 use yii\base\Exception;
 use app\interfaces\ES\QueryBuilderInterface;
 use Yii;
+
 /**
  * @package app\models\ES
  * author  ysp
@@ -34,8 +35,8 @@ class VideoAudio extends BaseModel
     public function search(QueryBuilderInterface $query): array
     {
         $return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
-        $log = 'VideoAudio:redisKey:'.$query->getRedisKey();
-        yii::info($log,__METHOD__);
+        $log = 'VideoAudio:redisKey:' . $query->getRedisKey();
+        yii::info($log, __METHOD__);
         if ($return) {
             Yii::info('bypass by redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
@@ -50,6 +51,7 @@ class VideoAudio extends BaseModel
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
         } catch (Exception $e) {
+            // TODO: @yangshangpu Add exception to error log
             $info['hit'] = 0;
             $info['ids'] = [];
             $info['score'] = [];

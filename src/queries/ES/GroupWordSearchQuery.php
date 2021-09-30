@@ -14,8 +14,7 @@ class GroupWordSearchQuery implements QueryBuilderInterface
         public  $pageSize = 40,
         public  $search = '0',
         public  $searchAll = '0',
-    )
-    {
+    ) {
     }
 
     public function query(): array
@@ -42,6 +41,7 @@ class GroupWordSearchQuery implements QueryBuilderInterface
                 "operator" => 'and'
             ];
         }
+        // FIXME: @yangshangpu 这儿会出现错误 ·Undefined variable $newQuery·, 例如： /v1/groups?keyword=
         return $newQuery;
     }
     public function queryKeyword($keyword, $is_or = false)
@@ -69,7 +69,8 @@ class GroupWordSearchQuery implements QueryBuilderInterface
         }
         return $redisKey;
     }
-    public function pageSizeSet(){
+    public function pageSizeSet()
+    {
         $pageSize = $this->pageSize;
         if ($this->page * $this->pageSize > 10000) {
             $pageSize = $this->page * $pageSize - 10000;

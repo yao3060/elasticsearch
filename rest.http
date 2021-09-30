@@ -186,3 +186,28 @@ GET {{BASE_URL}}/v1/pictures?keyword=你好&page=1&page_size=10
 Content-Type: application/json
 Accept: application/json
 
+### 'GET  v1/groups/recommends' => 'es/group-word/recommend-search',
+GET {{BASE_URL}}/v1/groups/recommends?keyword=你好&page=1&pageSize=10
+Content-Type: application/json
+Accept: application/json
+
+### 'GET  v1/groups' => 'es/group-word/search', //组合字搜索
+GET {{BASE_URL}}/v1/groups?keyword=
+Content-Type: application/json
+Accept: application/json
+
+###  'GET  v1/audiovisuals' => 'es/video-audio/search', //试听素材搜索
+GET {{BASE_URL}}/v1/audiovisuals?keyword=
+Content-Type: application/json
+Accept: application/json
+
+###  'GET  v1/video-elements' => 'es/video-element/search', //视频元素搜索
+GET {{BASE_URL}}/v1/video-elements?keyword=可爱&page_size=40&&class_id=188&scope_type=lottie
+Content-Type: application/json
+Accept: application/json
+
+###   'GET  v1/containers' => 'es/container/search', //裁剪搜索
+GET {{BASE_URL}}/v1/containers?keyword=
+Content-Type: application/json
+Accept: application/json
+

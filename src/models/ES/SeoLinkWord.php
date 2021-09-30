@@ -89,7 +89,7 @@ class SeoLinkWord extends BaseModel
             return $return;
         }
 
-        // FIXME: @yangshangpu 这儿代码有问题
+        // FIXME: @yangshangpu 这儿代码有问题, 下面3行貌似是多余的
         $return['hit'] = 0;
         $return['ids'] = [];
         $return['score'] = [];
