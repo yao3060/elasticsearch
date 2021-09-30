@@ -47,9 +47,7 @@ class SeoSearchWordAsset extends BaseModel
             Yii::info('bypass by redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
-        $return['hit'] = 0;
-        $return['ids'] = [];
-        $return['score'] = [];
+
         try {
             $info = self::find()
                 ->source(['id', '_keyword', 'pinyin', 'weight'])
@@ -61,22 +59,32 @@ class SeoSearchWordAsset extends BaseModel
             \Yii::error($e->getMessage(), __METHOD__);
             throw new Exception($e->getMessage());
         }
-        if ($info['total'] > 0) {
-            foreach ($info['hits'] as $k => $v) {
-                $return[$k]['id'] = $v['_source']['id'];
-                $return[$k]['keyword'] = $v['_source']['_keyword'];
-                $return[$k]['pinyin'] = $v['_source']['pinyin'];
-                if (isset($v['_source']['weight'])){
-                    $return[$k]['weight'] = $v['_source']['weight'];
-                }else{
-                    $return[$k]['weight'] = 0;
-                }
 
+        $total = $info['total'] ?? 0;
+
+        $data = [];
+
+        if ($total > 0 && isset($info['hits']) && $info['hits']) {
+
+
+            foreach ($info['hits'] as $v) {
+                $data[] = [
+                    'id' => $v['_source']['id'] ?? 0,
+                    'keyword' => $v['_source']['keyword'] ?? '',
+                    'pinyin' => $v['_source']['pinyin'] ?? '',
+                    'weight' => $v['_source']['weight'] ?? 0
+                ];
             }
-
         }
-        Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 86400 * 30);
-        return $return;
+
+        $response = [
+            'list' => $data,
+            'total' => $total
+        ];
+
+        Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $response, 86400 * 30);
+
+        return $response;
     }
 
 }
