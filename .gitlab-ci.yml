@@ -8,7 +8,11 @@ cache:
     - src/vendor
     - src/web/apidocs
 
+include:
+  - template: Code-Quality.gitlab-ci.yml
+
 stages:
+  - test
   - install
   - build-apidoc
   - build
@@ -24,6 +28,13 @@ after_script:
   - ./deploy/scripts/clean-docker-network.sh  "${PROJECT}_${ENVIRONMENT}_default"
 
 ###########################################################################
+
+code_quality:
+  stage: test
+  artifacts:
+    paths: [gl-code-quality-report.json]
+  script:
+    - echo "do code_quality test"
 
 staging-install-job:
   stage: install
