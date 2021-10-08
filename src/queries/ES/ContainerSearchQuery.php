@@ -7,6 +7,7 @@ use app\interfaces\ES\QueryBuilderInterface;
 
 class ContainerSearchQuery implements QueryBuilderInterface
 {
+    private $query = [];
     function __construct(
         public $keyword = 0,
         public $page = 1,
@@ -17,28 +18,24 @@ class ContainerSearchQuery implements QueryBuilderInterface
 
     public function query(): array
     {
-        if ($this->keyword) {
-            $newQuery = $this->queryKeyword($this->keyword);
-        }
+        $this->queryKeyword();
         if ($this->kid) {
-            $newQuery['bool']['must'][]['terms']['kid_2'] = $this->kid;
+            $this->query['bool']['must'][]['terms']['kid_2'] = $this->kid;
         }
-        if (isset($newQuery) && $newQuery) {
-            return $newQuery;
-        } else {
-            return array();
-        }
+        return $this->query;
     }
-    public function queryKeyword($keyword, $is_or = false)
+    public function queryKeyword($is_or = false)
     {
-        $operator = $is_or ? 'or' : 'and';
-        $query['bool']['must'][]['multi_match'] = [
-            'query' => $keyword,
-            'fields' => ["title^5", "description^1"],
-            'type' => 'most_fields',
-            "operator" => $operator
-        ];
-        return $query;
+        if ($this->keyword){
+            $operator = $is_or ? 'or' : 'and';
+            $this->query['bool']['must']['terms']['multi_match'] = [
+                'query' => $this->keyword,
+                'fields' => ["title^5", "description^1"],
+                'type' => 'most_fields',
+                "operator" => $operator
+            ];
+        }
+        return $this;
     }
     public function sortBy()
     {

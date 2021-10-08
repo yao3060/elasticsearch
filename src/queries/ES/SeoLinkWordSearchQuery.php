@@ -8,6 +8,7 @@ use app\services\designers\DesignerRecommendAssetTagService;
 
 class SeoLinkWordSearchQuery implements QueryBuilderInterface
 {
+    private $query = [];
     function __construct(
         public $keyword = 0,
         public $page = 1,
@@ -19,24 +20,22 @@ class SeoLinkWordSearchQuery implements QueryBuilderInterface
     public function query(): array
     {
         if ($this->keyword) {
-            $newQuery['bool']['must'][]['match']['keyword'] = $this->keyword;
-        }else{
-            $newQuery = '';
+            $this->query['bool']['must'][]['match']['keyword'] = $this->keyword;
         }
-        return $newQuery;
+        return $this->query;
     }
-    public function similarQueryKeyword($keyword) {
-        $query['bool']['must'][]['multi_match'] = [
-            'query' => $keyword,
+    public function similarQueryKeyword() {
+        $this->query['bool']['must'][]['multi_match'] = [
+            'query' => $this->keyword,
             'fields' => ["_keyword^1","keyword^1"],
             'type' => 'most_fields',
             "operator" => "or"
         ];
-        return $query;
+        return $this;
     }
     public function seoQuery(){
-        $newQuery = $this->similarQueryKeyword($this->keyword);
-        return $newQuery;
+        $this->similarQueryKeyword();
+        return $this->query;
     }
 
     public function getRedisKey()

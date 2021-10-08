@@ -8,6 +8,8 @@ use app\services\designers\DesignerRecommendAssetTagService;
 
 class GroupWordSearchQuery implements QueryBuilderInterface
 {
+    private $query = [];
+
     function __construct(
         public  $keyword = 0,
         public  $page = 1,
@@ -19,7 +21,6 @@ class GroupWordSearchQuery implements QueryBuilderInterface
 
     public function query(): array
     {
-        $newQuery = [];
         if ($this->searchAll) {
             $keyword = DesignerRecommendAssetTagService::getRecommendAssetKws(5);
             $shouldMatch = [];
@@ -30,30 +31,30 @@ class GroupWordSearchQuery implements QueryBuilderInterface
                     ]
                 ];
             }
-            $newQuery['bool']['should'][] = $shouldMatch;
+            $this->query['bool']['should'][] = $shouldMatch;
         } elseif ($this->keyword) {
-            $newQuery = $this->queryKeyword($this->keyword, false, true);
+            $this->query = $this->queryKeyword($this->keyword, false, true);
         }
         if (!empty($this->search)) {
-            $newQuery['bool']['must'][]['multi_match'] = [
+            $this->query['bool']['must'][]['multi_match'] = [
                 'query' => $this->search,
                 'fields' => ["keyword^1"],
                 'type' => 'most_fields',
                 "operator" => 'and'
             ];
         }
-        return $newQuery;
+        return $this->query;
     }
     public function queryKeyword($keyword, $is_or = false)
     {
         $operator = $is_or ? 'or' : 'and';
-        $query['bool']['must'][]['multi_match'] = [
+        $this->query['bool']['must'][]['multi_match'] = [
             'query' => $keyword,
             'fields' => ["title^5", "description^1"],
             'type' => 'most_fields',
             "operator" => $operator
         ];
-        return $query;
+        return $this;
     }
 
     public function getRedisKey()

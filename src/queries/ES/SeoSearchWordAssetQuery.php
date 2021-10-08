@@ -16,7 +16,6 @@ class SeoSearchWordAssetQuery extends BaseTemplateSearchQuery
     public function query(): array
     {
         $this->similarQueryKeyword();
-
         return $this->query;
     }
 

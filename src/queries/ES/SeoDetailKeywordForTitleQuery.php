@@ -7,36 +7,35 @@ use app\interfaces\ES\QueryBuilderInterface;
 
 class SeoDetailKeywordForTitleQuery implements QueryBuilderInterface
 {
+    private $query = [];
     /**
      * @var string|int|mixed 关键字
      */
-    public string $keyword;
-
     function __construct(
-        $keyword = 0,
+        public $keyword = 0,
     )
     {
-        $this->keyword = $keyword;
     }
 
     public function query(): array
     {
-        if ($this->keyword) {
-            $newQuery = $this->similarQueryKeyword($this->keyword);
-        }
-        $newQuery['bool']['filter'][]['range']['use']['lt'] = 5;
-        return $newQuery;
+        $this->similarQueryKeyword();
+        $this->query['bool']['filter'][]['range']['use']['lt'] = 5;
+        return $this->query;
     }
 
-    public function similarQueryKeyword($keyword, $type = 1)
+    public function similarQueryKeyword()
     {
-        $query['bool']['must'][]['multi_match'] = [
-            'query' => $keyword,
-            'fields' => ["_keyword^1", "keyword^1"],
-            'type' => 'most_fields',
-            "operator" => "or"
-        ];
-        return $query;
+        if ($this->keyword) {
+            $this->query['bool']['must'][]['multi_match'] = [
+                'query' => $this->keyword,
+                'fields' => ["_keyword^1", "keyword^1"],
+                'type' => 'most_fields',
+                "operator" => "or"
+            ];
+        }
+
+        return $this;
     }
 
     public function getRedisKey()

@@ -7,6 +7,7 @@ use app\interfaces\ES\QueryBuilderInterface;
 
 class AlbumSearchQuery implements QueryBuilderInterface
 {
+    private $query = [];
     //搜索所需要参数
     function __construct(
         public $keyword = 0,
@@ -23,32 +24,31 @@ class AlbumSearchQuery implements QueryBuilderInterface
 
     public function query(): array
     {
-        if ($this->keyword) {
-            $newQuery = $this->queryKeyword($this->keyword, $this->fuzzy);
-        }
+        $this->queryKeyword();
         if ($this->type) {
-            $newQuery['bool']['must'][]['terms']['type'] = $this->type;
-            //$newQuery['bool']['must'][]['match']['type'] = $this->type;
+            $this->query['bool']['must'][]['terms']['type'] = $this->type;
         }
         if ($this->classId) {
             $class_id = explode('_', $this->classId);
             foreach ($class_id as $key) {
                 if ($key > 0) {
-                    $newQuery['bool']['must'][]['terms']['class_id'] = [$key];
+                    $this->query['bool']['must'][]['terms']['class_id'] = [$key];
                 }
             }
         }
-        return $newQuery;
+        return $this->query;
     }
-    public function queryKeyword($keyword, $fuzzy = 0) {
-        $operator = $fuzzy ? 'or' : 'and';
-        $query['bool']['must'][]['multi_match'] = [
-            'query' => $keyword,
-            'fields' => ["title^1", "subtitle^1", "keyword^1"],
-            'type' => 'most_fields',
-            "operator" => $operator
-        ];
-        return $query;
+    public function queryKeyword() {
+        if($this->keyword) {
+            $operator = $this->fuzzy ? 'or' : 'and';
+            $this->query['bool']['must'][]['multi_match'] = [
+                'query' => $this->keyword,
+                'fields' => ["title^1", "subtitle^1", "keyword^1"],
+                'type' => 'most_fields',
+                "operator" => $operator
+            ];
+        }
+        return $this;
     }
 
     public function getRedisKey()

@@ -7,6 +7,7 @@ use app\interfaces\ES\QueryBuilderInterface;
 
 class SeoSearchWordQuery implements QueryBuilderInterface
 {
+    private $query = [];
     //搜索所需要参数
     function __construct(
         public $keyword = 0,
@@ -17,27 +18,27 @@ class SeoSearchWordQuery implements QueryBuilderInterface
 
     public function seoQuery(): array
     {
-        $newQuery = $this->similarQueryKeyword($this->keyword);
-        $newQuery['bool']['filter'][]['range']['count']['gte'] = '3';
-        return $newQuery;
+        $this->similarQueryKeyword();
+        $this->query['bool']['filter'][]['range']['count']['gte'] = '3';
+        return $this->query;
     }
     public function query(): array
     {
         if ($this->keyword) {
-            $newQuery['bool']['must'][]['match']['keyword'] = $this->keyword;
+            $this->query['bool']['must'][]['match']['keyword'] = $this->keyword;
         }
-        $newQuery['bool']['filter'][]['range']['count']['gte'] = '3';
-        return $newQuery;
+        $this->query['bool']['filter'][]['range']['count']['gte'] = '3';
+        return $this->query;
     }
-    public function similarQueryKeyword($keyword)
+    public function similarQueryKeyword()
     {
-        $query['bool']['must'][]['multi_match'] = [
-            'query' => $keyword,
+        $this->query['bool']['must'][]['multi_match'] = [
+            'query' => $this->keyword,
             'fields' => ["_keyword^1", "keyword^1"],
             'type' => 'most_fields',
             "operator" => "or"
         ];
-        return $query;
+        return $this;
     }
     public function getRedisKey()
     {

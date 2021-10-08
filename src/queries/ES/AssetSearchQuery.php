@@ -8,6 +8,7 @@ use \app\models\Backend\AssetUseTop;
 
 class AssetSearchQuery implements QueryBuilderInterface
 {
+    private $query = [];
     //搜索所需 要参数
     function __construct(
         public $keyword = 0,
@@ -22,27 +23,23 @@ class AssetSearchQuery implements QueryBuilderInterface
 
     public function query(): array
     {
-        if ($this->keyword) {
-            $newQuery = $this->queryKeyword($this->keyword);
-        }
+        $this->queryKeyword();
         if ($this->sceneId) {
-            $newQuery['bool']['must'][]['terms']['scene_id'] = $this->sceneId;
+            $this->query['bool']['must'][]['terms']['scene_id'] = $this->sceneId;
         }
-        $newQuery['bool']['filter'][]['term']['kid_1'] = 1;
+        $this->query['bool']['filter'][]['term']['kid_1'] = 1;
         if ($this->useCount) {
             $useInfo = AssetUseTop::getLatestBy('kid_1', 1);
             switch ($this->useCount) {
                 case 1:
-                    $newQuery['bool']['filter'][]['range']['use_count']['gte'] = $useInfo['top1_count'];
+                    $this->query['bool']['filter'][]['range']['use_count']['gte'] = $useInfo['top1_count'];
                     break;
                 case 2:
-                    $newQuery['bool']['filter'][]['range']['use_count']['lt'] = $useInfo['top1_count'];
+                    $this->query['bool']['filter'][]['range']['use_count']['lt'] = $useInfo['top1_count'];
                     break;
             }
-        } else {
-            $useInfo = '';
         }
-        return  $newQuery;
+        return  $this->query;
     }
     public function pageSizeSet()
     {
@@ -91,16 +88,19 @@ class AssetSearchQuery implements QueryBuilderInterface
         ];
         return $sort;
     }
-    public function queryKeyword($keyword, $is_or = false)
+    public function queryKeyword($is_or = false)
     {
-        $operator = $is_or ? 'or' : 'and';
-        $query['bool']['must'][]['multi_match'] = [
-            'query' => $keyword,
-            'fields' => ["title^5", "description^1"],
-            'type' => 'most_fields',
-            "operator" => $operator
-        ];
-        return $query;
+
+        if ($this->keyword){
+            $operator = $is_or ? 'or' : 'and';
+            $this->query['bool']['must'][]['multi_match'] = [
+                'query' => $this->keyword,
+                'fields' => ["title^5", "description^1"],
+                'type' => 'most_fields',
+                "operator" => $operator
+            ];
+        }
+        return $this;
     }
 
     public function getRedisKey()

@@ -7,6 +7,8 @@ use app\interfaces\ES\QueryBuilderInterface;
 
 class H5SensitiveWordSearchQuery implements QueryBuilderInterface
 {
+    private $query = [];
+
     function __construct(
         public $word = 0,
     )
@@ -14,16 +16,16 @@ class H5SensitiveWordSearchQuery implements QueryBuilderInterface
     }
     public function query(): array
     {
-        $newQuery = $this->queryWord($this->word);
-        return $newQuery;
+        $this->queryWord();
+        return $this->query;
     }
-    public function queryWord($word)
+    public function queryWord()
     {
-        $query['bool']['must'][]['match']['word'] = [
-            'query' => $word,
+        $this->query['bool']['must'][]['match']['word'] = [
+            'query' => $this->word,
             "operator" => "or",
         ];
-        return $query;
+        return $this;
     }
 
     public function getRedisKey()

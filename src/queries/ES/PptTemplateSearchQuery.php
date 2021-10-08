@@ -8,6 +8,7 @@ use app\services\designers\DesignerRecommendAssetTagService;
 
 class PptTemplateSearchQuery implements QueryBuilderInterface
 {
+    private $query = [];
     function __construct(
         public  $c1 = 0,
         public  $page = 1,
@@ -22,23 +23,22 @@ class PptTemplateSearchQuery implements QueryBuilderInterface
     {
         ksort($this->c2);
         ksort($this->c3);
-        $newQuery = [];
-        $newQuery['bool']['must'][]['terms']['c_id'] = [$this->c1];
+        $this->query['bool']['must'][]['terms']['c_id'] = [$this->c1];
         if ($this->c2) {
             foreach ($this->c2 as $class_id) {
                 if (intval($class_id) > 0) {
-                    $query['bool']['must'][]['terms']['c_id'] = [$class_id];
+                    $this->query['bool']['must'][]['terms']['c_id'] = [$class_id];
                 }
             }
         }
         if ($this->c3) {
             foreach ($this->c3 as $class_id) {
                 if (intval($class_id) > 0) {
-                    $query['bool']['must'][]['terms']['c_id'] = [$class_id];
+                    $this->query['bool']['must'][]['terms']['c_id'] = [$class_id];
                 }
             }
         }
-        return $newQuery;
+        return $this->query;
     }
     public function getRedisKey()
     {

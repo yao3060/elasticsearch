@@ -7,6 +7,7 @@ use app\interfaces\ES\QueryBuilderInterface;
 
 class VideoAudioSearchQuery implements QueryBuilderInterface
 {
+    private $query = [];
     function __construct(
         public $keyword = 0,
         public $page = 1,
@@ -22,10 +23,7 @@ class VideoAudioSearchQuery implements QueryBuilderInterface
 
     public function query(): array
     {
-        $newQuery = [];
-        if ($this->keyword) {
-            $newQuery = $this->queryKeyword($this->keyword);
-        }
+        $this->queryKeyword();
         $class_id = $this->classId ? $this->classId : [];
         if (!is_array($class_id)) {
             $class_id = [$class_id];
@@ -33,30 +31,33 @@ class VideoAudioSearchQuery implements QueryBuilderInterface
         if ($class_id) {
             foreach ($class_id as $key) {
                 if ($key > 0) {
-                    $newQuery['bool']['must'][]['terms']['class_id'] = [$key];
+                    $this->query['bool']['must'][]['terms']['class_id'] = [$key];
                 }
             }
         }
-        $newQuery['bool']['must'][]['match']['parents_id'] = $this->parentsId;
+        $this->query['bool']['must'][]['match']['parents_id'] = $this->parentsId;
         if ($this->isDesigner == 1) {
-            $newQuery['bool']['must'][]['term']['is_vip'] = 0;
+            $this->query['bool']['must'][]['term']['is_vip'] = 0;
         }
         if ($this->isVip == 1) {
-            $newQuery['bool']['must'][]['term']['is_vip'] = 1;
+            $this->query['bool']['must'][]['term']['is_vip'] = 1;
         }
-        return $newQuery;
+        return $this->query;
     }
 
-    public function queryKeyword($keyword, $is_or = false)
+    public function queryKeyword($is_or = false)
     {
-        $operator = $is_or ? 'or' : 'and';
-        $query['bool']['must'][]['multi_match'] = [
-            'query' => $keyword,
-            'fields' => ["title^1"],
-            'type' => 'most_fields',
-            "operator" => $operator
-        ];
-        return $query;
+        if ($this->keyword) {
+            $operator = $is_or ? 'or' : 'and';
+            $this->query['bool']['must'][]['multi_match'] = [
+                'query' => $this->keyword,
+                'fields' => ["title^1"],
+                'type' => 'most_fields',
+                "operator" => $operator
+            ];
+        }
+
+        return $this;
     }
 
     public function getRedisKey()
