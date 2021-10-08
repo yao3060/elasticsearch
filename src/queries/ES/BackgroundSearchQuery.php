@@ -8,6 +8,7 @@ use app\models\Backend\AssetUseTop;
 
 class BackgroundSearchQuery implements QueryBuilderInterface
 {
+    private $query = [];
     //搜索所需要参数
     function __construct(
         public $keyword = 0,
@@ -26,37 +27,35 @@ class BackgroundSearchQuery implements QueryBuilderInterface
 
     public function query(): array
     {
-        if ($this->keyword) {
-            $newQuery = $this->queryKeyword($this->keyword);
-        }
+        $this->queryKeyword();
         if ($this->ratioId > -1) {
-            $newQuery['bool']['must'][]['match']['ratio'] = $this->ratioId;
+            $this->query['bool']['must'][]['match']['ratio'] = $this->ratioId;
         }
         if ($this->kid) {
-            $newQuery['bool']['must'][]['terms']['kid_2'] = $this->kid;
+            $this->query['bool']['must'][]['terms']['kid_2'] = $this->kid;
         }
         if ($this->sceneId) {
-            $newQuery['bool']['must'][]['terms']['scene_id'] = $this->sceneId;
+            $this->query['bool']['must'][]['terms']['scene_id'] = $this->sceneId;
         }
         if ($this->class) {
-            $newQuery['bool']['must'][]['match']['class_id'] = $this->class;
+            $this->query['bool']['must'][]['match']['class_id'] = $this->class;
         }
 
         if ($this->isBg) {
-            $newQuery['bool']['must'][]['match']['kid_1'] = 2;
+            $this->query['bool']['must'][]['match']['kid_1'] = 2;
         }
         if ($this->useCount) {
             $useInfo = AssetUseTop::getLatestBy('kid_1', 2);
             switch ($this->useCount) {
                 case 1:
-                    $newQuery['bool']['filter'][]['range']['use_count']['gte'] = $useInfo['top1_count'];
+                    $this->query['bool']['filter'][]['range']['use_count']['gte'] = $useInfo['top1_count'];
                     break;
                 case 2:
-                    $newQuery['bool']['filter'][]['range']['use_count']['lt'] = $useInfo['top1_count'];
+                    $this->query['bool']['filter'][]['range']['use_count']['lt'] = $useInfo['top1_count'];
                     break;
             }
         }
-        return $newQuery;
+        return $this->query;
     }
 
     public function getRedisKey()
@@ -112,16 +111,18 @@ class BackgroundSearchQuery implements QueryBuilderInterface
         return $offset;
     }
 
-    public function queryKeyword($keyword, $is_or = false)
+    public function queryKeyword($is_or = false)
     {
-        $operator = $is_or ? 'or' : 'and';
-        $query['bool']['must'][]['multi_match'] = [
-            'query' => $keyword,
-            'fields' => ["title^5", "description^1"],
-            'type' => 'most_fields',
-            "operator" => $operator
-        ];
-        return $query;
+        if($this->keyword){
+            $operator = $is_or ? 'or' : 'and';
+            $this->query['bool']['must'][]['multi_match'] = [
+                'query' => $this->keyword,
+                'fields' => ["title^5", "description^1"],
+                'type' => 'most_fields',
+                "operator" => $operator
+            ];
+        }
+        return $this;
     }
 
     public function sortByTime()
