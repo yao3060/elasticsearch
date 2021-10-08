@@ -22,9 +22,9 @@ class GroupWordController extends BaseController
     {
         $data = $request->get();
         try {
-            // FIXME: 需要 校验 search
             $model = DynamicModel::validateData($data, [
-                ['keyword', 'string']
+                ['keyword', 'string'],
+                ['search', 'string']
             ]);
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
@@ -59,7 +59,7 @@ class GroupWordController extends BaseController
         return $this->response($response);
     }
 
-    public function actionRecommendSearch(Request $request)
+   /* public function actionRecommendSearch(Request $request)
     {
         $data = $request->get();
         try {
@@ -69,10 +69,8 @@ class GroupWordController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                // TODO: @yangshangpu `pageSize` 改成 `page_size`
-                // FIXME: @yangshangpu `GroupWord::recommendSearch` 被注释掉了，不能调用
                 $data = (new GroupWord())
-                    ->recommendSearch(new GroupWordSearchQuery($data['keyword'], $data['page'], $data['pageSize']));
+                    ->recommendSearch(new GroupWordSearchQuery($data['keyword'], $data['page'], $data['page_size']));
                 $response = new Response('get_Group_Recommend_list', 'Group_Recommend_List', $data);
             }
         } catch (UnknownPropertyException $e) {
@@ -91,5 +89,5 @@ class GroupWordController extends BaseController
             );
         }
         return $this->response($response);
-    }
+    }*/
 }

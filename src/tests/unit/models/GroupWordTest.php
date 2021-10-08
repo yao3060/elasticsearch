@@ -39,6 +39,7 @@ class GroupWordTest extends \Codeception\Test\Unit
                 search: '你好',
                 searchAll: 1,
             ));
+        var_dump($items);exit();
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
