@@ -78,11 +78,10 @@ staging-build-job:
     - 818ps_web_dev
   only:
     - develop
-  before_script:
+  script:
     - mkdir -p /etc/deploy
     - echo ${kube_config} | base64 -d > ${KUBECONFIG}
-    - ping -c 5 192.168.4.135
-  script:
+    - kubectl cluster-info
     # - ./deploy/scripts/enable-docker-compose-network.sh
     - ./deploy/scripts/update-resource-mirror.sh
     - ./deploy/scripts/modify-dot-env-staging.sh
