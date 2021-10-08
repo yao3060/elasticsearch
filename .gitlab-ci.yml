@@ -27,7 +27,7 @@ before_script:
 
 after_script:
   - source .env
-  - ./deploy/scripts/clean-docker-network.sh  "${PROJECT}_${ENVIRONMENT}_default"
+  # - ./deploy/scripts/clean-docker-network.sh  "${PROJECT}_${ENVIRONMENT}_default"
 
 ###########################################################################
 
@@ -79,9 +79,6 @@ staging-build-job:
   only:
     - develop
   script:
-    - mkdir -p /etc/deploy
-    - echo ${kube_config} | base64 -d > ${KUBECONFIG}
-    - kubectl cluster-info
     # - ./deploy/scripts/enable-docker-compose-network.sh
     - ./deploy/scripts/update-resource-mirror.sh
     - ./deploy/scripts/modify-dot-env-staging.sh
@@ -94,6 +91,35 @@ staging-build-job:
     - ./deploy/scripts/deploy-to-aliyun-cs.sh nginx php
     - echo "built successfully"
   # when: manual
+
+staging-deploy-job:
+  stage: deploy
+  environment:
+    name: staging
+  tags:
+    - 818ps_web_dev
+  only:
+    - develop
+  script:
+    - mkdir -p /etc/deploy
+    - echo ${kube_config} | base64 -d > ${KUBECONFIG}
+    - cp k8s/overlays/staging/secrets.example.txt k8s/overlays/staging/secrets.txt
+    - sed -i "/REDIS_PASSWORD=/c REDIS_PASSWORD=${REDIS_PASSWORD}" k8s/overlays/staging/secrets.txt
+    - sed -i "/REDIS_SESSION_PASSWORD=/c REDIS_SESSION_PASSWORD=${REDIS_SESSION_PASSWORD}" k8s/overlays/staging/secrets.txt
+    - sed -i "/REDIS_SEARCH_PASSWORD=/c REDIS_SEARCH_PASSWORD=${REDIS_SEARCH_PASSWORD}" k8s/overlays/staging/secrets.txt
+    - sed -i "/BACKEND_DB_PASSWORD=/c BACKEND_DB_PASSWORD=${BACKEND_DB_PASSWORD}" k8s/overlays/staging/secrets.txt
+    - cp k8s/overlays/staging/secrets.txt k8s/base/apps/secrets.txt
+    - cp k8s/overlays/staging/secrets.txt k8s/base/db/secrets.txt
+    - sed -i "1 s|$|-${CI_COMMIT_SHA:0:8}|" VERSION
+    - export FULLSHA=$(cat VERSION)
+    - echo $FULLSHA
+    - sed -i "s/MYNEWTAG/${FULLSHA}/g" k8s/overlays/staging/kustomization.yaml
+    - sed -i "s/APP_NEW_VERSION/${FULLSHA}/g" k8s/overlays/staging/kustomization.yaml
+    # - cat k8s/overlays/staging/secrets.txt
+    # - cat k8s/overlays/staging/kustomization.yaml
+    - kubectl apply -k k8s/overlays/staging/
+  # when: manual
+
 
 prod-install-job:
   stage: install
