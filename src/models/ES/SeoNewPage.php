@@ -43,9 +43,11 @@ class SeoNewPage extends BaseModel
             return $return;
         }
 
-        $return['hit'] = 0;
-        $return['ids'] = [];
-        $return['score'] = [];
+        $responseData = [
+            'hit' => 0,
+            'ids' => [],
+            'score' => []
+        ];
 
         try {
             $info = self::find()
@@ -54,20 +56,20 @@ class SeoNewPage extends BaseModel
                 ->limit($query->pageSize)
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
-            $total = $info['total'] ?? [];
+            $total = $info['total'] ?? 0;
 
             if (isset($info['hits']) && $info['hits'] && $total > 0) {
                 foreach ($info['hits'] as $k => $v) {
-                    $return[$k]['id'] = $v['_source']['id'];
-                    $return[$k]['keyword'] = $v['_source']['_keyword'];
+                    $responseData[$k]['id'] = $v['_source']['id'] ?? 0;
+                    $responseData[$k]['keyword'] = $v['_source']['_keyword'] ?? '';
                 }
             }
         } catch (Exception $e) {
-            throw new Exception($e->getMessage());
+            \Yii::error("SeoNewPage Model Error: " . $e->getMessage(), __METHOD__);
         }
 
-        Tools::setRedis(self::$redisDb, $redisKey, $return, 86400 * 30);
+        Tools::setRedis(self::$redisDb, $redisKey, $responseData, 86400 * 30);
 
-        return $return;
+        return $responseData;
     }
 }

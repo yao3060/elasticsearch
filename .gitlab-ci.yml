@@ -1,6 +1,7 @@
 variables:
   GIT_STRATEGY: fetch
   GIT_DEPTH: 1
+  KUBECONFIG: /etc/deploy/config
 
 cache:
   key: ${CI_PROJECT_NAME}_3
@@ -78,6 +79,9 @@ staging-build-job:
   only:
     - develop
   script:
+    - mkdir -p /etc/deploy
+    - echo ${kube_config} | base64 -d > ${KUBECONFIG}
+    - kubectl cluster-info
     # - ./deploy/scripts/enable-docker-compose-network.sh
     - ./deploy/scripts/update-resource-mirror.sh
     - ./deploy/scripts/modify-dot-env-staging.sh

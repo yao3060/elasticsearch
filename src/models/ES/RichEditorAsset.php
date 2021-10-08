@@ -74,8 +74,7 @@ class RichEditorAsset extends BaseModel
                 }
             }
         } catch (Exception $e) {
-            \Yii::error($e->getMessage(), __METHOD__);
-            throw new Exception($e->getMessage());
+            \Yii::error("RichEditorAsset Model Error: " . $e->getMessage(), __METHOD__);
         }
 
         Tools::setRedis(self::$redisDb, $query->getRedisKey(), $responseData, 86400);
