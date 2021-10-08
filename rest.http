@@ -23,7 +23,7 @@ X-FORWARDED-FOR: 1.1.1.1
 # X-ORIGINAL-FORWARDED-FOR: 1.1.1.1
 
 ### get Assets
-GET {{BASE_URL}}/v1/assets?keyword=你好&page=3&pageSize=30&sceneId=0&isZb=1
+GET {{BASE_URL}}/v1/assets?keyword=你好&page=3&page_size=30&scene_id=0&is_zb=1
 Content-Type: application/json
 Accept: application/json
 
