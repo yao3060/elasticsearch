@@ -18,6 +18,20 @@ use yii\web\Request;
 
 class SeoSearchWordController extends BaseController
 {
+    /**
+     * @api {get} /v1/seo/keywords GetSeoSearchWord
+     * @apiName GetSeoSearchWord
+     * @apiGroup SeoSearchWord
+     *
+     * @apiParam (请求参数) {String} keyword 搜索关键词
+     *
+     * @apiSuccess (应答字段) {String} code 返回状态码
+     * @apiSuccess (应答字段) {String} message 返回消息
+     * @apiSuccess (应答字段) {Object[]} data 返回数据
+     * @apiSuccess (应答字段) {String} data.is_seo_search_keyword 是否关键词
+     * @apiSuccess (应答字段) {String} data.id 关键词id
+     * @apiSuccess (应答字段) {String} data.keyword 关键词
+     */
     public function actionSearch(Request $request)
     {
         $data = $request->get();

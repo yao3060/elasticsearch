@@ -18,6 +18,18 @@ use yii\web\Request;
 
 class H5SensitiveWordController extends BaseController
 {
+    /**
+     * @api {post} /v1/h5-sensitive-words/validate GetH5SensitiveWordValidate
+     * @apiName GetH5SensitiveWordValidate
+     * @apiGroup H5SensitiveWord
+     * @apiParam (请求参数) {String} keyword 搜索关键词
+     *
+     * @apiSuccess (应答字段) {String} code 返回状态码
+     * @apiSuccess (应答字段) {String} message 返回消息
+     * @apiSuccess (应答字段) {Object[]} data 返回数据
+     * @apiSuccess (应答字段) {String} data.flag 返回状态true或false
+     * @apiSuccess (应答字段) {String[]} data.word 返回存在的敏感词
+     */
     public function actionValidate(Request $request)
     {
         $data = $request->post();

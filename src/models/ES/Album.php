@@ -41,17 +41,19 @@ class Album extends BaseModel
                 ->limit($query->pageSizeSet())
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
+            $return['total'] = $info['total'] ?? 0;
+            $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
+            foreach ($info['hits'] as $value) {
+                $return['ids'][] = $value['_id'];
+                $return['score'][$value['_id']] = $value['sort'][0];
+            }
+            Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, self::REDIS_EXPIRE);
+            return $return;
         } catch (Exception $e) {
-            \Yii::error("Album Model Error: " . $e->getMessage(), __METHOD__);
+            \Yii::error($e->getMessage(), __METHOD__);
+            return $info;
         }
-        $return['total'] = $info['total'] ?? 0;
-        $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
-        foreach ($info['hits'] as $value) {
-            $return['ids'][] = $value['_id'];
-            $return['score'][$value['_id']] = $value['sort'][0];
-        }
-        Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, self::REDIS_EXPIRE);
-        return $return;
+
     }
     public static function index()
     {

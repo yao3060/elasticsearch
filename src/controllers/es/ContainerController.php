@@ -18,6 +18,23 @@ use yii\web\Request;
 
 class ContainerController extends BaseController
 {
+    /**
+     * @api {get} /v1/containers GetContainerSearch
+     * @apiName GetContainer
+     * @apiGroup Container
+     *
+     * @apiParam (请求参数) {String} keyword 搜索关键词
+     * @apiParam (请求参数) {Number} [page] 页码
+     * @apiParam (请求参数) {Number} [page_size] 每页条数
+     * @apiParam (请求参数) {Number} [kid] 版式
+     *
+     * @apiSuccess (应答字段) {String} code 返回状态码
+     * @apiSuccess (应答字段) {String} message 返回消息
+     * @apiSuccess (应答字段) {Object[]} data 返回数据
+     * @apiSuccess (应答字段) {String} data.hit 命中数
+     * @apiSuccess (应答字段) {String[]} data.ids 模板id集合
+     * @apiSuccess (应答字段) {String[]} data.score 计算分数
+     */
     public function actionSearch(Request $request)
     {
         $data = $request->get();

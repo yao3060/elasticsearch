@@ -19,6 +19,7 @@ class GroupWordSearchQuery implements QueryBuilderInterface
 
     public function query(): array
     {
+        $newQuery = [];
         if ($this->searchAll) {
             $keyword = DesignerRecommendAssetTagService::getRecommendAssetKws(5);
             $shouldMatch = [];
@@ -41,7 +42,6 @@ class GroupWordSearchQuery implements QueryBuilderInterface
                 "operator" => 'and'
             ];
         }
-        // FIXME: @yangshangpu 这儿会出现错误 ·Undefined variable $newQuery·, 例如： /v1/groups?keyword=
         return $newQuery;
     }
     public function queryKeyword($keyword, $is_or = false)

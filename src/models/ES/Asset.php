@@ -50,26 +50,27 @@ class Asset extends BaseModel
                 ->limit($query->pageSizeSet())
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
-        } catch (Exception $e) {
-            \Yii::error($e->getMessage(), __METHOD__);
-            throw new Exception($e->getMessage());
-        }
-        $return['hit'] = $info['total'] ?? 0 > 10000 ? 10000 : $info['total'];
-        foreach ($info['hits'] as $value) {
-            $return['ids'][] = $value['_id'];
-            $return['score'][$value['_id']] = $value['sort'][0];
-            if ($useInfo) {
-                if ($value['_source']['use_count'] >= $useInfo['top1_count']) {
-                    $return['use_count'][$value['_id']] = 1;
-                } elseif ($value['_source']['use_count'] >= $useInfo['top5_count']) {
-                    $return['use_count'][$value['_id']] = 2;
-                } else {
-                    $return['use_count'][$value['_id']] = 3;
+            $return['hit'] = $info['total'] ?? 0 > 10000 ? 10000 : $info['total'];
+            foreach ($info['hits'] as $value) {
+                $return['ids'][] = $value['_id'];
+                $return['score'][$value['_id']] = $value['sort'][0];
+                if ($useInfo) {
+                    if ($value['_source']['use_count'] >= $useInfo['top1_count']) {
+                        $return['use_count'][$value['_id']] = 1;
+                    } elseif ($value['_source']['use_count'] >= $useInfo['top5_count']) {
+                        $return['use_count'][$value['_id']] = 2;
+                    } else {
+                        $return['use_count'][$value['_id']] = 3;
+                    }
                 }
             }
+            Tools::setRedis(self::REDIS_DB, $redisKey, $return, self::REDIS_EXPIRE);
+            return $return;
+        } catch (Exception $e) {
+            \Yii::error($e->getMessage(), __METHOD__);
+            return $return;
         }
-        Tools::setRedis(self::REDIS_DB, $redisKey, $return, self::REDIS_EXPIRE);
-        return $return;
+
     }
 
     public static function index()
