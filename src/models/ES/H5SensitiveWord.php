@@ -39,7 +39,10 @@ class H5SensitiveWord extends BaseModel
     public function checkBanWord(QueryBuilderInterface $query)
     {
         if (empty($query->word)) {
-            return false;
+            return [
+                'flag'=>false,
+                'word'=>$query->word
+            ];
         }
         $is_ban_word['flag'] = false;
         try {
@@ -49,9 +52,11 @@ class H5SensitiveWord extends BaseModel
                 ->createCommand()
                 ->search()['hits'];
             if ($find['total'] <= 0) {
-                return false;
+                return [
+                    'flag'=>false,
+                    'word'=>$query->word
+                ];
             }
-
             $BanWord = '';
             foreach ($find['hits'] as $item) {
                 $item['_source']['word'] = str_replace(" ", '', $item['_source']['word']);

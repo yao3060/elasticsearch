@@ -63,9 +63,9 @@ class GroupWord extends BaseModel
             Yii::info('bypass by redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
-        $return['hit'] = 0;
-        $return['ids'] = [];
-        $return['score'] = [];
+        $info['hit'] = 0;
+        $info['ids'] = [];
+        $info['score'] = [];
         try {
             $info = self::find()
                 ->source(['id'])
@@ -87,50 +87,4 @@ class GroupWord extends BaseModel
         Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 86400);
         return $return;
     }
-
-    //推荐搜索
-    /* public function recommendSearch(QueryBuilderInterface $query): array
-     {
-         if ($query->keyword) {
-             $newQuery = $this->queryKeyword($query->keyword, true);
-         }
-         $sort = $this->sortDefault();
-         try {
-             $info = self::find()
-                 ->source(['id'])
-                 ->query($newQuery)
-                 ->orderBy($sort)
-                 ->offset(($query->page - 1) * $query->pageSize)
-                 ->limit($query->pageSize)
-                 ->createCommand()
-                 ->search([], ['track_scores' => true])['hits'];
-         } catch (\exception $e) {
-             $info['hit'] = 0;
-             $info['ids'] = [];
-             $info['score'] = [];
-         }
-         $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
-         foreach ($info['hits'] as $value) {
-             $return['ids'][] = $value['_id'];
-             $return['score'][$value['_id']] = $value['sort'][0];
-         }
-         return $return;
-     }
-
-
-     public static function sortDefault()
-     {
-         $source = "doc['pr'].value+(int)(_score*10)";
-         $sort['_script'] = [
-             'type' => 'number',
-             'script' => [
-                 "lang" => "painless",
-                 "source" => $source
-             ],
-             'order' => 'desc'
-         ];
-         return $sort;
-     }*/
-
-
 }

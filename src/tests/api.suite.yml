@@ -1,4 +1,10 @@
 actor: ApiTester
+class_name: ApiTester
 modules:
     enabled:
+        - REST:
+            url: /
+            depends: Yii2
         - \Helper\Api
+    config:
+        - Yii2
