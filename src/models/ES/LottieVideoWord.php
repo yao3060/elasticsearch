@@ -46,10 +46,11 @@ class LottieVideoWord extends BaseModel
             return $return;
         }
 
-
-        $return['hit'] = 0;
-        $return['ids'] = [];
-        $return['score'] = [];
+        $responseData = [
+            'hit' => 0,
+            'ids' => [],
+            'score' => []
+        ];
 
         try {
             $info = self::find()
@@ -62,10 +63,10 @@ class LottieVideoWord extends BaseModel
                 ->search([], ['track_scores' => true])['hits'];
             if (isset($info['hits']) && sizeof($info['hits'])) {
                 $total = $info['total'] ?? 0;
-                $return['hit'] = $total > 10000 ? 10000 : $total;
+                $responseData['hit'] = $total > 10000 ? 10000 : $total;
                 foreach ($info['hits'] as $value) {
-                    $return['ids'][] = $value['_id'];
-                    $return['score'][$value['_id']] = $value['sort'][0] ?? [];
+                    $responseData['ids'][] = $value['_id'];
+                    $responseData['score'][$value['_id']] = $value['sort'][0] ?? [];
                 }
             }
         } catch (Exception $e) {
@@ -73,8 +74,8 @@ class LottieVideoWord extends BaseModel
             throw new Exception($e->getMessage());
         }
 
-        Tools::setRedis(self::$redisDb, $redisKey, $return, 86400);
+        Tools::setRedis(self::$redisDb, $redisKey, $responseData, 86400);
 
-        return $return;
+        return $responseData;
     }
 }
