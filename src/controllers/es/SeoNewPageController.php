@@ -16,7 +16,6 @@ class SeoNewPageController extends BaseController
 {
     public function actionSeoSearch(Request $request)
     {
-        $data = $request->get();
         try {
             $validate = DynamicModel::validateData(
                 $request->getQueryParams(),
