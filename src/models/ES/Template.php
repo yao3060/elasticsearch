@@ -223,7 +223,7 @@ class Template extends BaseModel
         Yii::$app->redis9->incr("search_return_source_incr");
 
         $return = [
-            'total' => -1,
+            'total' => 0,
             'hit' => 0,
             'ids' => [],
             'score' => []
@@ -254,7 +254,7 @@ class Template extends BaseModel
                 $return['hit'] = $return['total'] > 10000 ? 10000 : $return['total'];
 
                 foreach ($info['hits'] as $value) {
-                    $return['ids'][] = $value['_id'];
+                    $return['ids'][] = $value['_id'] ?? 0;
                     $return['score'][$value['_id']] = $value['sort'][0] ?? [];
                 }
             }
