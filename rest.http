@@ -1,4 +1,4 @@
-@BASE_URL = http://localhost:8081
+@BASE_URL = http://es-api-staging.818ps.com
 
 ### Test
 GET {{BASE_URL}}/?test=1 HTTP/1.1
@@ -206,8 +206,21 @@ GET {{BASE_URL}}/v1/video-elements?keyword=可爱&page_size=40&&class_id=188&sco
 Content-Type: application/json
 Accept: application/json
 
-###   'GET  v1/containers' => 'es/container/search', //裁剪搜索
+### 'GET  v1/containers' => 'es/container/search', //裁剪搜索
 GET {{BASE_URL}}/v1/containers?keyword=
 Content-Type: application/json
 Accept: application/json
 
+### 'POST  v1/h5-sensitive-words/validate' => 'es/h5-sensitive-word/validate', //查询是否存在敏感词
+POST {{BASE_URL}}/v1/h5-sensitive-words/validate
+Content-Type: application/json
+Accept: application/json
+
+{
+  "keyword": "fucking"
+}
+
+### 'GET  v1/ppt-templates' => 'es/ppt-template/search', //PPT模板单页分类筛选
+GET {{BASE_URL}}/v1/ppt-templates?class_id=10
+Content-Type: application/json
+Accept: application/json
