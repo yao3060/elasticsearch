@@ -236,7 +236,7 @@ class DesignerTemplate extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $res = [
+        $responseData = [
             'hit' => 0,
             'ids' => [],
             'score' => [],
@@ -278,11 +278,11 @@ class DesignerTemplate extends BaseModel
 
             if (isset($info['hits']) && sizeof($info['hits'])) {
                 $total = $info['total'] ?? 0;
-                $res['total'] = $total;
-                $res['hit'] = $total > 10000 ? 10000 : $total;
+                $responseData['total'] = $total;
+                $responseData['hit'] = $total > 10000 ? 10000 : $total;
                 foreach ($info['hits'] as $value) {
-                    $res['ids'][] = $value['_id'] ?? 0;
-                    $res['score'][$value['_id']] = $value['sort'][0] ?? [];
+                    $responseData['ids'][] = $value['_id'] ?? 0;
+                    $responseData['score'][$value['_id']] = $value['sort'][0] ?? [];
                 }
             }
 
@@ -292,10 +292,10 @@ class DesignerTemplate extends BaseModel
         }
 
         if (!IpsAuthority::check(IOS_ALBUM_USER)) {
-            Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $res, 86400 + rand(-3600, 3600));
+            Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $responseData, 86400 + rand(-3600, 3600));
         }
 
-        return $res;
+        return $responseData;
     }
 
     /**
