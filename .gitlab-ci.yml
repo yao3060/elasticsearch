@@ -24,9 +24,6 @@ before_script:
   - set -aeu
   # - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   - cp .env.default .env
-  - mkdir -p /etc/deploy
-  - echo ${kube_config} | base64 -d > ${KUBECONFIG}
-  - kubectl cluster-info
 
 after_script:
   - source .env
@@ -81,6 +78,10 @@ staging-build-job:
     - 818ps_web_dev
   only:
     - develop
+  before_script:
+    - mkdir -p /etc/deploy
+    - echo ${kube_config} | base64 -d > ${KUBECONFIG}
+    - kubectl cluster-info
   script:
     # - ./deploy/scripts/enable-docker-compose-network.sh
     - ./deploy/scripts/update-resource-mirror.sh
