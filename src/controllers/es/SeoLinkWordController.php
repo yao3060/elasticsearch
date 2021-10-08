@@ -18,6 +18,17 @@ use yii\web\Request;
 
 class SeoLinkWordController extends BaseController
 {
+    /**
+     * @api {get} /v1/seo/link-word-seo GetSeoLinkWordSearch
+     * @apiName GetSeoLinkWordSearch
+     * @apiGroup SeoLinkWord
+     *
+     * @apiParam (请求参数) {String} keyword 搜索关键词
+     *
+     * @apiSuccess (应答字段) {String} code 返回状态码
+     * @apiSuccess (应答字段) {String} message 返回消息
+     * @apiSuccess (应答字段) {Object[]} data 返回数据
+     */
     public function actionSearch(Request $request)
     {
         $data = $request->get();

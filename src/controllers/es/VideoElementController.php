@@ -18,6 +18,26 @@ use yii\web\Request;
 
 class VideoElementController extends BaseController
 {
+    /**
+     * @api {get} /v1/video-elements GetVideoElementSearch
+     * @apiName GetVideoElementSearch
+     * @apiGroup VideoElement
+     *
+     * @apiParam (请求参数) {String} keyword 搜索关键词
+     * @apiParam (请求参数) {Number} [page] 页码
+     * @apiParam (请求参数) {Number} [page_size] 每页条数
+     * @apiParam (请求参数) {String} [class_id] 分类id
+     * @apiParam (请求参数) {Number} [ratio] 版式  null：全部 1：横图；2：竖图；0：方图
+     * @apiParam (请求参数) {String} [scope_type] 范围类型
+     * @apiParam (请求参数) {String} [owner]
+     *
+     * @apiSuccess (应答字段) {String} code 返回状态码
+     * @apiSuccess (应答字段) {String} message 返回消息
+     * @apiSuccess (应答字段) {Object[]} data 返回数据
+     * @apiSuccess (应答字段) {String} data.hit 命中数
+     * @apiSuccess (应答字段) {String[]} data.ids 模板id集合
+     * @apiSuccess (应答字段) {Object[]} data.score 计算分数
+     */
     public function actionSearch(Request $request)
     {
         $data = $request->get();
