@@ -65,7 +65,7 @@ class SeoNewPage extends BaseModel
                 }
             }
         } catch (Exception $e) {
-            throw new Exception($e->getMessage());
+            \Yii::error("SeoNewPage Model Error: " . $e->getMessage(), __METHOD__);
         }
 
         Tools::setRedis(self::$redisDb, $redisKey, $responseData, 86400 * 30);

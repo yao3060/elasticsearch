@@ -75,7 +75,7 @@ class BackgroundVideo extends BaseModel
                 }
             }
         } catch (\Throwable $throwable) {
-            throw new Exception($throwable->getMessage().$throwable->getFile().$throwable->getLine());
+            \Yii::error("BackgroundVideo Model Error: " . $throwable->getMessage(), __METHOD__);
         }
 
         Tools::setRedis(self::$redisDb, $redisKey, $return, 86400);

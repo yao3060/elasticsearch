@@ -287,8 +287,7 @@ class DesignerTemplate extends BaseModel
             }
 
         } catch (\Exception $e) {
-            Yii::error($e->getMessage(), __METHOD__);
-            throw new Exception($e->getMessage(), __METHOD__);
+            \Yii::error("DesignerTemplate Model Error: " . $e->getMessage(), __METHOD__);
         }
 
         if (!IpsAuthority::check(IOS_ALBUM_USER)) {

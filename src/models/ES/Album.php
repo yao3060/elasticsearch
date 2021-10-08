@@ -42,7 +42,7 @@ class Album extends BaseModel
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
         } catch (Exception $e) {
-            throw new Exception($e->getMessage());
+            \Yii::error("Album Model Error: " . $e->getMessage(), __METHOD__);
         }
         $return['total'] = $info['total'] ?? 0;
         $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];

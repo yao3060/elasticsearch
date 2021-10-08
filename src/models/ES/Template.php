@@ -314,8 +314,8 @@ class Template extends BaseModel
                     $responseData['score'][$value['_id']] = isset($value['sort'][0]) ?? [];
                 }
             }
-        } catch (\exception $e) {
-            throw new Exception($e->getMessage());
+        } catch (\Exception $e) {
+            \Yii::error("Template Model Error: " . $e->getMessage(), __METHOD__);
         }
 
         Tools::setRedis(self::$redisDb, $redisKey, $responseData);
