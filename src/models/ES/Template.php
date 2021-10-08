@@ -282,15 +282,15 @@ class Template extends BaseModel
     public function recommendSearch(QueryBuilderInterface $query): array
     {
         $redisKey = $query->getRedisKey();
-        $repsonse = Tools::getRedis(self::$redisDb, $redisKey);
+        $return = Tools::getRedis(self::$redisDb, $redisKey);
         \Yii::info("[TemplateRecommendSearch:redisKey]:[$redisKey]", __METHOD__);
 
-        if (!empty($repsonse) && isset($repsonse['hit']) && $repsonse['hit'] && Tools::isReturnSource() === false) {
+        if (!empty($return) && isset($return['hit']) && $return['hit'] && Tools::isReturnSource() === false) {
             \Yii::info('template recommend search data source from redis', __METHOD__);
-            return $repsonse;
+            return $return;
         }
 
-        $return = [
+        $responseData = [
             'hit' => 0,
             'ids' => [],
             'score' => []
@@ -308,19 +308,19 @@ class Template extends BaseModel
 
             if (isset($info['hits']) && $info['hits']) {
                 $total = $info['total'] ?? 0;
-                $return['hit'] = $total > 10000 ? 10000 : $total;
+                $responseData['hit'] = $total > 10000 ? 10000 : $total;
                 foreach ($info['hits'] as $value) {
-                    $return['ids'][] = $value['_id'];
-                    $return['score'][$value['_id']] = isset($value['sort'][0]) ?? [];
+                    $responseData['ids'][] = $value['_id'];
+                    $responseData['score'][$value['_id']] = isset($value['sort'][0]) ?? [];
                 }
             }
         } catch (\exception $e) {
             throw new Exception($e->getMessage());
         }
 
-        Tools::setRedis(self::$redisDb, $redisKey, $return);
+        Tools::setRedis(self::$redisDb, $redisKey, $responseData);
 
-        return $return;
+        return $responseData;
     }
 
     public function rules()
