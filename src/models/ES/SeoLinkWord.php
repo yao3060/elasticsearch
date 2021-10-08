@@ -88,11 +88,10 @@ class SeoLinkWord extends BaseModel
         if ($return && isset($return['hit']) && $return['hit']) {
             return $return;
         }
-
-        // FIXME: @yangshangpu 这儿代码有问题, 下面3行貌似是多余的
-        $return['hit'] = 0;
-        $return['ids'] = [];
-        $return['score'] = [];
+        $info['hit'] = 0;
+        $info['ids'] = [];
+        $info['score'] = [];
+        $info['total'] = 0;
         try {
             $info = self::find()
                 ->source(['id', '_keyword', 'pinyin'])

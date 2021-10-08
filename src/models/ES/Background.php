@@ -35,12 +35,9 @@ class Background extends BaseModel
         } else {
             $useInfo = '';
         }
-        $return['hit'] = 0;
-        $return['ids'] = [];
-        $return['score'] = [];
-        // FIXME: @yangshangpu  原来程序里并没有下面的两个参数
-        $return['total'] = 0;
-        $return['hits'] = 0;
+        $info['hit'] = 0;
+        $info['ids'] = [];
+        $info['score'] = [];
         try {
             $info = self::find()
                 ->source(['id', 'use_count'])
@@ -55,21 +52,20 @@ class Background extends BaseModel
             throw new Exception($e->getMessage());
         }
         $return['hit'] = $info['total'] ?? 0 > 10000 ? 10000 : $info['total'];
-        if ($info['hits'] != 0) {
-            foreach ($info['hits'] as $value) {
-                $return['ids'][] = $value['_id'];
-                $return['score'][$value['_id']] = $value['sort'][0];
-                if ($useInfo) {
-                    if ($value['_source']['use_count'] >= $useInfo['top1_count']) {
-                        $return['use_count'][$value['_id']] = 1;
-                    } elseif ($value['_source']['use_count'] >= $useInfo['top5_count']) {
-                        $return['use_count'][$value['_id']] = 2;
-                    } else {
-                        $return['use_count'][$value['_id']] = 3;
-                    }
+        foreach ($info['hits'] as $value) {
+            $return['ids'][] = $value['_id'];
+            $return['score'][$value['_id']] = $value['sort'][0];
+            if ($useInfo) {
+                if ($value['_source']['use_count'] >= $useInfo['top1_count']) {
+                    $return['use_count'][$value['_id']] = 1;
+                } elseif ($value['_source']['use_count'] >= $useInfo['top5_count']) {
+                    $return['use_count'][$value['_id']] = 2;
+                } else {
+                    $return['use_count'][$value['_id']] = 3;
                 }
             }
         }
+
         Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 86400);
         return $return;
     }

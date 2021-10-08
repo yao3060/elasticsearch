@@ -41,6 +41,9 @@ class VideoAudio extends BaseModel
             Yii::info('bypass by redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
+        $info['hit'] = 0;
+        $info['ids'] = [];
+        $info['score'] = [];
         try {
             $info = self::find()
                 ->source(['id'])
@@ -52,11 +55,10 @@ class VideoAudio extends BaseModel
                 ->search([], ['track_scores' => true])['hits'];
         } catch (Exception $e) {
             // TODO: @yangshangpu Add exception to error log
-            $info['hit'] = 0;
-            $info['ids'] = [];
-            $info['score'] = [];
+            \Yii::error($e->getMessage(), __METHOD__);
+            throw new Exception($e->getMessage());
         }
-        $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
+        $return['hit'] = $info['total'] ?? 0 > 10000 ? 10000 : $info['total'];
         foreach ($info['hits'] as $value) {
             $return['ids'][] = $value['_id'];
             $return['score'][$value['_id']] = $value['sort'][0];
