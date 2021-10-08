@@ -39,7 +39,6 @@ class GroupWordTest extends \Codeception\Test\Unit
                 search: '你好',
                 searchAll: 1,
             ));
-        var_dump($items);exit();
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
@@ -51,9 +50,6 @@ class GroupWordTest extends \Codeception\Test\Unit
         sort($ids);
         $myIds = $items['ids'];
         sort($myIds);
-        var_dump($ids);
-        var_dump($myIds);
-        exit();
         $flag = 1;
         foreach ($ids as $va) {
             if (in_array($va, $myIds)) {
