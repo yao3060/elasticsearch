@@ -4,6 +4,7 @@ modules:
     enabled:
         - REST:
             url: /
+            # "Yii2" for local test, "PhpBrowser" for remote test
             depends: Yii2
         - \Helper\Api
     config:
