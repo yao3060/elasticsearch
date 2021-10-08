@@ -3,6 +3,15 @@
     "bmewburn.vscode-intelephense-client",
     "neilbrayfield.php-docblocker",
     "felixfbecker.php-debug",
-    "junstyle.php-cs-fixer"
+    "junstyle.php-cs-fixer",
+    "redhat.vscode-yaml",
+    "gruntfuggly.todo-tree",
+    "tabnine.tabnine-vscode",
+    "humao.rest-client",
+    "coenraads.bracket-pair-colorizer-2",
+    "streetsidesoftware.code-spell-checker",
+    "mikestead.dotenv",
+    "editorconfig.editorconfig",
+    "liamhammett.inline-parameters"
   ]
 }
