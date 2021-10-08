@@ -89,21 +89,6 @@ class DesignerTemplate extends BaseModel
         ];
     }
 
-    public static function getMapping()
-    {
-        $redisKey = "ES_template:mapping:second";
-        $return = Tools::getRedis(self::REDIS_DB, $redisKey);
-
-        if (!empty($return)) {
-            return $return;
-        }
-        $db = static::getDb();
-        $command = $db->createCommand();
-        $return = $command->getMapping(static::index(), static::type(), static::mapping());
-        Tools::setRedis(self::REDIS_DB, $redisKey, $return, 3600);
-        return $return;
-    }
-
     /**
      * Create this model's index
      */
@@ -254,7 +239,8 @@ class DesignerTemplate extends BaseModel
         $res = [
             'hit' => 0,
             'ids' => [],
-            'score' => []
+            'score' => [],
+            'total' => 0
         ];
 
         try {
@@ -295,7 +281,7 @@ class DesignerTemplate extends BaseModel
                 $res['total'] = $total;
                 $res['hit'] = $total > 10000 ? 10000 : $total;
                 foreach ($info['hits'] as $value) {
-                    $res['ids'][] = $value['_id'];
+                    $res['ids'][] = $value['_id'] ?? 0;
                     $res['score'][$value['_id']] = $value['sort'][0] ?? [];
                 }
             }
