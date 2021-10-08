@@ -34,20 +34,21 @@ class SeoSearchWord extends BaseModel
                 ->query($query->query())
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
+            if ($info['total'] > 0) {
+                $return['is_seo_search_keyword'] = true;
+                $return['id'] = $info['hits'][0]['_id'];
+                $return['keyword'] = $query->keyword;
+            }
+            Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 86400);
+            if (empty($return)){
+                $return = [];
+            }
+            return $return;
         } catch (Exception $e) {
-            $info['total'] = 0;
             $return['is_seo_search_keyword'] = false;
+            return $return;
         }
-        if ($info['total'] > 0) {
-            $return['is_seo_search_keyword'] = true;
-            $return['id'] = $info['hits'][0]['_id'];
-            $return['keyword'] = $query->keyword;
-        }
-        Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 86400);
-        if (empty($return)){
-            $return = [];
-        }
-        return $return;
+
     }
 
     public function seoSearch(QueryBuilderInterface $query): array

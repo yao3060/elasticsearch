@@ -55,22 +55,23 @@ class SeoDetailKeywordForTitle extends BaseModel
                 ->limit(2)
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
+            $total = $info['total'] ?? 0;
+            if ($total > 0 && isset($info['hits']) && $info['hits']) {
+                foreach ($info['hits'] as $v) {
+                    $repsonseData[] = [
+                        'id' => $v['_id'] ?? 0,
+                        'keyword'=> $v['_source']['_keyword'] ?? ''
+                    ];
+                }
+            }
+            Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $repsonseData, 86400 * 30);
+            return $repsonseData;
         } catch (Exception $e) {
 
             \Yii::error($e->getMessage(), __METHOD__);
-            throw new Exception($e->getMessage());
+            return $repsonseData;
         }
-        $total = $info['total'] ?? 0;
-        if ($total > 0 && isset($info['hits']) && $info['hits']) {
-            foreach ($info['hits'] as $v) {
-                $repsonseData[] = [
-                    'id' => $v['_id'] ?? 0,
-                    'keyword'=> $v['_source']['_keyword'] ?? ''
-                ];
-            }
-        }
-        Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $repsonseData, 86400 * 30);
-        return $repsonseData;
+
     }
 
 }

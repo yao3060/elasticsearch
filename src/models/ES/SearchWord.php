@@ -76,25 +76,26 @@ class SearchWord extends BaseModel
                 ->limit($query->pageSizeSet())
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
+            $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
+            foreach ($info['hits'] as $value) {
+                $this_id = (int)$value['_source']['word_id'];
+                $return['ids'][] = $this_id;
+                $return['results'][$this_id] = $value['_source']['results'];
+                $return['count'][$this_id] = $value['_source']['count'];
+                $return['keyword'][$this_id] = $value['_source']['keyword'];
+                $return['pinyin'][$this_id] = $value['_source']['pinyin'];
+                $return['score'][$this_id] = $value['sort'][0];
+            }
+            Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 126000);
+            return $return;
         } catch (Exception $e) {
             $info['hit'] = 0;
             $info['ids'] = [];
             $info['score'] = [];
             \Yii::error($e->getMessage(), __METHOD__);
-            throw new Exception($e->getMessage());
+            return $info;
         }
-        $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
-        foreach ($info['hits'] as $value) {
-            $this_id = (int)$value['_source']['word_id'];
-            $return['ids'][] = $this_id;
-            $return['results'][$this_id] = $value['_source']['results'];
-            $return['count'][$this_id] = $value['_source']['count'];
-            $return['keyword'][$this_id] = $value['_source']['keyword'];
-            $return['pinyin'][$this_id] = $value['_source']['pinyin'];
-            $return['score'][$this_id] = $value['sort'][0];
-        }
-        Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 126000);
-        return $return;
+
     }
 
 

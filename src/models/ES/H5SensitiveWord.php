@@ -45,6 +45,7 @@ class H5SensitiveWord extends BaseModel
             ];
         }
         $is_ban_word['flag'] = false;
+        $BanWord = '';
         try {
             $find = self::find()
                 ->source(['word'])
@@ -57,7 +58,6 @@ class H5SensitiveWord extends BaseModel
                     'word'=>$query->word
                 ];
             }
-            $BanWord = '';
             foreach ($find['hits'] as $item) {
                 $item['_source']['word'] = str_replace(" ", '', $item['_source']['word']);
                 if (strstr($query->word, $item['_source']['word'])) {
@@ -68,7 +68,6 @@ class H5SensitiveWord extends BaseModel
             }
         } catch (Exception $e) {
             \Yii::error($e->getMessage(), __METHOD__);
-            throw new Exception($e->getMessage());
         }
         $flag = $is_ban_word['flag'];
         return [

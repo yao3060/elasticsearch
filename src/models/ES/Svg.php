@@ -61,7 +61,7 @@ class Svg extends BaseModel
             }
         } catch (Exception $e) {
             \Yii::error($e->getMessage(), __METHOD__);
-            throw new Exception($e->getMessage());
+            //throw new Exception($e->getMessage());
         }
         return $return;
     }

@@ -61,17 +61,18 @@ class SeoLinkWord extends BaseModel
                 ->query($query->query())
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
+            if ($info['total'] > 0) {
+                $return['is_seo_search_keyword'] = true;
+                $return['id'] = $info['hits'][0]['_id'];
+                $return['keyword'] = $query->keyword;
+            }
+            Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, self::REDIS_EXPIRE);
+            return $return;
         } catch (\exception $e) {
-            $info['total'] = 0;
             $return['is_seo_search_keyword'] = false;
+            return $return;
         }
-        if ($info['total'] > 0) {
-            $return['is_seo_search_keyword'] = true;
-            $return['id'] = $info['hits'][0]['_id'];
-            $return['keyword'] = $query->keyword;
-        }
-        Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, self::REDIS_EXPIRE);
-        return $return;
+
     }
 
     /**

@@ -47,7 +47,6 @@ class SeoSearchWordAsset extends BaseModel
             Yii::info('bypass by redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
-
         try {
             $info = self::find()
                 ->source(['id', '_keyword', 'pinyin', 'weight'])
@@ -55,36 +54,33 @@ class SeoSearchWordAsset extends BaseModel
                 ->limit($query->pageSizeSet())
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
+            $total = $info['total'] ?? 0;
+            $data = [];
+            if ($total > 0 && isset($info['hits']) && $info['hits']) {
+                foreach ($info['hits'] as $v) {
+                    $data[] = [
+                        'id' => $v['_source']['id'] ?? 0,
+                        'keyword' => $v['_source']['_keyword'] ?? '',
+                        'pinyin' => $v['_source']['pinyin'] ?? '',
+                        'weight' => $v['_source']['weight'] ?? 0
+                    ];
+                }
+            }
+            $response = [
+                'list' => $data,
+                'total' => $total
+            ];
+            Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $response, 86400 * 30);
+            return $response;
         } catch (Exception $e) {
             \Yii::error($e->getMessage(), __METHOD__);
-            throw new Exception($e->getMessage());
+            $response = [
+                'list' => '',
+                'total' => ''
+            ];
+            return $response;
         }
 
-        $total = $info['total'] ?? 0;
-
-        $data = [];
-
-        if ($total > 0 && isset($info['hits']) && $info['hits']) {
-
-
-            foreach ($info['hits'] as $v) {
-                $data[] = [
-                    'id' => $v['_source']['id'] ?? 0,
-                    'keyword' => $v['_source']['_keyword'] ?? '',
-                    'pinyin' => $v['_source']['pinyin'] ?? '',
-                    'weight' => $v['_source']['weight'] ?? 0
-                ];
-            }
-        }
-
-        $response = [
-            'list' => $data,
-            'total' => $total
-        ];
-
-        Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $response, 86400 * 30);
-
-        return $response;
     }
 
 }

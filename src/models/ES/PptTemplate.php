@@ -68,19 +68,20 @@ class PptTemplate extends BaseModel
                 ->orderBy(['id' => SORT_DESC])
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
+            $data = [
+                'total' => $info['total'],
+                'hit' => $info['total'] ?? 0 > 10000 ? 10000 : $info['total'],
+            ];
+            foreach ($info['hits'] as $value) {
+                $data['ids'][] = $value['_id'];
+                $data['score'][$value['_id']] = $value['sort'][0];
+            }
+            Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $data, self::REDIS_EXPIRE);
+            return $data;
         } catch (Exception $e) {
             \Yii::error($e->getMessage(), __METHOD__);
-            throw new Exception($e->getMessage());
+            return $data;
         }
-        $data = [
-            'total' => $info['total'],
-            'hit' => $info['total'] ?? 0 > 10000 ? 10000 : $info['total'],
-        ];
-        foreach ($info['hits'] as $value) {
-            $data['ids'][] = $value['_id'];
-            $data['score'][$value['_id']] = $value['sort'][0];
-        }
-        Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $data, self::REDIS_EXPIRE);
-        return $data;
+
     }
 }

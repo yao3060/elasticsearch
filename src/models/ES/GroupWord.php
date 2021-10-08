@@ -76,8 +76,9 @@ class GroupWord extends BaseModel
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
         } catch (Exception $e) {
+            var_dump($e->getMessage());exit();
             \Yii::error($e->getMessage(), __METHOD__);
-            throw new Exception($e->getMessage());
+            //throw new Exception($e->getMessage());
         }
         $return['hit'] = $info['total'] ?? 0 > 10000 ? 10000 : $info['total'];
         foreach ($info['hits'] as $value) {

@@ -58,16 +58,17 @@ class GifAsset extends BaseModel
                 ->limit($query->pageSizeSet())
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
+            $return['hit'] = $info['total'] ?? 0 > 10000 ? 10000 : $info['total'];
+            foreach ($info['hits'] as $value) {
+                $return['ids'][] = $value['_id'];
+                $return['score'][$value['_id']] = $value['sort'][0];
+            }
+            Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 86400);
+            return $return;
         } catch (Exception $e) {
             \Yii::error($e->getMessage(), __METHOD__);
-            throw new Exception($e->getMessage());
+            return $return;
         }
-        $return['hit'] = $info['total'] ?? 0 > 10000 ? 10000 : $info['total'];
-        foreach ($info['hits'] as $value) {
-            $return['ids'][] = $value['_id'];
-            $return['score'][$value['_id']] = $value['sort'][0];
-        }
-        Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 86400);
-        return $return;
+
     }
 }
