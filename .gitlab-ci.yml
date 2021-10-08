@@ -81,7 +81,7 @@ staging-build-job:
   before_script:
     - mkdir -p /etc/deploy
     - echo ${kube_config} | base64 -d > ${KUBECONFIG}
-    - kubectl cluster-info
+    - ping -c 5 192.168.4.135
   script:
     # - ./deploy/scripts/enable-docker-compose-network.sh
     - ./deploy/scripts/update-resource-mirror.sh
