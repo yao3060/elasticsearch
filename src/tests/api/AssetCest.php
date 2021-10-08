@@ -21,6 +21,7 @@ class AssetCest
         ]);
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(['code' => 'get_asset_list']);
         $I->seeResponseMatchesJsonType([
             'code' => 'string',
             'message' => 'string',
