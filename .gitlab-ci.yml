@@ -1,6 +1,7 @@
 variables:
   GIT_STRATEGY: fetch
   GIT_DEPTH: 1
+  KUBECONFIG: /etc/deploy/config
 
 cache:
   key: ${CI_PROJECT_NAME}_3
@@ -23,6 +24,9 @@ before_script:
   - set -aeu
   # - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
   - cp .env.default .env
+  - mkdir -p /etc/deploy
+  - echo ${kube_config} | base64 -d > ${KUBECONFIG}
+  - kubectl cluster-info
 
 after_script:
   - source .env
