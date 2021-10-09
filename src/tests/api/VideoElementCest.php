@@ -2,7 +2,7 @@
 
 use \Codeception\Util\HttpCode;
 
-class GifAssetCest
+class VideoElementCest
 {
     public function _before(ApiTester $I)
     {
@@ -10,26 +10,25 @@ class GifAssetCest
         $I->haveHttpHeader('accept', 'application/json');
         $I->haveHttpHeader('content-type', 'application/json');
     }
-
     // tests
-    public function testGetGifAsset(ApiTester $I)
+    public function testGetVideoElement(ApiTester $I)
     {
         // pass in query params in second argument
         $I->sendGet(
-            API_TESTING_BASE_URL . 'v1/gif-assets',
+            API_TESTING_BASE_URL . 'v1/video-elements',
             [
                 'keyword' => "你好",
                 'page' => 1,
                 'page_size' => 30,
-                'class_id' => 0,
-                'is_zb' => 1,
-                'prep' => 0,
-                'limit_size' => 0,
+                'class_id' => 188,
+                'ratio' => 0,
+                'scope_type' => 'lottie',
+                'owner' => 0,
             ]
         );
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(['code' => 'get_gif_asset_list']);
+        $I->seeResponseContainsJson(['code' => 'get_video_element_list']);
         $I->seeResponseMatchesJsonType(
             [
                 'code' => 'string',
@@ -43,24 +42,24 @@ class GifAssetCest
         );
     }
 
-    public function testGetGifAssetNull(ApiTester $I)
+    public function testGetVideoElementNull(ApiTester $I)
     {
         // pass in query params in second argument
         $I->sendGet(
-            API_TESTING_BASE_URL . 'v1/gif-assets',
+            API_TESTING_BASE_URL . 'v1/video-elements',
             [
                 'keyword' => 0,
                 'page' => 1,
                 'page_size' => 30,
-                'class_id' => 10,
-                'is_zb' => 1,
-                'prep' => 1,
-                'limit_size' => 0,
+                'class_id' => 188,
+                'ratio' => 0,
+                'scope_type' => 'lottie',
+                'owner' => 0,
             ]
         );
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(['code' => 'get_gif_asset_list']);
+        $I->seeResponseContainsJson(['code' => 'get_video_element_list']);
         $I->seeResponseMatchesJsonType(
             [
                 'code' => 'string',
