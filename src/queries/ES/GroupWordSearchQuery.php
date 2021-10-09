@@ -33,7 +33,7 @@ class GroupWordSearchQuery implements QueryBuilderInterface
             }
             $this->query['bool']['should'][] = $shouldMatch;
         } elseif ($this->keyword) {
-            $this->query = $this->queryKeyword($this->keyword, false, true);
+            $this->queryKeyword();
         }
         if (!empty($this->search)) {
             $this->query['bool']['must'][]['multi_match'] = [
@@ -45,11 +45,11 @@ class GroupWordSearchQuery implements QueryBuilderInterface
         }
         return $this->query;
     }
-    public function queryKeyword($keyword, $is_or = false)
+    public function queryKeyword($is_or = false)
     {
         $operator = $is_or ? 'or' : 'and';
         $this->query['bool']['must'][]['multi_match'] = [
-            'query' => $keyword,
+            'query' => $this->keyword,
             'fields' => ["title^5", "description^1"],
             'type' => 'most_fields',
             "operator" => $operator
