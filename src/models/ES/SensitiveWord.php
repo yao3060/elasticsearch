@@ -112,7 +112,7 @@ class SensitiveWord extends BaseModel
                 }
             }
             Tools::setRedis(6, $query->getRedisKey(), $validateSensitiveWord, 86400 * 7);
-        } catch (Exception $exception) {
+        } catch (\Throwable $exception) {
             \Yii::error("SensitiveWord Model Error: " . $exception->getMessage(), __METHOD__);
         }
 

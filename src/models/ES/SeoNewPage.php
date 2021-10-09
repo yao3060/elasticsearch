@@ -6,7 +6,6 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
-use yii\base\Exception;
 
 class SeoNewPage extends BaseModel
 {
@@ -30,7 +29,6 @@ class SeoNewPage extends BaseModel
     /**
      * @param  \app\queries\ES\SeoNewPageSeoSearchQuery  $query
      * @return array|false|mixed
-     * @throws Exception
      */
     public function seoSearch(QueryBuilderInterface $query)
     {
@@ -64,7 +62,7 @@ class SeoNewPage extends BaseModel
                     $responseData[$k]['keyword'] = $v['_source']['_keyword'] ?? '';
                 }
             }
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             \Yii::error("SeoNewPage Model Error: " . $e->getMessage(), __METHOD__);
         }
 

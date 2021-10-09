@@ -6,7 +6,6 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
-use yii\base\Exception;
 
 class BackgroundVideo extends BaseModel
 {

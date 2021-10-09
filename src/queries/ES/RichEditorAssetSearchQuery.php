@@ -17,7 +17,7 @@ class RichEditorAssetSearchQuery extends BaseTemplateSearchQuery
         public $sort = 'create_date desc'
     )
     {
-
+        $this->beforeAssignment();
     }
 
     public function queryKeyword($is_or = false)
@@ -86,8 +86,6 @@ class RichEditorAssetSearchQuery extends BaseTemplateSearchQuery
 
     public function getRedisKey()
     {
-        $this->beforeAssignment();
-
         $redisKey = "ES_RT:rt_asset:" . date('Y-m-d') . ":{$this->keyword}_{$this->page}_ " . implode('-', $this->classId) . " _{$this->pageSize}" . " _{$this->ratio}";
 
         return $redisKey;

@@ -7,7 +7,6 @@ namespace app\models\ES;
 use app\components\IpsAuthority;
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
-use yii\base\Exception;
 
 class RichEditorAsset extends BaseModel
 {
@@ -31,7 +30,6 @@ class RichEditorAsset extends BaseModel
     /**
      * @param  \app\queries\ES\RichEditorAssetSearchQuery  $query
      * @return array
-     * @throws Exception
      */
     public function search(QueryBuilderInterface $query): array
     {
@@ -73,7 +71,7 @@ class RichEditorAsset extends BaseModel
                     $responseData['score'][$value['_id']] = $value['sort'][0] ?? [];
                 }
             }
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             \Yii::error("RichEditorAsset Model Error: " . $e->getMessage(), __METHOD__);
         }
 

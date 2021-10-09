@@ -5,7 +5,6 @@ namespace app\models\ES;
 use app\components\IpsAuthority;
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
-use yii\base\Exception;
 
 class Svg extends BaseModel
 {
@@ -24,7 +23,6 @@ class Svg extends BaseModel
     /**
      * @param \app\queries\ES\SvgSearchQuery $query
      * @return array
-     * @throws Exception
      */
     public function search(QueryBuilderInterface $query): array
     {
@@ -54,7 +52,7 @@ class Svg extends BaseModel
                     $return['score'][$value['_id']] = $value['sort'][0];
                 }
             }
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             \Yii::error($e->getMessage(), __METHOD__);
         }
         return $return;

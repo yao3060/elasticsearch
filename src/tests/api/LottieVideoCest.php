@@ -2,7 +2,7 @@
 
 use Codeception\Util\HttpCode;
 
-class RichEditorAssetCest
+class LottieVideoCest
 {
     public function _before(ApiTester $I)
     {
@@ -12,12 +12,12 @@ class RichEditorAssetCest
     }
 
     /**
-     * @target: 默认，无搜索条件
+     * @target 默认搜索
      */
-    public function testSearchDefault(ApiTester $I)
+    public function testSearch(ApiTester $I)
     {
         $I->sendGet(
-            API_TESTING_BASE_URL.'v1/rich-editor-assets',
+            API_TESTING_BASE_URL.'v1/lottie-videos',
             [
                 'keyword' => ''
             ]
@@ -26,8 +26,8 @@ class RichEditorAssetCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(
             [
-                'code' => 'rich_editor_asset_search',
-                'message' => 'Rich Editor Asset Search'
+                'code' => 'lottie_video_search',
+                'message' => 'Lottie Video Search'
             ]
         );
         $I->seeResponseMatchesJsonType(
@@ -44,124 +44,17 @@ class RichEditorAssetCest
     }
 
     /**
-     * @target: 默认，无搜索条件
-     * @classId: [1, 0]
+     * @target 无搜索词搜索
+     * @classId: 1
+     * @page: 1
      */
-    public function testSearchClassIds(ApiTester $I)
+    public function testSearchClassIdOfOnePageOfOne(ApiTester $I)
     {
         $I->sendGet(
-            API_TESTING_BASE_URL.'v1/rich-editor-assets',
+            API_TESTING_BASE_URL.'v1/lottie-videos',
             [
                 'keyword' => '',
-                'class_id' => [1, 0],
-                'page' => 1,
-                'page_size' => 40
-            ]
-        );
-        $I->seeResponseCodeIs(HttpCode::OK);
-        $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(
-            [
-                'code' => 'rich_editor_asset_search',
-                'message' => 'Rich Editor Asset Search'
-            ]
-        );
-        $I->seeResponseMatchesJsonType(
-            [
-                'code' => 'string',
-                'message' => 'string',
-                'data' => [
-                    'hit' => 'integer',
-                    'ids' => 'array',
-                    'score' => 'array'
-                ]
-            ]
-        );
-    }
-
-    /**
-     * @target: 默认，无搜索条件
-     * @classId: [2, 55]
-     */
-    public function testSearchClassIdsSecond(ApiTester $I)
-    {
-        $I->sendGet(
-            API_TESTING_BASE_URL.'v1/rich-editor-assets',
-            [
-                'keyword' => '',
-                'class_id' => [2, 55],
-                'page' => 1,
-                'page_size' => 40
-            ]
-        );
-        $I->seeResponseCodeIs(HttpCode::OK);
-        $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(
-            [
-                'code' => 'rich_editor_asset_search',
-                'message' => 'Rich Editor Asset Search'
-            ]
-        );
-        $I->seeResponseMatchesJsonType(
-            [
-                'code' => 'string',
-                'message' => 'string',
-                'data' => [
-                    'hit' => 'integer',
-                    'ids' => 'array',
-                    'score' => 'array'
-                ]
-            ]
-        );
-    }
-
-    /**
-     * @target: 默认，无搜索条件
-     * @classId: [2, 55]
-     * @page: 2
-     */
-    public function testSearchClassIdsPage(ApiTester $I)
-    {
-        $I->sendGet(
-            API_TESTING_BASE_URL.'v1/rich-editor-assets',
-            [
-                'keyword' => '',
-                'class_id' => [1, 0],
-                'page' => 3
-            ]
-        );
-        $I->seeResponseCodeIs(HttpCode::OK);
-        $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(
-            [
-                'code' => 'rich_editor_asset_search',
-                'message' => 'Rich Editor Asset Search'
-            ]
-        );
-        $I->seeResponseMatchesJsonType(
-            [
-                'code' => 'string',
-                'message' => 'string',
-                'data' => [
-                    'hit' => 'integer',
-                    'ids' => 'array',
-                    'score' => 'array'
-                ]
-            ]
-        );
-    }
-
-    /**
-     * @target 有搜索词：橘色
-     * @classId: [5, 58]
-     */
-    public function testSearchCarryKeywordClassIds(ApiTester $I)
-    {
-        $I->sendGet(
-            API_TESTING_BASE_URL.'v1/rich-editor-assets',
-            [
-                'keyword' => '橘色',
-                'class_id' => [5, 58],
+                'class_id' => 1,
                 'page' => 1
             ]
         );
@@ -169,8 +62,80 @@ class RichEditorAssetCest
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(
             [
-                'code' => 'rich_editor_asset_search',
-                'message' => 'Rich Editor Asset Search'
+                'code' => 'lottie_video_search',
+                'message' => 'Lottie Video Search'
+            ]
+        );
+        $I->seeResponseMatchesJsonType(
+            [
+                'code' => 'string',
+                'message' => 'string',
+                'data' => [
+                    'hit' => 'integer',
+                    'ids' => 'array',
+                    'score' => 'array'
+                ]
+            ]
+        );
+    }
+
+    /**
+     * @target 有搜索词：可爱
+     * @classId: 1
+     * @page: 1
+     */
+    public function testSearchCarryKeywordClassIdOfOnePageOfOne(ApiTester $I)
+    {
+        $I->sendGet(
+            API_TESTING_BASE_URL.'v1/lottie-videos',
+            [
+                'keyword' => '可爱',
+                'class_id' => [],
+                'page' => 1
+            ]
+        );
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(
+            [
+                'code' => 'lottie_video_search',
+                'message' => 'Lottie Video Search'
+            ]
+        );
+        $I->seeResponseMatchesJsonType(
+            [
+                'code' => 'string',
+                'message' => 'string',
+                'data' => [
+                    'hit' => 'integer',
+                    'ids' => 'array',
+                    'score' => 'array'
+                ]
+            ]
+        );
+    }
+
+    /**
+     * @taget 无搜索关键词
+     * @classId: 3
+     * @page: 1
+     */
+    public function testSearchClassIdOfThreePageOfOne(ApiTester $I)
+    {
+        $I->sendGet(
+            API_TESTING_BASE_URL.'v1/lottie-videos',
+            [
+                'keyword' => '',
+                'class_id' => [3],
+                'page' => 1
+            ]
+        );
+        $I->seeResponseCodeIs(HttpCode::OK);
+        $I->seeResponseIsJson();
+        $I->seeResponseContainsJson(
+            [
+                'code' => 'lottie_video_search',
+                'message' => 'Lottie Video Search'
             ]
         );
         $I->seeResponseMatchesJsonType(

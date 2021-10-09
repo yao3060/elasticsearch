@@ -6,7 +6,6 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
-use yii\base\Exception;
 
 /**
  * 片段视频
@@ -45,7 +44,6 @@ class VideoTemplate extends BaseModel
     /**
      * @param  \app\queries\ES\VideoTemplateSearchQuery  $query
      * @return array|false
-     * @throws Exception
      */
     public function search(QueryBuilderInterface $query): array
     {
@@ -60,10 +58,11 @@ class VideoTemplate extends BaseModel
             return $return;
         }
 
-
-        $responseData['hit'] = 0;
-        $responseData['ids'] = [];
-        $responseData['score'] = [];
+        $responseData = [
+            'hit' => 0,
+            'ids' => [],
+            'score' => []
+        ];
 
         try {
             $info = self::find()
@@ -83,7 +82,7 @@ class VideoTemplate extends BaseModel
                     $responseData['score'][$value['_id']] = $value['sort'][0] ?? [];
                 }
             }
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             \Yii::error("VideoTemplate Model Error: " . $e->getMessage(), __METHOD__);
         }
 

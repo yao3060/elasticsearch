@@ -39,6 +39,7 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
         public $use = 0
     ) {
         $this->sortClassId = $classId;
+        $this->beforeAssignment();
     }
 
     public function query(): array
@@ -132,8 +133,6 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
 
     public function getRedisKey()
     {
-        $this->beforeAssignment();
-
         $classId = str_replace(
             ['10_133_0_', '132_133_0_', '10_550_27_'],
             ['31_23_0_', '31_23_0_', '32_27_326_'],
