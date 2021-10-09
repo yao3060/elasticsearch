@@ -10,8 +10,10 @@ class SeoSearchWordCest
         $I->haveHttpHeader('accept', 'application/json');
         $I->haveHttpHeader('content-type', 'application/json');
     }
-
-    // tests
+    /**
+     * @param ApiTester $I
+     * 有关键词测试
+     */
     public function testGetSeoSearchWord(ApiTester $I)
     {
         // pass in query params in second argument
@@ -36,7 +38,10 @@ class SeoSearchWordCest
             ]
         );
     }
-
+    /**
+     * @param ApiTester $I
+     * 关键词测试
+     */
     public function testGetSeoSearchWordNull(ApiTester $I)
     {
         // pass in query params in second argument

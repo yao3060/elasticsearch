@@ -10,8 +10,10 @@ class SeoSearchWordAssetCest
         $I->haveHttpHeader('accept', 'application/json');
         $I->haveHttpHeader('content-type', 'application/json');
     }
-
-    // tests
+    /**
+     * @param ApiTester $I
+     * 有关键词测试
+     */
     public function testGetSeoSearchWordAsset(ApiTester $I)
     {
         // pass in query params in second argument
@@ -38,7 +40,10 @@ class SeoSearchWordAssetCest
             ]
         );
     }
-
+    /**
+     * @param ApiTester $I
+     * 无关键词测试
+     */
     public function testGetSeoSearchWordAssetNull(ApiTester $I)
     {
         // pass in query params in second argument

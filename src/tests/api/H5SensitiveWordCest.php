@@ -10,8 +10,10 @@ class H5SensitiveWordCest
         $I->haveHttpHeader('accept', 'application/json');
         $I->haveHttpHeader('content-type', 'application/json');
     }
-
-    // tests
+    /**
+     * @param ApiTester $I
+     * 无敏感词测试
+     */
     public function testGetH5SensitiveWord(ApiTester $I)
     {
         // pass in query params in second argument
@@ -35,7 +37,10 @@ class H5SensitiveWordCest
             ]
         );
     }
-
+    /**
+     * @param ApiTester $I
+     * 有敏感词测试
+     */
     public function testGetH5SensitiveWordNull(ApiTester $I)
     {
         // pass in query params in second argument

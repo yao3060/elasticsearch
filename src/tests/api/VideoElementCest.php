@@ -10,7 +10,10 @@ class VideoElementCest
         $I->haveHttpHeader('accept', 'application/json');
         $I->haveHttpHeader('content-type', 'application/json');
     }
-    // tests
+    /**
+     * @param ApiTester $I
+     * 有关键词测试
+     */
     public function testGetVideoElement(ApiTester $I)
     {
         // pass in query params in second argument
@@ -41,7 +44,10 @@ class VideoElementCest
             ]
         );
     }
-
+    /**
+     * @param ApiTester $I
+     * 无关键词测试
+     */
     public function testGetVideoElementNull(ApiTester $I)
     {
         // pass in query params in second argument

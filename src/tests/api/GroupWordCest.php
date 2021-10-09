@@ -10,8 +10,10 @@ class GroupWordCest
         $I->haveHttpHeader('accept', 'application/json');
         $I->haveHttpHeader('content-type', 'application/json');
     }
-
-    // tests
+    /**
+     * @param ApiTester $I
+     * 关键词测试
+     */
     public function testGetGroupWord(ApiTester $I)
     {
         // pass in query params in second argument
@@ -40,7 +42,10 @@ class GroupWordCest
             ]
         );
     }
-
+    /**
+     * @param ApiTester $I
+     * 无关键词测试
+     */
     public function testGetGroundWordNull(ApiTester $I)
     {
         // pass in query params in second argument

@@ -10,8 +10,10 @@ class PptTemplateCest
         $I->haveHttpHeader('accept', 'application/json');
         $I->haveHttpHeader('content-type', 'application/json');
     }
-
-    // tests
+    /**
+     * @param ApiTester $I
+     * 有class_id测试
+     */
     public function testGetPptTemplate(ApiTester $I)
     {
         // pass in query params in second argument
@@ -42,7 +44,7 @@ class PptTemplateCest
         );
     }
 
-    public function testGetPptTemplateNull(ApiTester $I)
+    public function testGetPptTemplateSaveClassId(ApiTester $I)
     {
         // pass in query params in second argument
         $I->sendGet(

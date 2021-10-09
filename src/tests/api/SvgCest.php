@@ -10,7 +10,10 @@ class SvgCest
         $I->haveHttpHeader('accept', 'application/json');
         $I->haveHttpHeader('content-type', 'application/json');
     }
-    // tests
+    /**
+     * @param ApiTester $I
+     * 有关键词测试
+     */
     public function testGetSvg(ApiTester $I)
     {
         // pass in query params in second argument
@@ -38,7 +41,10 @@ class SvgCest
             ]
         );
     }
-
+    /**
+     * @param ApiTester $I
+     * 无关键词测试
+     */
     public function testGetSvgNull(ApiTester $I)
     {
         // pass in query params in second argument

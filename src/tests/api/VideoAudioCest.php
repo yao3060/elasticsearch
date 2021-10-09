@@ -10,7 +10,10 @@ class VideoAudioCest
         $I->haveHttpHeader('accept', 'application/json');
         $I->haveHttpHeader('content-type', 'application/json');
     }
-    // tests
+    /**
+     * @param ApiTester $I
+     * 有关键词测试
+     */
     public function testGetVideoAudio(ApiTester $I)
     {
         // pass in query params in second argument
@@ -42,14 +45,17 @@ class VideoAudioCest
             ]
         );
     }
-
+    /**
+     * @param ApiTester $I
+     * 无关键词测试
+     */
     public function testGetVideoAudioNull(ApiTester $I)
     {
         // pass in query params in second argument
         $I->sendGet(
             API_TESTING_BASE_URL . 'v1/audiovisuals',
             [
-                'keyword' => "你好",
+                'keyword' => '',
                 'page' => 1,
                 'page_size' => 30,
                 'parents_id' => 0,
