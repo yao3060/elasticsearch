@@ -6,6 +6,9 @@ class SensitiveWordCest
 {
     public function _before(ApiTester $I)
     {
+        $I->haveHttpHeader('host', 'es-api-stagging.818ps.com');
+        $I->haveHttpHeader('accept', 'application/json');
+        $I->haveHttpHeader('content-type', 'application/json');
     }
 
     public function testValidateSensitiveWordPartyPolicy(ApiTester $I)
