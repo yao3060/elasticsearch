@@ -38,7 +38,7 @@ class VideoAudio extends BaseModel
         $log = 'VideoAudio:redisKey:' . $query->getRedisKey();
         yii::info($log, __METHOD__);
         if ($return) {
-            Yii::info('bypass by redis, redis key:' . $query->getRedisKey(), __METHOD__);
+            Yii::info('bypass redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
         $info['hit'] = 0;
@@ -64,6 +64,5 @@ class VideoAudio extends BaseModel
             \Yii::error($e->getMessage(), __METHOD__);
             return $info;
         }
-
     }
 }

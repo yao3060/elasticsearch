@@ -18,13 +18,16 @@ class Container extends BaseModel
      */
     const REDIS_DB = 8;
 
-    public static function index() {
+    public static function index()
+    {
         return 'container';
     }
-    public static function type() {
+    public static function type()
+    {
         return 'list';
     }
-    public function attributes() {
+    public function attributes()
+    {
         return ['id', 'title', 'description', 'created', 'kid_1', 'kid_2', 'kid_3', 'pr', 'man_pr', 'man_pr_add', 'width', 'height', 'ratio', 'scene_id'];
     }
     /**
@@ -35,10 +38,10 @@ class Container extends BaseModel
     public function search(QueryBuilderInterface $query): array
     {
         $return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
-        $log = 'Container:redisKey:'.$query->getRedisKey();
-        yii::info($log,__METHOD__);
+        $log = 'Container:redisKey:' . $query->getRedisKey();
+        yii::info($log, __METHOD__);
         if ($return && isset($return['hit']) && $return['hit']) {
-            Yii::info('bypass by redis, redis key:' . $query->getRedisKey(), __METHOD__);
+            Yii::info('bypass redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
         $return['hit'] = 0;
@@ -64,6 +67,5 @@ class Container extends BaseModel
             \Yii::error($e->getMessage(), __METHOD__);
             return $return;
         }
-
     }
 }

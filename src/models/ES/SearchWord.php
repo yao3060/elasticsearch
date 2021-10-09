@@ -62,10 +62,10 @@ class SearchWord extends BaseModel
     public function search(QueryBuilderInterface $query): array
     {
         $return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
-        $log = 'SearchWord:redisKey:'.$query->getRedisKey();
-        yii::info($log,__METHOD__);
+        $log = 'SearchWord:redisKey:' . $query->getRedisKey();
+        yii::info($log, __METHOD__);
         if ($return && isset($return['hit']) && $return['hit']) {
-            Yii::info('bypass by redis, redis key:' . $query->getRedisKey(), __METHOD__);
+            Yii::info('bypass redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
         try {
@@ -95,8 +95,5 @@ class SearchWord extends BaseModel
             \Yii::error($e->getMessage(), __METHOD__);
             return $info;
         }
-
     }
-
-
 }

@@ -30,7 +30,7 @@ class Asset extends BaseModel
         yii::info($log, __METHOD__);
         $return = Tools::getRedis(self::REDIS_DB, $redisKey);
         if ($return && isset($return['hit']) && $return['hit']) {
-            Yii::info('bypass by redis, redis key:' . $redisKey, __METHOD__);
+            Yii::info('bypass redis, redis key:' . $redisKey, __METHOD__);
             return $return;
         }
         if ($query->useCount) {
@@ -70,7 +70,6 @@ class Asset extends BaseModel
             \Yii::error($e->getMessage(), __METHOD__);
             return $return;
         }
-
     }
 
     public static function index()

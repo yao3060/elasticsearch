@@ -6,6 +6,7 @@ use app\components\Tools;
 use yii\base\Exception;
 use app\interfaces\ES\QueryBuilderInterface;
 use Yii;
+
 /**
  * @package app\models\ES
  * author  ysp
@@ -22,10 +23,10 @@ class SeoSearchWord extends BaseModel
     public function search(QueryBuilderInterface $query): array
     {
         $return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
-        $log = 'SeoSearchWord:redisKey:'.$query->getRedisKey();
-        yii::info($log,__METHOD__);
+        $log = 'SeoSearchWord:redisKey:' . $query->getRedisKey();
+        yii::info($log, __METHOD__);
         if ($return && isset($return['hit']) && $return['hit']) {
-            Yii::info('bypass by redis, redis key:' . $query->getRedisKey(), __METHOD__);
+            Yii::info('bypass redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
         try {
@@ -40,7 +41,7 @@ class SeoSearchWord extends BaseModel
                 $return['keyword'] = $query->keyword;
             }
             Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 86400);
-            if (empty($return)){
+            if (empty($return)) {
                 $return = [];
             }
             return $return;
@@ -48,7 +49,6 @@ class SeoSearchWord extends BaseModel
             $return['is_seo_search_keyword'] = false;
             return $return;
         }
-
     }
 
     public function seoSearch(QueryBuilderInterface $query): array
