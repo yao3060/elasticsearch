@@ -1,4 +1,4 @@
-@BASE_URL = http://es-api-staging.818ps.com
+@BASE_URL = http://localhost:8081
 
 ### Test
 GET {{BASE_URL}}/?test=1 HTTP/1.1
@@ -99,7 +99,7 @@ Content-Type: application/json
 Accept: application/json
 
 ### SVG
-GET {{BASE_URL}}/v1/svg?keyword=&page_size=50&kid2=0&type=1
+GET {{BASE_URL}}/v1/svg?keyword=&page_size=2&kid2=0&page=2
 Content-Type: application/json
 Accept: application/json
 
@@ -217,7 +217,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "keyword": "fuck"
+  "keyword": "sdadadadad"
 }
 
 ### 'GET  v1/ppt-templates' => 'es/ppt-template/search', //PPT模板单页分类筛选
