@@ -6,6 +6,7 @@ use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
 use yii\base\Exception;
 use Yii;
+
 /**
  * @package app\models\ES
  * author  ysp
@@ -40,10 +41,10 @@ class Picture extends BaseModel
     public function search(QueryBuilderInterface $query): array
     {
         $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
-        $log = 'Picture:redisKey:'.$query->getRedisKey();
-        yii::info($log,__METHOD__);
+        $log = 'Picture:redisKey:' . $query->getRedisKey();
+        yii::info($log, __METHOD__);
         if ($return && isset($return['hit']) && $return['hit']) {
-            Yii::info('bypass by redis, redis key:' . $query->getRedisKey(), __METHOD__);
+            Yii::info('bypass redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
         $return['hit'] = 0;
@@ -71,7 +72,5 @@ class Picture extends BaseModel
             \Yii::error($e->getMessage(), __METHOD__);
             return $return;
         }
-
     }
-
 }

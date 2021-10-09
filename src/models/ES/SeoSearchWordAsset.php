@@ -41,10 +41,10 @@ class SeoSearchWordAsset extends BaseModel
     public function seoSearch(QueryBuilderInterface $query): array
     {
         $return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
-        $log = 'SeoSearchWordAsset:redisKey:'.$query->getRedisKey();
-        yii::info($log,__METHOD__);
+        $log = 'SeoSearchWordAsset:redisKey:' . $query->getRedisKey();
+        yii::info($log, __METHOD__);
         if ($return && isset($return['hit']) && $return['hit']) {
-            Yii::info('bypass by redis, redis key:' . $query->getRedisKey(), __METHOD__);
+            Yii::info('bypass redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
         try {
@@ -80,7 +80,5 @@ class SeoSearchWordAsset extends BaseModel
             ];
             return $response;
         }
-
     }
-
 }

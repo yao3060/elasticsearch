@@ -41,10 +41,10 @@ class SeoDetailKeywordForTitle extends BaseModel
     public function Search(QueryBuilderInterface $query): array
     {
         $return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
-        $log = 'SeoDetailKeywordForTitle:redisKey:'.$query->getRedisKey();
-        yii::info($log,__METHOD__);
+        $log = 'SeoDetailKeywordForTitle:redisKey:' . $query->getRedisKey();
+        yii::info($log, __METHOD__);
         if ($return && isset($return['hit']) && $return['hit']) {
-            Yii::info('bypass by redis, redis key:' . $query->getRedisKey(), __METHOD__);
+            Yii::info('bypass redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
         $repsonseData = [];
@@ -60,7 +60,7 @@ class SeoDetailKeywordForTitle extends BaseModel
                 foreach ($info['hits'] as $v) {
                     $repsonseData[] = [
                         'id' => $v['_id'] ?? 0,
-                        'keyword'=> $v['_source']['_keyword'] ?? ''
+                        'keyword' => $v['_source']['_keyword'] ?? ''
                     ];
                 }
             }
@@ -71,7 +71,5 @@ class SeoDetailKeywordForTitle extends BaseModel
             \Yii::error($e->getMessage(), __METHOD__);
             return $repsonseData;
         }
-
     }
-
 }
