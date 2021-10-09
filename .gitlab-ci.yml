@@ -4,7 +4,7 @@ variables:
   KUBECONFIG: /etc/deploy/config
 
 cache:
-  key: ${CI_PROJECT_NAME}_3
+  key: ${CI_PROJECT_NAME}
   paths:
     - src/vendor
     - src/web/apidocs
@@ -42,18 +42,17 @@ staging-install-job:
   stage: install
   environment:
     name: staging
-  image: composer:2
+  # image: composer:2
   tags:
     - 818ps_web_dev
   only:
     - develop
   script:
-    - cd ./src
+    # - cd ./src
     - echo "Start install php packages"
-    - composer install --ignore-platform-reqs --no-scripts --no-dev
+    - ./composer install --ignore-platform-reqs --no-scripts --no-dev
     # Optimizes PSR0 and PSR4 packages to be loaded with classmaps too, good for production.
-    - composer dump-autoload -o
-    - cd ../
+    - ./composer dump-autoload -o
 
 staging-build-apidoc-job:
   stage: build-apidoc
