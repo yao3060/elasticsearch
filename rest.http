@@ -107,6 +107,7 @@ Accept: application/json
 GET {{BASE_URL}}/v1/keywords?keyword=中秋&type=1&page_size=30
 Content-Type: application/json
 Accept: application/json
+User-Agent: YAOYY/1.0
 
 ### seo词库相关推荐
 GET {{BASE_URL}}/v1/seo/keyword-assets?keyword=节日

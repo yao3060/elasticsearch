@@ -20,9 +20,11 @@ class JsonStreamTarget extends Streamlog
      */
     public function formatMessage($message)
     {
-        list($text, $level, $category, $timestamp) = $message;
+        list($text, $level, $category, $timestamp, $trace, $memory) = $message;
 
         $logData = [];
+
+        $logData['level'] = Logger::getLevelName($level);
 
         // Begin assembling the data that we will JSON-encode for the log.
         $logData['timestamp'] = $this->getTime($timestamp);
@@ -31,8 +33,10 @@ class JsonStreamTarget extends Streamlog
         $logData['username'] =  Yii::$app->user?->identity?->username ?? '-';
 
         $logData['ip'] = $_SERVER['HTTP_X_ORIGINAL_FORWARDED_FOR'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? Yii::$app->getRequest()?->getUserIP();
+        $logData['url'] = Yii::$app->getRequest()?->url;
+        $logData['http_method'] = Yii::$app->getRequest()?->method;
+        $logData['memory'] = $this->memoryUsage($memory);
 
-        $logData['level'] = Logger::getLevelName($level);
         $logData['category'] = $category;
         $logData['message'] = $this->extractMessageContentData($text);
 
@@ -134,5 +138,17 @@ class JsonStreamTarget extends Streamlog
         } else {
             return (strpos($data, "\n") !== false);
         }
+    }
+
+    protected function memoryUsage($memory)
+    {
+        if ($memory < 1024)
+            return $memory . " B";
+        elseif ($memory < 1048576)
+            return round($memory / 1024, 2) . " KB";
+        else
+            return round($memory / 1048576, 2) . " MB";
+
+        return $memory . ' B';
     }
 }
