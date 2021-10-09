@@ -3,27 +3,11 @@ variables:
   GIT_DEPTH: 1
   KUBECONFIG: /etc/deploy/config
 
-cache:
-  key: ${CI_PROJECT_NAME}_testing
-  paths:
-    - src/vendor
-    - src/web/apidocs
-
 include:
   - template: Code-Quality.gitlab-ci.yml
 
-
 stages:
   - test
-
-before_script:
-  - set -aeu
-  # - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
-  - cp .env.default .env
-
-after_script:
-  - source .env
-  # - ./deploy/scripts/clean-docker-network.sh  "${PROJECT}_${ENVIRONMENT}_default"
 
 ###########################################################################
 
