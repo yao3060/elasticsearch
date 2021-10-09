@@ -21,8 +21,8 @@ class PptTemplateCest
                 'class_id' => '10',
                 'page' => 1,
                 'page_size' => 30,
-                'class_level2_ids' => 0,
-                'class_level3_ids' => 0,
+                'class_level2_ids' => [],
+                'class_level3_ids' => [],
             ]
         );
         $I->seeResponseCodeIs(HttpCode::OK);
@@ -30,13 +30,13 @@ class PptTemplateCest
         $I->seeResponseContainsJson(['code' => 'get_template_single_page_list']);
         $I->seeResponseMatchesJsonType(
             [
-                'code' => 'string',
-                'message' => 'string',
-                'data' => [
-                    'total'=>'integer',
-                    'hit' => 'integer',
-                    'ids' => 'array',
-                    'score' => 'array',
+                "code" => "string",
+                "message" => "string",
+                "data" => [
+                    "total"=>"integer",
+                    "hit" => "integer",
+                    "ids" => "array",
+                    "score" => "array",
                 ],
             ]
         );
@@ -51,8 +51,8 @@ class PptTemplateCest
                 'class_id' => '15',
                 'page' => 1,
                 'page_size' => 30,
-                'class_level2_ids' => 0,
-                'class_level3_ids' => 0,
+                'class_level2_ids' => [],
+                'class_level3_ids' => [],
             ]
         );
         $I->seeResponseCodeIs(HttpCode::OK);

@@ -2,7 +2,7 @@
 
 use \Codeception\Util\HttpCode;
 
-class GifAssetCest
+class SeoDetailKeywordForTitle
 {
     public function _before(ApiTester $I)
     {
@@ -12,63 +12,49 @@ class GifAssetCest
     }
 
     // tests
-    public function testGetGifAsset(ApiTester $I)
+    public function testGetSeoDetailKeyword(ApiTester $I)
     {
         // pass in query params in second argument
         $I->sendGet(
-            API_TESTING_BASE_URL . 'v1/gif-assets',
+            API_TESTING_BASE_URL . 'v1/seo/title-keywords',
             [
                 'keyword' => "你好",
-                'page' => 1,
-                'page_size' => 30,
-                'class_id' => 0,
-                'is_zb' => 1,
-                'prep' => 0,
-                'limit_size' => 0,
             ]
         );
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(['code' => 'get_gif_asset_list']);
+        $I->seeResponseContainsJson(['code' => 'get_seo_detail_keyword_for_title_list']);
         $I->seeResponseMatchesJsonType(
             [
                 'code' => 'string',
                 'message' => 'string',
                 'data' => [
-                    'hit' => 'integer',
-                    'ids' => 'array',
-                    'score' => 'array',
+                    'id' => 'integer',
+                    'keyword' => 'string',
                 ],
             ]
         );
     }
 
-    public function testGetGifAssetNull(ApiTester $I)
+    public function testGetSeoDetailKeywordNull(ApiTester $I)
     {
         // pass in query params in second argument
         $I->sendGet(
-            API_TESTING_BASE_URL . 'v1/gif-assets',
+            API_TESTING_BASE_URL . 'v1/seo/title-keywords',
             [
-                'keyword' => 0,
-                'page' => 1,
-                'page_size' => 30,
-                'class_id' => 10,
-                'is_zb' => 1,
-                'prep' => 1,
-                'limit_size' => 0,
+                'keyword' => '',
             ]
         );
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(['code' => 'get_gif_asset_list']);
+        $I->seeResponseContainsJson(['code' => 'get_seo_detail_keyword_for_title_list']);
         $I->seeResponseMatchesJsonType(
             [
                 'code' => 'string',
                 'message' => 'string',
                 'data' => [
-                    'hit' => 'integer',
-                    'ids' => 'array',
-                    'score' => 'array',
+                    'id' => 'integer',
+                    'keyword' => 'string',
                 ],
             ]
         );

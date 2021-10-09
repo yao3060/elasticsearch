@@ -2,7 +2,7 @@
 
 use \Codeception\Util\HttpCode;
 
-class H5SensitiveWordCest
+class SeoLinkWordCest
 {
     public function _before(ApiTester $I)
     {
@@ -12,50 +12,44 @@ class H5SensitiveWordCest
     }
 
     // tests
-    public function testGetH5SensitiveWord(ApiTester $I)
+    public function testGetSeoLinkWord(ApiTester $I)
     {
         // pass in query params in second argument
-        $I->sendPost(
-            API_TESTING_BASE_URL . 'v1/h5-sensitive-words/validate',
+        $I->sendGet(
+            API_TESTING_BASE_URL . 'v1/seo/link-word-seo',
             [
                 'keyword' => "你好",
             ]
         );
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(['code' => 'get_h5_ban_list']);
+        $I->seeResponseContainsJson(['code' => 'get_seo_link_word_search_list']);
         $I->seeResponseMatchesJsonType(
             [
                 'code' => 'string',
                 'message' => 'string',
-                'data' => [
-                    'flag' => 'boolean',
-                    'word' => 'string',
-                ],
+                'data' => [],
             ]
         );
     }
 
-    public function testGetH5SensitiveWordNull(ApiTester $I)
+    public function testGetSeoLinkWordNull(ApiTester $I)
     {
         // pass in query params in second argument
-        $I->sendPost(
-            API_TESTING_BASE_URL . 'v1/h5-sensitive-words/validate',
+        $I->sendGet(
+            API_TESTING_BASE_URL . 'v1/seo/link-word-seo',
             [
-                'keyword' => 'fuck',
+                'keyword' => '0',
             ]
         );
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(['code' => 'get_h5_ban_list']);
+        $I->seeResponseContainsJson(['code' => 'get_seo_link_word_search_list']);
         $I->seeResponseMatchesJsonType(
             [
                 'code' => 'string',
                 'message' => 'string',
-                'data' => [
-                    'flag' => 'boolean',
-                    'word' => 'string',
-                ],
+                'data' => [],
             ]
         );
     }
