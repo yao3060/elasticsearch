@@ -42,7 +42,7 @@ class SvgController extends BaseController
             } else {
                 $items = (new Svg)->search(new SvgSearchQuery(
                     keyword: $request->get('keyword', 0),
-                    kid2: $request->get('kid2', []),
+                    kid2: $request->get('kid2', 0),
                     page: $request->get('page', 1),
                     pageSize: $request->get('page_size', 40)
                 ));

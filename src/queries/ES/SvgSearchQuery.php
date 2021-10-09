@@ -7,10 +7,10 @@ class SvgSearchQuery extends BaseTemplateSearchQuery
 {
     public function __construct(
         public $keyword = 0,
-        public array $kid2 = [],
-        public int $page = 1,
-        public int $pageSize = 40,
-        public string $sort = 'sort desc'
+        public $kid2 = [],
+        public $page = 1,
+        public $pageSize = 40,
+        public $sort = 'sort desc'
     ) {
     }
 
@@ -26,7 +26,6 @@ class SvgSearchQuery extends BaseTemplateSearchQuery
     public function query(): array
     {
         $this->queryKeyword();
-
         return $this->query;
     }
 

@@ -22,25 +22,21 @@ class Svg extends BaseModel
     }
 
     /**
-     * @param  \app\queries\ES\SvgSearchQuery  $query
+     * @param \app\queries\ES\SvgSearchQuery $query
      * @return array
      * @throws Exception
      */
     public function search(QueryBuilderInterface $query): array
     {
         $redisKey = $query->getRedisKey();
-
         $return = Tools::getRedis(self::REDIS_DB, $redisKey);
-
         if (!empty($return) && isset($return['hit']) && $return['hit'] && Tools::isReturnSource(
             ) === false && !IpsAuthority::check(DESIGNER_USER)) {
             return $return;
         }
-
         $return['hit'] = 0;
         $return['ids'] = [];
         $return['score'] = [];
-
         try {
             $info = self::find()
                 ->source(['id'])
@@ -50,7 +46,6 @@ class Svg extends BaseModel
                 ->limit($query->pageSize)
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
-
             if (isset($info['hits']) && sizeof($info['hits'])) {
                 $total = $info['total'] ?? 0;
                 $return['hit'] = $total > 10000 ? 10000 : $total;
@@ -61,7 +56,6 @@ class Svg extends BaseModel
             }
         } catch (Exception $e) {
             \Yii::error($e->getMessage(), __METHOD__);
-            //throw new Exception($e->getMessage());
         }
         return $return;
     }
