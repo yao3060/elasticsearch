@@ -6,7 +6,7 @@ class DesignerTemplateCest
 {
     public function _before(ApiTester $I)
     {
-        $I->haveHttpHeader('host', 'es-api-stagging.818ps.com');
+        $I->haveHttpHeader('host', 'es-api-staging.818ps.com');
         $I->haveHttpHeader('accept', 'application/json');
         $I->haveHttpHeader('content-type', 'application/json');
     }
