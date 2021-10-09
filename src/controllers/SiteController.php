@@ -74,8 +74,8 @@ class SiteController extends BaseController
                 'is_local' => is_local(),
                 'env' => getenv('APP_ENV') ?? 'dev',
                 'version' => getenv('APP_VERSION') ?: '0.0.0',
-                // 'AssetUseTop' => AssetUseTop::getLatestBy('kid_1', 1),
-                'profile' => Yii::$app->user->identity,
+                'core_version' => Yii::getVersion(),
+                'profile' => Yii::$app->user->identity ?? '',
             ]
         ]);
     }
