@@ -2,7 +2,7 @@
 
 use Codeception\Util\HttpCode;
 
-class RichEditorAssetCest
+class VideoTemplateCest
 {
     public function _before(ApiTester $I)
     {
@@ -12,58 +12,24 @@ class RichEditorAssetCest
     }
 
     /**
-     * @target: 默认，无搜索条件
+     * @target 默认，无搜索词搜索
+     * @tips 其余参数默认
      */
-    public function testSearchDefault(ApiTester $I)
+    public function testSearch(ApiTester $I)
     {
         $I->sendGet(
-            API_TESTING_BASE_URL.'v1/rich-editor-assets',
-            [
-                'keyword' => ''
-            ]
-        );
-        $I->seeResponseCodeIs(HttpCode::OK);
-        $I->seeResponseIsJson();
-        $I->seeResponseContainsJson(
-            [
-                'code' => 'rich_editor_asset_search',
-                'message' => 'Rich Editor Asset Search'
-            ]
-        );
-        $I->seeResponseMatchesJsonType(
-            [
-                'code' => 'string',
-                'message' => 'string',
-                'data' => [
-                    'hit' => 'integer',
-                    'ids' => 'array',
-                    'score' => 'array'
-                ]
-            ]
-        );
-    }
-
-    /**
-     * @target: 默认，无搜索条件
-     * @classId: [1, 0]
-     */
-    public function testSearchClassIds(ApiTester $I)
-    {
-        $I->sendGet(
-            API_TESTING_BASE_URL.'v1/rich-editor-assets',
+            API_TESTING_BASE_URL.'v1/video-templates',
             [
                 'keyword' => '',
-                'class_id' => [1, 0],
-                'page' => 1,
-                'page_size' => 40
+                'page_size' => 32
             ]
         );
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(
             [
-                'code' => 'rich_editor_asset_search',
-                'message' => 'Rich Editor Asset Search'
+                'code' => 'video_template_search',
+                'message' => 'Video Template Search'
             ]
         );
         $I->seeResponseMatchesJsonType(
@@ -80,26 +46,25 @@ class RichEditorAssetCest
     }
 
     /**
-     * @target: 默认，无搜索条件
-     * @classId: [2, 55]
+     * @target 有搜索词：教师节
+     * @ratio: 2
      */
-    public function testSearchClassIdsSecond(ApiTester $I)
+    public function testSearchCarryKeyword(ApiTester $I)
     {
         $I->sendGet(
-            API_TESTING_BASE_URL.'v1/rich-editor-assets',
+            API_TESTING_BASE_URL.'v1/video-templates',
             [
-                'keyword' => '',
-                'class_id' => [2, 55],
-                'page' => 1,
-                'page_size' => 40
+                'keyword' => '教师节',
+                'page_size' => 32,
+                'ratio' => 2
             ]
         );
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(
             [
-                'code' => 'rich_editor_asset_search',
-                'message' => 'Rich Editor Asset Search'
+                'code' => 'video_template_search',
+                'message' => 'Video Template Search'
             ]
         );
         $I->seeResponseMatchesJsonType(
@@ -116,26 +81,28 @@ class RichEditorAssetCest
     }
 
     /**
-     * @target: 默认，无搜索条件
-     * @classId: [2, 55]
+     * @target 无搜索词
+     * @classId: [1579, 1580]
      * @page: 2
      */
-    public function testSearchClassIdsPage(ApiTester $I)
+    public function testSearchCarryClassIdsPageOfTwo(ApiTester $I)
     {
         $I->sendGet(
-            API_TESTING_BASE_URL.'v1/rich-editor-assets',
+            API_TESTING_BASE_URL.'v1/video-templates',
             [
                 'keyword' => '',
-                'class_id' => [1, 0],
-                'page' => 3
+                'page' => 2,
+                'page_size' => 32,
+                'ratio' => 1,
+                'class_id' => [1579, 1580]
             ]
         );
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(
             [
-                'code' => 'rich_editor_asset_search',
-                'message' => 'Rich Editor Asset Search'
+                'code' => 'video_template_search',
+                'message' => 'Video Template Search'
             ]
         );
         $I->seeResponseMatchesJsonType(
@@ -152,25 +119,25 @@ class RichEditorAssetCest
     }
 
     /**
-     * @target 有搜索词：橘色
-     * @classId: [5, 58]
+     * @target 有搜索词：丢失
+     * @classId: []
      */
-    public function testSearchCarryKeywordClassIds(ApiTester $I)
+    public function testSearchCarryKeywordClassIdsOfNone(ApiTester $I)
     {
         $I->sendGet(
-            API_TESTING_BASE_URL.'v1/rich-editor-assets',
+            API_TESTING_BASE_URL.'v1/video-templates',
             [
-                'keyword' => '橘色',
-                'class_id' => [5, 58],
-                'page' => 1
+                'keyword' => '丢失',
+                'page' => 1,
+                'ratio' => 1
             ]
         );
         $I->seeResponseCodeIs(HttpCode::OK);
         $I->seeResponseIsJson();
         $I->seeResponseContainsJson(
             [
-                'code' => 'rich_editor_asset_search',
-                'message' => 'Rich Editor Asset Search'
+                'code' => 'video_template_search',
+                'message' => 'Video Template Search'
             ]
         );
         $I->seeResponseMatchesJsonType(

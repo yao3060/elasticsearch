@@ -30,7 +30,7 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
         public $elasticsearchColor = ''
     )
     {
-
+        $this->beforeAssignment();
     }
 
     /**
@@ -76,8 +76,6 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
      */
     public function getRedisKey()
     {
-        $this->beforeAssignment();
-
         $redisKey = "ES_template12-23:";
 
         if ($this->isFuzzy()) {

@@ -6,11 +6,16 @@ class DesignerTemplateCest
 {
     public function _before(ApiTester $I)
     {
-        $I->haveHttpHeader('host', 'es-api-stagging.818ps.com');
+        $I->haveHttpHeader('host', 'es-api-staging.818ps.com');
         $I->haveHttpHeader('accept', 'application/json');
         $I->haveHttpHeader('content-type', 'application/json');
     }
 
+    /*
+     * @target 测试 DesignerTemplate@getTemplateIds
+     * @notice 只适用于搜索结果数量小于 32 条【不改变测试代码的情况下】
+     * @reason 搜索条件一致，搜索结果顺序不一致
+     */
     public function testKid1OfOneKid2OfNineteen(ApiTester $I)
     {
         $I->sendGet(API_TESTING_BASE_URL . 'v1/designer-templates', [
@@ -44,6 +49,13 @@ class DesignerTemplateCest
         ]);
     }
 
+    /**
+     * @target 测试有搜索词
+     * @kid1 156
+     * @kid2 301
+     * @es_type 3
+     * @template_type 4
+     */
     public function testCarryKeyword(ApiTester $I)
     {
         $I->sendGet(API_TESTING_BASE_URL . 'v1/designer-templates', [

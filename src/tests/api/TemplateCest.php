@@ -6,11 +6,16 @@ class TemplateCest
 {
     public function _before(ApiTester $I)
     {
-        $I->haveHttpHeader('host', 'es-api-stagging.818ps.com');
+        $I->haveHttpHeader('host', 'es-api-staging.818ps.com');
         $I->haveHttpHeader('accept', 'application/json');
         $I->haveHttpHeader('content-type', 'application/json');
     }
 
+    /**
+     * @target 默认，无搜索关键词
+     * @templateTypes 3
+     * @pageSize  35
+     */
     public function testSortTypeByTime(ApiTester $I)
     {
         $I->sendGet(API_TESTING_BASE_URL . 'v1/templates', [
@@ -45,6 +50,11 @@ class TemplateCest
        ]);
     }
 
+    /**
+     * @target 测试无搜索词有分类分页
+     * @classId: 290_0_0
+     * @page: 2
+     */
     public function testPageOfTwoCarryClassId(ApiTester $I)
     {
         $I->sendGet(API_TESTING_BASE_URL . 'v1/templates', [
@@ -79,6 +89,11 @@ class TemplateCest
        ]);
     }
 
+    /**
+     * @target 测试无搜索词
+     * @classId: 290_334_0_0
+     * @tagId: 46
+     */
     public function testCarryClassIdTagId(ApiTester $I)
     {
         $I->sendGet(API_TESTING_BASE_URL . 'v1/templates', [
@@ -114,6 +129,12 @@ class TemplateCest
        ]);
     }
 
+    /**
+     * @target 测试无搜索词
+     * @classId: 290_334_0_0
+     * @sortType: 'bytime'
+     * @tagId: 46
+     */
     public function testCarryClassIdTagIdSortType(ApiTester $I)
     {
         $I->sendGet(API_TESTING_BASE_URL . 'v1/templates', [
@@ -149,6 +170,12 @@ class TemplateCest
        ]);
     }
 
+    /**
+     * @target 搜索词：你好
+     * @classId 10_30_0
+     * @width 1242
+     * @height 2208
+     */
     public function testCarryKeyword(ApiTester $I)
     {
         $I->sendGet(API_TESTING_BASE_URL . 'v1/templates', [
@@ -187,6 +214,11 @@ class TemplateCest
        ]);
     }
 
+    /**
+     * @target 关键词搜索：环保
+     * @classId: 290_0_0_0
+     * @tagId: 0
+     */
     public function testSearchCarryKeywordClassIdsSortTypeTagId(ApiTester $I)
     {
         $I->sendGet(API_TESTING_BASE_URL . 'v1/templates', [
@@ -222,6 +254,11 @@ class TemplateCest
        ]);
     }
 
+    /**
+     * @target 关键词搜索：环保
+     * @classId: 290_0_0_710
+     * @tagId: 49
+     */
     public function testSearchCarryKeywordClassIdsTagId(ApiTester $I)
     {
         $I->sendGet(API_TESTING_BASE_URL . 'v1/templates', [
@@ -257,6 +294,11 @@ class TemplateCest
        ]);
     }
 
+    /**
+     * @target 关键词搜索：环保
+     * @classId: 290_0_0_710
+     * @tagId: 49
+     */
     public function testSearchCarryKeywordClassIdsTagIdSecond(ApiTester $I)
     {
         $I->sendGet(API_TESTING_BASE_URL . 'v1/templates', [

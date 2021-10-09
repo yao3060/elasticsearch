@@ -16,6 +16,7 @@ class LottieVideoSearchQuery extends BaseTemplateSearchQuery
         public $pageSize = 40,
         public $prep = 0
     ) {
+        $this->beforeAssignment();
     }
 
     public function query(): array
@@ -56,8 +57,6 @@ class LottieVideoSearchQuery extends BaseTemplateSearchQuery
 
     public function getRedisKey()
     {
-        $this->beforeAssignment();
-
         $redisKey = "ES_video:lottie:".date('Y-m-d').":{$this->keyword}_{$this->page}_ ".implode(
                 '-',
                 $this->classId

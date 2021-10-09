@@ -17,6 +17,7 @@ class VideoTemplateSearchQuery extends BaseTemplateSearchQuery
         public $offset = 0
     )
     {
+        $this->beforeAssignment();
     }
 
     public function beforeAssignment()
@@ -32,8 +33,6 @@ class VideoTemplateSearchQuery extends BaseTemplateSearchQuery
 
     public function getRedisKey()
     {
-        $this->beforeAssignment();
-
         $redisKey = "ES_video:excerpt:" . date('Y-m-d') . ":{$this->keyword}_{$this->page}_ " . implode('-', $this->classId) . " _{$this->pageSize}_{$this->ratio}";
 
         return $redisKey;
