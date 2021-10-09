@@ -2,31 +2,29 @@
 
 namespace app\queries\ES;
 
-use app\models\ES\Template;
 use Yii;
 
 class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
 {
 
+    const REDIS_KEY = "ES:template:second:designer:";
+    const HASH_KEY_SECOND_PAGE = "is:second:hash:template:second:page";
+    public static $esKey = null;
+
+    //每个搜索结果存1万条 1天过期
+    public $sort;
+    // 页数，未使用
+    public int $offset;
     protected $sortClassId;
     protected $templateAttr;
     protected $settlementLevel;
-
-    //每个搜索结果存1万条 1天过期
-    const REDIS_KEY = "ES:template:second:designer:";
-    // 页数，未使用
-    const HASH_KEY_SECOND_PAGE = "is:second:hash:template:second:page";
-
-    public static $esKey = null;
-    public $sort;
-    public int $offset;
 
     public function __construct(
         public $keyword = 0,
         public $page = 1,
         public $kid1 = 0,
         public $kid2 = 0,
-        public string $sortType = 'default',
+        public $sortType = 'default',
         public $tagId = 0,
         public $isZb = 1,
         public $pageSize = 100,
@@ -39,37 +37,8 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
         public $templateInfo = [],
         public $color = [],
         public $use = 0
-    )
-    {
+    ) {
         $this->sortClassId = $classId;
-    }
-
-    public static function index()
-    {
-        return 'second_design';
-    }
-
-    public function beforeAssignment()
-    {
-        $this->sortType = $this->sortType ?: 'default';
-        $this->keyword = $this->keyword ?: 0;
-        $this->kid1 = $this->kid1 ? $this->kid1 : 0;
-        $this->kid2 = $this->kid2 ? $this->kid2 : 0;
-        $this->tagId = $this->tagId ? $this->tagId : 0;
-        $this->isZb = $this->isZb ? $this->isZb : 1;
-        $this->ratio = $this->ratio != null ? $this->ratio : null;
-        $this->classId = $this->classId ? $this->classId : '0_0_0_0';
-        $this->sortClassId = $this->classId;
-        $this->size = $this->size ? $this->size : 0;
-        $this->use = $this->use ? $this->use : 0;
-        $this->templateAttr = isset($this->templateInfo['templ_attr']) ? $this->templateInfo['templ_attr'] : 0; //ips_template_info => templ_attr 模板属性 1普通模板  2精品模板  3GIF模板  4套图模板
-        $this->settlementLevel = isset($this->templateInfo['settlement_level']) && $this->templateInfo['settlement_level'] ? $this->templateInfo['settlement_level'] : 0; //ips_template_info => 结算等级 1=>A级    2=>S级'
-        if (!$this->keyword && !$this->tagId && $this->ratio <= 0 && in_array($this->classId, ['0_0_0_0', '0_0_0'])) {
-            //用于排序的class_id但不影响过滤项 影响全局排序的特殊class_id为-1
-            $this->sortClassId = -1;
-        }
-
-        $this->offset = ($this->page - 1) * $this->pageSize;
     }
 
     public function query(): array
@@ -96,80 +65,25 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
         return $this->query;
     }
 
-    //获取搜索redis key
-    public function getRedisKey()
+    protected function setSort()
     {
-        $this->beforeAssignment();
+        switch ($this->sortType) {
+            case 'bytime':
+                $this->sortByTime();
+                break;
 
-        $classId = str_replace(
-            ['10_133_0_', '132_133_0_', '10_550_27_'],
-            ['31_23_0_', '31_23_0_', '32_27_326_'],
-            $this->classId
-        );
+            case 'byhot':
+                $this->sortByHot();
+                break;
 
-        $redisKey = self::REDIS_KEY . date('Y-m-d');
-        if ($this->fuzzy == 1) {
-            $redisKey .= ":fuzzy";
+            default:
+                $this->sortDefault($this->keyword, $this->sortClassId, static::index());
         }
+    }
 
-        // $redisKey:主图厨房用具_156_301_default_0_1_10000__0_0_0_0_0_0_0_0_4_1
-
-//        var_dump([
-//            'keyword' => $this->keyword,
-//            'kid_1' => $this->kid1,
-//            'kid_2' => $this->kid2,
-//            'sortType' => $this->sortType,
-//            'tag_id' => $this->tagId,
-//            'is_zb' => $this->isZb,
-//            'pagesize' => $this->pageSize,
-//            'class_id' => $this->classId,
-//            'size' => $this->size,
-//            'use' => $this->use,
-//            'templ_attr' => isset($this->templateInfo['templ_attr']) ? $this->templateInfo['templ_attr'] : 0,
-//            'settlement_level' => $this->settlementLevel,
-//            'templ_info' => $this->templateInfo,
-//        ]);exit;
-
-        $implodeKeys = [
-            $this->keyword,
-            $this->kid1,
-            $this->kid2,
-            $this->sortType,
-            $this->tagId,
-            $this->isZb,
-            $this->pageSize,
-            $this->ratio,
-            $classId,
-            $this->size,
-            $this->use,
-            $this->templateAttr,
-            $this->settlementLevel
-        ];
-
-        $redisKey .= ':' . implode('_', $implodeKeys);
-
-        //templateTypes = [1,2]
-        if (!empty($this->templateTypes) && is_array($this->templateTypes)) {
-            $redisKey .= '_' . implode('|', $this->templateTypes);
-        } else if ($this->templateTypes > 0) {
-            $redisKey .= "_" . $this->templateTypes;
-        }
-
-        if (!empty($this->color) && $this->color) {
-            $redisKey .= '_' . implode(',', array_column($this->color, 'color')) .
-                '_' . implode(',', array_column($this->color, 'weight'));
-        }
-
-        //获取页数 占用逻辑
-        if (isset($this->templateInfo['type']) && $this->templateInfo['type'] == 'second') {
-            self::$esKey = $redisKey;
-            $page = Yii::$app->redis8->hget(self::HASH_KEY_SECOND_PAGE, self::REDIS_KEY);
-            return $page ?: 1;
-        }
-
-        $redisKey .= "_" . $this->page;
-        self::$esKey = $redisKey;
-        return $redisKey;
+    public static function index()
+    {
+        return 'second_design';
     }
 
     protected function queryColor()
@@ -214,24 +128,95 @@ class DesignerTemplateSearchQuery extends BaseTemplateSearchQuery
         }
     }
 
-    protected function setSort()
+    //获取搜索redis key
+
+    public function getRedisKey()
     {
-        switch ($this->sortType) {
-            case 'bytime':
-                $this->sort = $this->sortByTime();
-                break;
+        $this->beforeAssignment();
 
-            case 'byhot':
-                $this->sort = $this->sortByHot();
-                break;
+        $classId = str_replace(
+            ['10_133_0_', '132_133_0_', '10_550_27_'],
+            ['31_23_0_', '31_23_0_', '32_27_326_'],
+            $this->classId
+        );
 
-            default: // @todo
-                $this->sort = $this->sortDefault(
-                    $this->keyword,
-                    $this->sortClassId,
-                    static::index(),
-                    Template::getEsTableName()
-                );
+        $redisKey = self::REDIS_KEY . date('Y-m-d');
+
+        if ($this->isFuzzy()) {
+            $redisKey .= ":fuzzy";
         }
+
+        $implodeKeys = [
+            $this->keyword,
+            $this->kid1,
+            $this->kid2,
+            $this->sortType,
+            $this->tagId,
+            $this->isZb,
+            $this->pageSize,
+            $this->ratio,
+            $classId,
+            $this->size,
+            $this->use,
+            $this->templateAttr,
+            $this->settlementLevel
+        ];
+
+        $redisKey .= ':' . implode('_', $implodeKeys);
+
+        //templateTypes = [1,2]
+        if (!empty($this->templateTypes) && is_array($this->templateTypes)) {
+            $redisKey .= '_' . implode('|', $this->templateTypes);
+        } else {
+            if ($this->templateTypes > 0) {
+                $redisKey .= "_" . $this->templateTypes;
+            }
+        }
+
+        if (!empty($this->color) && $this->color) {
+            $redisKey .= '_' . implode(',', array_column($this->color, 'color')) .
+                '_' . implode(',', array_column($this->color, 'weight'));
+        }
+
+        //获取页数 占用逻辑
+        if (isset($this->templateInfo['type']) && $this->templateInfo['type'] == 'second') {
+            self::$esKey = $redisKey;
+            $page = Yii::$app->redis8->hget(self::HASH_KEY_SECOND_PAGE, self::REDIS_KEY);
+            return $page ?: 1;
+        }
+
+        $redisKey .= "_" . $this->page;
+
+        self::$esKey = $redisKey;
+
+        return $redisKey;
+    }
+
+    public function beforeAssignment()
+    {
+        $this->sortType = $this->sortType ?: 'default';
+        $this->keyword = $this->keyword ?: 0;
+        $this->kid1 = $this->kid1 ? $this->kid1 : 0;
+        $this->kid2 = $this->kid2 ? $this->kid2 : 0;
+        $this->tagId = $this->tagId ? $this->tagId : 0;
+        $this->isZb = $this->isZb ? $this->isZb : 1;
+        $this->ratio = $this->ratio != null ? $this->ratio : null;
+        $this->classId = $this->classId ? $this->classId : '0_0_0_0';
+        $this->sortClassId = $this->classId;
+        $this->size = $this->size ? $this->size : 0;
+        $this->use = $this->use ? $this->use : 0;
+        $this->templateAttr = isset($this->templateInfo['templ_attr']) ? $this->templateInfo['templ_attr'] : 0; //ips_template_info => templ_attr 模板属性 1普通模板  2精品模板  3GIF模板  4套图模板
+        $this->settlementLevel = isset($this->templateInfo['settlement_level']) && $this->templateInfo['settlement_level'] ? $this->templateInfo['settlement_level'] : 0; //ips_template_info => 结算等级 1=>A级    2=>S级'
+        if (!$this->keyword && !$this->tagId && $this->ratio <= 0 && in_array($this->classId, ['0_0_0_0', '0_0_0'])) {
+            //用于排序的class_id但不影响过滤项 影响全局排序的特殊class_id为-1
+            $this->sortClassId = -1;
+        }
+
+        $this->offset = ($this->page - 1) * $this->pageSize;
+    }
+
+    public function isFuzzy()
+    {
+        return $this->fuzzy == 1;
     }
 }

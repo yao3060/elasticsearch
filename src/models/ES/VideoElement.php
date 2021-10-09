@@ -4,7 +4,7 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
-use app\services\designers\DesignerRecommendAssetTagService;
+use yii\base\Exception;
 
 /**
  * @package app\models\ES
@@ -55,17 +55,19 @@ class VideoElement extends BaseModel
                 ->limit($query->pageSizeSet())
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
-        } catch (\exception $e) {
+            $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
+            foreach ($info['hits'] as $value) {
+                $return['ids'][] = $value['_id'];
+                $return['score'][$value['_id']] = $value['sort'][0];
+            }
+            return $return;
+        } catch (Exception $e) {
             $info['hit'] = 0;
             $info['ids'] = [];
             $info['score'] = [];
+            return $info;
         }
-        $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
-        foreach ($info['hits'] as $value) {
-            $return['ids'][] = $value['_id'];
-            $return['score'][$value['_id']] = $value['sort'][0];
-        }
-        return $return;
+
     }
 
     //推荐搜索

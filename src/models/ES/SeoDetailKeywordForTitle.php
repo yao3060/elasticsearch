@@ -4,6 +4,7 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
+use yii\base\Exception;
 use Yii;
 
 /**
@@ -15,7 +16,7 @@ class SeoDetailKeywordForTitle extends BaseModel
     /**
      * @var int  redis
      */
-    private $redisDb = 8;
+    const REDIS_DB = 8;
 
     public static function index()
     {
@@ -39,12 +40,14 @@ class SeoDetailKeywordForTitle extends BaseModel
      */
     public function Search(QueryBuilderInterface $query): array
     {
-        $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
-        $log = 'SeoDetailKeywordForTitle:redisKey:'.$query->getRedisKey();
-        yii::info($log,__METHOD__);
+        $return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
+        $log = 'SeoDetailKeywordForTitle:redisKey:' . $query->getRedisKey();
+        yii::info($log, __METHOD__);
         if ($return && isset($return['hit']) && $return['hit']) {
+            Yii::info('bypass redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
+        $repsonseData = [];
         try {
             $info = self::find()
                 ->source(['id', '_keyword'])
@@ -52,17 +55,21 @@ class SeoDetailKeywordForTitle extends BaseModel
                 ->limit(2)
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
-        } catch (\exception $e) {
-            $info['total'] = 0;
-        }
-        if ($info['total'] > 0) {
-            foreach ($info['hits'] as $k => $v) {
-                $return[$k]['id'] = $v['_id'];
-                $return[$k]['keyword'] = $v['_source']['_keyword'];
+            $total = $info['total'] ?? 0;
+            if ($total > 0 && isset($info['hits']) && $info['hits']) {
+                foreach ($info['hits'] as $v) {
+                    $repsonseData[] = [
+                        'id' => $v['_id'] ?? 0,
+                        'keyword' => $v['_source']['_keyword'] ?? ''
+                    ];
+                }
             }
-        }
-        Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 86400 * 30);
-        return $return;
-    }
+            Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $repsonseData, 86400 * 30);
+            return $repsonseData;
+        } catch (Exception $e) {
 
+            \Yii::error($e->getMessage(), __METHOD__);
+            return $repsonseData;
+        }
+    }
 }

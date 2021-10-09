@@ -3,6 +3,7 @@
 namespace app\models\ES;
 
 use app\components\Tools;
+use yii\base\Exception;
 use app\interfaces\ES\QueryBuilderInterface;
 use Yii;
 
@@ -15,7 +16,7 @@ class SeoSearchWordAsset extends BaseModel
     /**
      * @var int redis
      */
-    private $redisDb = 8;
+    const REDIS_DB = 8;
 
     public static function index()
     {
@@ -39,10 +40,11 @@ class SeoSearchWordAsset extends BaseModel
      */
     public function seoSearch(QueryBuilderInterface $query): array
     {
-        $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
-        $log = 'SeoSearchWordAsset:redisKey:'.$query->getRedisKey();
-        yii::info($log,__METHOD__);
+        $return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
+        $log = 'SeoSearchWordAsset:redisKey:' . $query->getRedisKey();
+        yii::info($log, __METHOD__);
         if ($return && isset($return['hit']) && $return['hit']) {
+            Yii::info('bypass redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
         try {
@@ -52,27 +54,31 @@ class SeoSearchWordAsset extends BaseModel
                 ->limit($query->pageSizeSet())
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
-        } catch (\exception $e) {
-            $info['hit'] = 0;
-            $info['ids'] = [];
-            $info['score'] = [];
-        }
-        if ($info['total'] > 0) {
-            foreach ($info['hits'] as $k => $v) {
-                $return[$k]['id'] = $v['_source']['id'];
-                $return[$k]['keyword'] = $v['_source']['_keyword'];
-                $return[$k]['pinyin'] = $v['_source']['pinyin'];
-                if (isset($v['_source']['weight'])){
-                    $return[$k]['weight'] = $v['_source']['weight'];
-                }else{
-                    $return[$k]['weight'] = 0;
+            $total = $info['total'] ?? 0;
+            $data = [];
+            if ($total > 0 && isset($info['hits']) && $info['hits']) {
+                foreach ($info['hits'] as $v) {
+                    $data[] = [
+                        'id' => $v['_source']['id'] ?? 0,
+                        'keyword' => $v['_source']['_keyword'] ?? '',
+                        'pinyin' => $v['_source']['pinyin'] ?? '',
+                        'weight' => $v['_source']['weight'] ?? 0
+                    ];
                 }
-
             }
-
+            $response = [
+                'list' => $data,
+                'total' => $total
+            ];
+            Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $response, 86400 * 30);
+            return $response;
+        } catch (Exception $e) {
+            \Yii::error($e->getMessage(), __METHOD__);
+            $response = [
+                'list' => '',
+                'total' => ''
+            ];
+            return $response;
         }
-        Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 86400 * 30);
-        return $return;
     }
-
 }

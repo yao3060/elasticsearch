@@ -30,6 +30,7 @@ configMapGenerator:
       - APP_ENV=staging
       - APP_KEY=base64:gT5YBxoHuFZqzPGU9CO26koLyE6YQkkLK+cH9dKQD8g=
       - APP_DEBUG=true
+      - APP_VERSION=APP_NEW_VERSION
       - APP_TIMEZONE=Asia/Shanghai
       - APP_LOCALE=zh-CN
       - LOG_CHANNEL=errorlog

@@ -2,8 +2,6 @@
 
 namespace app\queries\ES;
 
-use app\models\ES\Template;
-
 class TemplateSearchQuery extends BaseTemplateSearchQuery
 {
     public $sortClassId;
@@ -68,6 +66,11 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
 
     }
 
+    public function isFuzzy()
+    {
+        return $this->fuzzy == 1;
+    }
+
     /**
      * joint redis key
      */
@@ -76,7 +79,8 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
         $this->beforeAssignment();
 
         $redisKey = "ES_template12-23:";
-        if ($this->fuzzy == 1) {
+
+        if ($this->isFuzzy()) {
             $redisKey .= ":fuzzy";
         }
 
@@ -88,22 +92,26 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
 
         $redisKey .= ":" . implode('_', $implodeKeyArr);
 
-        if (!empty($this->templateTypes) && is_array($this->templateTypes)) {
+        if ($this->hasTemplateTypes() && is_array($this->templateTypes)) {
             $redisKey .= '_' . implode('|', $this->templateTypes);
         } else if ($this->templateTypes > 0) {
             $redisKey .= "_" . $this->templateTypes;
         }
-        if ($this->color) {
+
+        if ($this->hasColor()) {
             $redisKey .= '_' . implode(',', array_column($this->color, 'color')) .
                 '_' . implode(',', array_column($this->color, 'weight'));
         }
-        if (!empty($this->width)) {
+
+        if ($this->hasWidth()) {
             $redisKey .= "_w={$this->width}";
         }
-        if (!empty($this->height)) {
+
+        if ($this->hasHeight()) {
             $redisKey .= "_h={$this->height}";
         }
-        if (!empty($this->classIntersectionSearch)) {
+
+        if ($this->hasClassIntersectionSearch()) {
             $redisKey .= "_cis={$this->classIntersectionSearch}";
         }
 
@@ -131,26 +139,55 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
     {
         switch ($this->sortType) {
             case 'bytime':
-                $this->sort = Template::sortByTime();
+                $this->sortByTime();
                 break;
             case 'byyesday':
-                $this->sort = Template::sortByYesday();
-                $this->query['bool']['filter'][]['range']['web_dl']['gt'] = 0; //获取昨日有下载量的模板
+                $this->sortByYesterday();
                 break;
             case 'byweekday':
-                $this->sort = Template::sortByWeekday();
-                $this->query['bool']['filter'][]['range']['week_web_dl']['gt'] = 0;
+                $this->sortByWeekday();
                 break;
             case 'bymonth':
-                $this->sort = Template::sortByMonth();
-                $this->query['bool']['filter'][]['range']['month_web_dl']['gt'] = 0;
+                $this->sortByMonth();
                 break;
             case 'byhot':
-                $this->sort = Template::sortByHot();
+                $this->sortByHot();
                 break;
             default:
-                $this->sort = Template::sortDefault($this->keyword, $this->sortClassId);
+                $this->sortDefault($this->keyword, $this->sortClassId);
                 break;
+        }
+
+        return $this;
+    }
+
+    public function queryTemplateTypes()
+    {
+        if (is_array($this->templateTypes) && count($this->templateTypes) > 1 && in_array(5, $this->templateTypes)) {
+            //有H5就添加长页H5(不改变key,除了单独搜索H5类型)
+            $this->templateTypes[] = 7;
+        }
+
+        if ($this->hasTemplateTypes() && is_array($this->templateTypes)) {
+            // 如果搜索全部类型模板则去掉该条件
+            if(count($this->templateTypes) < 7){
+                $this->query['bool']['must'][]['terms']['template_type'] = $this->templateTypes;
+            }
+        } else if ($this->templateTypes>0){
+            $this->query['bool']['must'][]['match']['template_type'] = $this->templateTypes;
+        }
+
+        return $this;
+    }
+
+    public function queryTagId()
+    {
+        if ($this->hasTagId()) {
+            $tag_id = explode('_', $this->tagId);
+            foreach ($tag_id as &$item) {
+                $item = (int)$item;
+            }
+            $this->query['bool']['filter'][]['terms']['tag_id'] = $tag_id;
         }
 
         return $this;
@@ -169,7 +206,7 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
             ->queryRatio()
             ->queryClassIds()
             ->queryTemplateTypes()
-            ->queryTagIds()
+            ->queryTagId()
             ->queryIsZb()
             ->queryIosAlbumUser()
             ->queryWidth()
@@ -177,7 +214,7 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
             ->querySortType();
 
         //颜色搜索
-        if ($this->color) {
+        if ($this->hasColor()) {
             return $this->formatColor(array_column($this->color, 'color'), array_column($this->color, 'weight'));
         }
 

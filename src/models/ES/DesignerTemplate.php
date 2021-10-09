@@ -20,19 +20,9 @@ class DesignerTemplate extends BaseModel
     //二次设计redisKey
     public static $occupyKey = "task:template:link:occupy:old:tid:uid:"; // 占用被驳回
     public static $hashKey = "is:second:hash:template:id"; // 占用的模板 用不过期
+    public static $hashKeySecondPage = "is:second:hash:template:second:page"; // 页数，未使用
     public static $designRedisDb = 8;
-
-    public static function sortByTime()
-    {
-        return 'created desc';
-    }
-
-    public static function updateMapping()
-    {
-        $db = static::getDb();
-        $command = $db->createCommand();
-        $command->setMapping(static::index(), static::type(), static::mapping());
-    }
+    public static $esKey = null;
 
     public static function getDb()
     {
@@ -97,21 +87,6 @@ class DesignerTemplate extends BaseModel
                 ]
             ],
         ];
-    }
-
-    public static function getMapping()
-    {
-        $redisKey = "ES_template:mapping:second";
-        $return = Tools::getRedis(self::REDIS_DB, $redisKey);
-
-        if (!empty($return)) {
-            return $return;
-        }
-        $db = static::getDb();
-        $command = $db->createCommand();
-        $return = $command->getMapping(static::index(), static::type(), static::mapping());
-        Tools::setRedis(self::REDIS_DB, $redisKey, $return, 3600);
-        return $return;
     }
 
     /**
@@ -181,24 +156,7 @@ class DesignerTemplate extends BaseModel
         if (isset($templInfo['type']) && $templInfo['type']) {
             unset($templInfo['type']);
         }
-//        var_dump([
-//            'keyword' => $keyword,
-//            'page' => $page,
-//            'kid1' => $kid1,
-//            'kid2' => $kid2,
-//            'sort_type' => $sortType,
-//            'tag_id' => $tagId,
-//            'is_zb' => $isZb,
-//            'page_size' => $pageSize,
-//            'ratio' => $ratio,
-//            'class_id' => $classId,
-//            'size' => $size,
-//            'fuzzy' => $fuzzy,
-//            'template_type' => $templateTypes,
-//            'templ_info' => $templInfo,
-//            'color' => $color,
-//            'use' => $use,
-//        ]);exit;
+
         $templIdArr = self::search($queryBuilder);
 
         $ids = $templIdArr['ids'];
@@ -219,7 +177,7 @@ class DesignerTemplate extends BaseModel
             if (count($tmpAds) < self::$occupyNum) {
                 $page = $page + 1;
                 //当前页已全部占满  以后无需再此页搜索
-//                Yii::$app->redis8->hset(self::$hashKeySecondPage, self::$esKey, $page);
+                Yii::$app->redis8->hset(self::$hashKeySecondPage, self::$esKey, $page);
                 $templIdArr = self::search($queryBuilder);
                 //翻页后如数量不足  则终止循环
                 if (count($templIdArr['ids']) < self::$occupyNum) {
@@ -278,10 +236,11 @@ class DesignerTemplate extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $res = [
+        $responseData = [
             'hit' => 0,
             'ids' => [],
-            'score' => []
+            'score' => [],
+            'total' => 0
         ];
 
         try {
@@ -294,10 +253,11 @@ class DesignerTemplate extends BaseModel
             }
 
             if (!empty($return) && isset($return['hit']) && $return['hit'] && Tools::isReturnSource() === false) {
+                \Yii::info("designer template search data source from redis", __METHOD__);
                 return $return;
             }
 
-            if (!empty($query->color)) {
+            if ($query->hasColor()) {
                 $info = (new Query())->from('818ps_pic', '818ps_pic')
                     ->source(['templ_id'])
                     ->query($query->query())
@@ -318,24 +278,23 @@ class DesignerTemplate extends BaseModel
 
             if (isset($info['hits']) && sizeof($info['hits'])) {
                 $total = $info['total'] ?? 0;
-                $res['total'] = $total;
-                $res['hit'] = $total > 10000 ? 10000 : $total;
+                $responseData['total'] = $total;
+                $responseData['hit'] = $total > 10000 ? 10000 : $total;
                 foreach ($info['hits'] as $value) {
-                    $res['ids'][] = $value['_id'];
-                    $res['score'][$value['_id']] = $value['sort'][0];
+                    $responseData['ids'][] = $value['_id'] ?? 0;
+                    $responseData['score'][$value['_id']] = $value['sort'][0] ?? [];
                 }
             }
 
         } catch (\Exception $e) {
-            Yii::error($e->getMessage(), __METHOD__);
-            throw new Exception($e->getMessage(), __METHOD__);
+            \Yii::error("DesignerTemplate Model Error: " . $e->getMessage(), __METHOD__);
         }
 
         if (!IpsAuthority::check(IOS_ALBUM_USER)) {
-            Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $res, 86400 + rand(-3600, 3600));
+            Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $responseData, 86400 + rand(-3600, 3600));
         }
 
-        return $res;
+        return $responseData;
     }
 
     /**

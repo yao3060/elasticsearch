@@ -8,9 +8,7 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\helpers\StringHelper;
-use app\models\ES\GroupWords;
 use app\models\ES\SeoLinkWord;
-use app\queries\ES\GroupWordsSearchQuery;
 use app\queries\ES\SeoLinkWordSearchQuery;
 use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
@@ -20,6 +18,17 @@ use yii\web\Request;
 
 class SeoLinkWordController extends BaseController
 {
+    /**
+     * @api {get} /v1/seo/link-word-seo GetSeoLinkWordSearch
+     * @apiName GetSeoLinkWordSearch
+     * @apiGroup SeoLinkWord
+     *
+     * @apiParam (请求参数) {String} keyword 搜索关键词
+     *
+     * @apiSuccess (应答字段) {String} code 返回状态码
+     * @apiSuccess (应答字段) {String} message 返回消息
+     * @apiSuccess (应答字段) {Object[]} data 返回数据
+     */
     public function actionSearch(Request $request)
     {
         $data = $request->get();
@@ -34,7 +43,7 @@ class SeoLinkWordController extends BaseController
                     ->search(new SeoLinkWordSearchQuery(
                         $data['keyword'],
                     ));
-                $response = new Response('LinkWord_list', 'LinkWordList', $data);
+                $response = new Response('get_seo_link_word_list', 'SeoLinkWordList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(
@@ -72,7 +81,7 @@ class SeoLinkWordController extends BaseController
                         1,
                         $data['page_size'] ?? 40
                     ));
-                $response = new Response('get_LinkWordSeo_list', 'LinkWordSeoList', $data);
+                $response = new Response('get_seo_link_word_search_list', 'LinkWordSeoList', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(

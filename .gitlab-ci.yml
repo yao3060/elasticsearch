@@ -1,17 +1,20 @@
 variables:
   GIT_STRATEGY: fetch
   GIT_DEPTH: 1
+  KUBECONFIG: /etc/deploy/config
 
 cache:
-  key: ${CI_PROJECT_NAME}_3
+  key: ${CI_PROJECT_NAME}_testing
   paths:
     - src/vendor
+    - src/web/apidocs
+
+include:
+  - template: Code-Quality.gitlab-ci.yml
+
 
 stages:
-  - install
   - test
-  - build
-  - deploy
 
 before_script:
   - set -aeu
@@ -20,82 +23,15 @@ before_script:
 
 after_script:
   - source .env
-  - ./deploy/scripts/clean-docker-network.sh  "${PROJECT}_${ENVIRONMENT}_default"
+  # - ./deploy/scripts/clean-docker-network.sh  "${PROJECT}_${ENVIRONMENT}_default"
 
 ###########################################################################
 
-staging-install-job:
-  stage: install
-  environment:
-    name: staging
-  image: composer:2
-  tags:
-    - 818ps_web_dev
+code_quality:
+  stage: test
+  artifacts:
+    paths: [gl-code-quality-report.json]
   only:
-    - develop
+    - testing
   script:
-    - cd ./src
-    - echo "Start install php packages"
-    - composer install --ignore-platform-reqs --no-scripts
-    - composer dump-autoload
-    - cd ../
-
-staging-build-job:
-  stage: build
-  environment:
-    name: staging
-  tags:
-    - 818ps_web_dev
-  only:
-    - develop
-  script:
-    # - ./deploy/scripts/enable-docker-compose-network.sh
-    - ./deploy/scripts/update-resource-mirror.sh
-    - ./deploy/scripts/modify-dot-env-staging.sh
-    - sed -i "1 s|$|-${CI_COMMIT_SHA:0:8}|" VERSION
-    - source ./.env
-    - export COMPOSE_PROJECT_NAME="${PROJECT}_${ENVIRONMENT}"
-    - export VERSION=$(cat VERSION)
-    - echo $VERSION
-    - echo "ready to build and push to Aliyun CS"
-    - ./deploy/scripts/deploy-to-aliyun-cs.sh nginx php
-    - echo "built successfully"
-  # when: manual
-
-prod-install-job:
-  stage: install
-  environment:
-    name: production
-  image: composer:2
-  tags:
-    - 818ps_web_dev
-  only:
-    - master
-  script:
-    - cd ./src
-    - echo "Start install php packages"
-    - composer install --ignore-platform-reqs --no-dev --no-scripts
-    - composer dump-autoload
-    - cd ../
-
-prod-build-job:
-  stage: build
-  environment:
-    name: production
-  tags:
-    - 818ps_web_dev
-  only:
-    - master
-  script:
-    # - ./deploy/scripts/enable-docker-compose-network.sh
-    - ./deploy/scripts/update-resource-mirror.sh
-    - ./deploy/scripts/modify-dot-env-production.sh
-    - sed -i "1 s|$|-${CI_COMMIT_SHA:0:8}|" VERSION
-    - source ./.env
-    - export COMPOSE_PROJECT_NAME="${PROJECT}_${ENVIRONMENT}"
-    - export VERSION=$(cat VERSION)
-    - echo $VERSION
-    - echo "ready to build and push to Aliyun CS"
-    - ./deploy/scripts/deploy-to-aliyun-cs.sh nginx php
-    - echo "built successfully"
-  when: manual
+    - echo "do code_quality test"

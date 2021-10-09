@@ -4,7 +4,9 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
+use yii\base\Exception;
 use Yii;
+
 /**
  * @package app\models\ES
  * author  ysp
@@ -22,11 +24,15 @@ class Album extends BaseModel
     public function search(QueryBuilderInterface $query): array
     {
         $return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
-        $log = 'Album:redisKey:'.$query->getRedisKey();
-        yii::info($log,__METHOD__);
+        $log = 'Album:redisKey:' . $query->getRedisKey();
+        yii::info($log, __METHOD__);
         if ($return && isset($return['hit']) && $return['hit'] && !Tools::isReturnSource() && $query->update != 1) {
+            Yii::info('bypass redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
+        $info['hit'] = 0;
+        $info['ids'] = [];
+        $info['score'] = [];
         try {
             $info = self::find()
                 ->source(['id'])
@@ -36,19 +42,18 @@ class Album extends BaseModel
                 ->limit($query->pageSizeSet())
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
-        } catch (\exception $e) {
-            $info['hit'] = 0;
-            $info['ids'] = [];
-            $info['score'] = [];
+            $return['total'] = $info['total'] ?? 0;
+            $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
+            foreach ($info['hits'] as $value) {
+                $return['ids'][] = $value['_id'];
+                $return['score'][$value['_id']] = $value['sort'][0];
+            }
+            Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, self::REDIS_EXPIRE);
+            return $return;
+        } catch (Exception $e) {
+            \Yii::error($e->getMessage(), __METHOD__);
+            return $info;
         }
-        $return['total'] = $info['total'];
-        $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
-        foreach ($info['hits'] as $value) {
-            $return['ids'][] = $value['_id'];
-            $return['score'][$value['_id']] = $value['sort'][0];
-        }
-        Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, self::REDIS_EXPIRE);
-        return $return;
     }
     public static function index()
     {
@@ -60,7 +65,8 @@ class Album extends BaseModel
         return 'list';
     }
 
-    public function attributes() {
+    public function attributes()
+    {
         return ['id', 'url_id', 'title', '_title', 'subtitle', 'keyword', 'type', 'class_id', 'job_id', 'created', 'sort'];
     }
 }

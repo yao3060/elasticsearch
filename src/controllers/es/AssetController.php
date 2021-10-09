@@ -18,12 +18,32 @@ use yii\web\Request;
 
 class AssetController extends BaseController
 {
+    /**
+     * @api {get} /v1/assets Get Asset
+     * @apiName GetAsset
+     * @apiGroup Asset
+     *
+     * @apiParam (请求参数) {String} keyword 搜索关键词
+     * @apiParam (请求参数) {Number} [page] 页码
+     * @apiParam (请求参数) {Boolean} [is_zb] 是否可商用   >= 1 可商用
+     * @apiParam (请求参数) {Number} [page_size] 每页条数
+     * @apiParam (请求参数) {String[]} [scene_id] 分类
+     * @apiParam (请求参数) {String} [sort] DESC  排序
+     * @apiParam (请求参数) {Number} [use_count] 使用计数
+     *
+     * @apiSuccess (应答字段) {String} code 返回状态码
+     * @apiSuccess (应答字段) {String} message 返回消息
+     * @apiSuccess (应答字段) {Object[]} data 返回数据
+     * @apiSuccess (应答字段) {String} data.hit 命中数
+     * @apiSuccess (应答字段) {String[]} data.ids 模板id集合
+     * @apiSuccess (应答字段) {String[]} data.score 计算分数
+     */
     public function actionSearch(Request $request)
     {
         $data = $request->get();
         try {
             $model = DynamicModel::validateData($data, [
-                ['keyword', 'required']
+                ['keyword', 'string']
             ]);
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
@@ -71,7 +91,7 @@ class AssetController extends BaseController
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
                 $data = (new Asset())
-                    ->recommendSearch(new AssetSearchQuery($data['keyword'], $data['page'], $data['page_size']));
+                    ->search(new AssetSearchQuery($data['keyword'], $data['page'], $data['page_size']));
                 $response = new Response('get_asset_recommend_list', 'GetRecommendList', $data);
             }
         } catch (UnknownPropertyException $e) {

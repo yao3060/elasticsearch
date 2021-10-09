@@ -131,8 +131,8 @@ class AssetTest extends \Codeception\Test\Unit
     {
         $items = (new Asset())
             ->search(new AssetSearchQuery(
-                keyword: '中秋',
-                page: 1,
+                keyword: '国庆',
+                page: 2,
                 pageSize: 30,
                 sceneId: 0,
                 isZb: 1
@@ -140,7 +140,7 @@ class AssetTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            getenv('UNIT_BASE_URL') .'/api/get-asset-list?w=中秋&p=1&type=image&k1=0&k2=0&k3=0&tagId=0&sceneId=undefined&styleId=undefined&ratioId=undefined'
+            getenv('UNIT_BASE_URL') .'/api/get-asset-list?w=国庆&p=2&type=image&k1=0&k2=0&k3=0&tagId=0&sceneId=undefined&styleId=undefined&ratioId=undefined'
         );
 
         $content = json_decode($response->getBody()->getContents());
@@ -148,7 +148,6 @@ class AssetTest extends \Codeception\Test\Unit
         sort($ids);
         $myIds = $items['ids'];
         sort($myIds);
-
         $this->assertEquals(join(',', $ids), join(',', $myIds));
     }
 }

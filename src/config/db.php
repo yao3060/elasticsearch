@@ -9,9 +9,9 @@ return [
         'charset' => 'utf8',
 
         // Schema cache options (for production environment)
-        //'enableSchemaCache' => true,
-        //'schemaCacheDuration' => 60,
-        'schemaCache' => 'cache',
+        'enableSchemaCache' => true,
+        'schemaCacheDuration' => 86400,
+        'schemaCache' => 'db_cache',
     ],
     'backend_db' => [
         'class' => '\yii\db\Connection',
@@ -19,5 +19,9 @@ return [
         'username' => getenv('BACKEND_DB_USERNAME'),
         'password' => getenv('BACKEND_DB_PASSWORD'),
         'charset' => 'utf8',
+        // Schema cache options (for production environment)
+        'enableSchemaCache' => true,
+        'schemaCacheDuration' => 86400,
+        'schemaCache' => 'backend_db_cache',
     ],
 ];

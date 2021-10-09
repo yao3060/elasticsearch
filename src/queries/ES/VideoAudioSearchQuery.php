@@ -7,65 +7,79 @@ use app\interfaces\ES\QueryBuilderInterface;
 
 class VideoAudioSearchQuery implements QueryBuilderInterface
 {
+    private $query = [];
     function __construct(
         public $keyword = 0,
-        public int $page = 1,
-        public int $pageSize = 40,
-        public int $parentsId = 0,
-        public string $classId = '0',
-        public int $prep = 0,
-        public int $isDesigner = 0,
-        public int $isVip = 0
-    )
-    {
+        public $page = 1,
+        public $pageSize = 40,
+        public $parentsId = 0,
+        public $classId = '0',
+        public $prep = 0,
+        public $isDesigner = 0,
+        public $isVip = 0
+    ) {
+
     }
 
     public function query(): array
     {
-        if ($this->keyword) {
-            $newQuery = $this->queryKeyword($this->keyword);
+        $this->queryKeyword();
+        $class_id = $this->classId ? $this->classId : [];
+        if (!is_array($class_id)) {
+            $class_id = [$class_id];
         }
-        if ($this->classId) {
-            foreach ($this->classId as $key) {
+        if ($class_id) {
+            foreach ($class_id as $key) {
                 if ($key > 0) {
-                    $newQuery['bool']['must'][]['terms']['class_id'] = [$key];
+                    $this->query['bool']['must'][]['terms']['class_id'] = [$key];
                 }
             }
         }
-        $newQuery['bool']['must'][]['match']['parents_id'] = $this->parentsId;
+        $this->query['bool']['must'][]['match']['parents_id'] = $this->parentsId;
         if ($this->isDesigner == 1) {
-            $newQuery['bool']['must'][]['term']['is_vip'] = 0;
+            $this->query['bool']['must'][]['term']['is_vip'] = 0;
         }
         if ($this->isVip == 1) {
-            $newQuery['bool']['must'][]['term']['is_vip'] = 1;
+            $this->query['bool']['must'][]['term']['is_vip'] = 1;
         }
-        return $newQuery;
+        return $this->query;
     }
-    public static function queryKeyword($keyword, $is_or = false)
+
+    public function queryKeyword($is_or = false)
     {
-        $operator = $is_or ? 'or' : 'and';
-        $query['bool']['must'][]['multi_match'] = [
-            'query' => $keyword,
-            'fields' => ["title^5", "description^1"],
-            'type' => 'most_fields',
-            "operator" => $operator
-        ];
-        return $query;
+        if ($this->keyword) {
+            $operator = $is_or ? 'or' : 'and';
+            $this->query['bool']['must'][]['multi_match'] = [
+                'query' => $this->keyword,
+                'fields' => ["title^1"],
+                'type' => 'most_fields',
+                "operator" => $operator
+            ];
+        }
+
+        return $this;
     }
+
     public function getRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
+        $class_id = $this->classId ? $this->classId : [];
+        if (!is_array($class_id)) {
+            $class_id = [$class_id];
+        }
         $redisKey = sprintf(
-            'ES_video:audio:%s:%d_%s_%d_%d',
+            'ES_video:audio:%s:%s_%s_%d_%s_%d',
             date('Y-m-d'),
             $this->parentsId,
             $this->keyword,
             $this->page,
+            ' '.implode('-', $class_id).' ',
             $this->pageSize
         );
         return $redisKey;
     }
-    public function pageSizeSet(){
+
+    public function pageSizeSet()
+    {
         $pageSize = $this->pageSize;
         if ($this->page * $this->pageSize > 10000) {
             $pageSize = $this->page * $pageSize - 10000;
@@ -76,7 +90,6 @@ class VideoAudioSearchQuery implements QueryBuilderInterface
     public function sortBy()
     {
         if ($this->isVip == 1) {
-            $newQuery['bool']['must'][]['term']['is_vip'] = 1;
             $sort = $this->sortByOrderTime();
         } else {
             $sort = $this->sortByTime();
@@ -86,17 +99,18 @@ class VideoAudioSearchQuery implements QueryBuilderInterface
         }
         return $sort;
     }
-    public static function sortByTime()
-    {
-        return 'create_date desc';
-    }
 
-    public static function sortByOrderTime()
+    public function sortByOrderTime()
     {
         return 'create_date asc';
     }
 
-    public static function sortByPr()
+    public function sortByTime()
+    {
+        return 'create_date desc';
+    }
+
+    public function sortByPr()
     {
         return 'pr desc';
     }

@@ -5,6 +5,7 @@ namespace app\components;
 use yii\helpers\Json;
 use codemix\streamlog\Target as Streamlog;
 use yii\log\Logger;
+use Yii;
 
 /**
  * A log target for streams in URL format.
@@ -19,27 +20,17 @@ class JsonStreamTarget extends Streamlog
      */
     public function formatMessage($message)
     {
-
         list($text, $level, $category, $timestamp) = $message;
 
+        $logData = [];
+
         // Begin assembling the data that we will JSON-encode for the log.
-        $logData = [
-            'timestamp' => $this->getTime($timestamp),
-        ];
+        $logData['timestamp'] = $this->getTime($timestamp);
 
-        // If the prefix is already a JSON string, decode it (to avoid
-        // double-encoding it below).
-        $prefix = $this->getMessagePrefix($message);
-        $prefixData = $this->extractPrefixKeyValueData($prefix);
+        $logData['user_id'] =  Yii::$app->user?->id ?? '-';
+        $logData['username'] =  Yii::$app->user?->identity?->username ?? '-';
 
-        // Only include the prefix data and/or raw prefix if there was content.
-        if ($prefixData) {
-            foreach ($prefixData as $key => $value) {
-                $logData[$key] = $value;
-            }
-        } elseif ($prefix) {
-            $logData['prefix'] = $prefix;
-        }
+        $logData['ip'] = $_SERVER['HTTP_X_ORIGINAL_FORWARDED_FOR'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? Yii::$app->getRequest()?->getUserIP();
 
         $logData['level'] = Logger::getLevelName($level);
         $logData['category'] = $category;

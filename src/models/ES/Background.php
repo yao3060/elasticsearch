@@ -5,6 +5,7 @@ namespace app\models\ES;
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
 use app\models\Backend\AssetUseTop;
+use yii\base\Exception;
 use Yii;
 
 /**
@@ -13,19 +14,20 @@ use Yii;
  */
 class Background extends BaseModel
 {
-    private $redisDb = 8;
+    const REDIS_DB = 8;
 
     /**
-     * @param \app\queries\ES\BackGroundSearchQuery $query
+     * @param \app\queries\ES\BackgroundSearchQuery $query
      * @return array 2021-09-06
      * return ['hit','ids','score'] 命中数,命中id,模板id=>分数
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
+        $return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
         $log = 'Background:redisKey:' . $query->getRedisKey();
         yii::info($log, __METHOD__);
         if ($return && isset($return['hit']) && $return['hit']) {
+            Yii::info('bypass redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
         if ($query->useCount) {
@@ -33,6 +35,9 @@ class Background extends BaseModel
         } else {
             $useInfo = '';
         }
+        $info['hit'] = 0;
+        $info['ids'] = [];
+        $info['score'] = [];
         try {
             $info = self::find()
                 ->source(['id', 'use_count'])
@@ -42,15 +47,7 @@ class Background extends BaseModel
                 ->limit($query->pageSizeSet())
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
-        } catch (\exception $e) {
-            $info['hit'] = 0;
-            $info['ids'] = [];
-            $info['score'] = [];
-            $info['total'] = 0;
-            $info['hits'] = 0;
-        }
-        $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
-        if ($info['hits'] != 0) {
+            $return['hit'] = $info['total'] ?? 0 > 10000 ? 10000 : $info['total'];
             foreach ($info['hits'] as $value) {
                 $return['ids'][] = $value['_id'];
                 $return['score'][$value['_id']] = $value['sort'][0];
@@ -64,9 +61,13 @@ class Background extends BaseModel
                     }
                 }
             }
+
+            Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 86400);
+            return $return;
+        } catch (Exception $e) {
+            \Yii::error($e->getMessage(), __METHOD__);
+            return $info;
         }
-        Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 86400);
-        return $return;
     }
 
 

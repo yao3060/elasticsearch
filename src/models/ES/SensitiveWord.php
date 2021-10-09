@@ -43,13 +43,6 @@ class SensitiveWord extends BaseModel
         ];
     }
 
-    public static function getMapping()
-    {
-        $db = static::getDb();
-        $command = $db->createCommand();
-        return $command->getMapping(static::index(), static::type(), static::mapping());
-    }
-
     /**
      * Create this model's index
      */
@@ -94,6 +87,7 @@ class SensitiveWord extends BaseModel
 
         if (!empty($validateSensitiveWord) && isset($validateSensitiveWord['hit']) && $validateSensitiveWord['hit']
             && Tools::isReturnSource() === false) {
+            \Yii::info("sensitive word search data source from redis", __METHOD__);
             return $validateSensitiveWord;
         }
 
@@ -105,20 +99,21 @@ class SensitiveWord extends BaseModel
                 ->query($query->query())
                 ->createCommand()
                 ->search()['hits'];
-            if ($find['total'] <= 0) {
+            if (isset($find['total']) && $find['total'] <= 0) {
                 Tools::setRedis(6, $query->getRedisKey(), $validateSensitiveWord, 86400 * 7);
                 $validateSensitiveWord['flag'] = false;
             }
-            foreach ($find['hits'] as &$item) {
-                $item['_source']['word'] = str_replace(" ", '', $item['_source']['word']);
-                if (strstr($query->keyword, $item['_source']['word'])) {
-                    $validateSensitiveWord['flag'] = true;
+            if (isset($find['hits']) && $find['hits']) {
+                foreach ($find['hits'] as &$item) {
+                    $item['_source']['word'] = str_replace(" ", '', $item['_source']['word']);
+                    if (strstr($query->keyword, $item['_source']['word'])) {
+                        $validateSensitiveWord['flag'] = true;
+                    }
                 }
             }
             Tools::setRedis(6, $query->getRedisKey(), $validateSensitiveWord, 86400 * 7);
         } catch (Exception $exception) {
-            \Yii::error($exception->getMessage(), __METHOD__);
-            throw new Exception($exception->getMessage());
+            \Yii::error("SensitiveWord Model Error: " . $exception->getMessage(), __METHOD__);
         }
 
         return $validateSensitiveWord;
