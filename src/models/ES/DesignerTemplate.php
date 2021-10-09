@@ -9,7 +9,6 @@ use app\models\Backend\Templ;
 use app\queries\ES\DesignerTemplateSearchQuery;
 use Yii;
 use app\interfaces\ES\QueryBuilderInterface;
-use yii\base\Exception;
 use yii\elasticsearch\Query;
 
 class DesignerTemplate extends BaseModel
@@ -286,7 +285,7 @@ class DesignerTemplate extends BaseModel
                 }
             }
 
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             \Yii::error("DesignerTemplate Model Error: " . $e->getMessage(), __METHOD__);
         }
 

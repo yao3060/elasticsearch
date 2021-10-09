@@ -10,7 +10,6 @@ use app\models\Backend\Templtaglink;
 use app\models\Backend\Test;
 use Yii;
 use yii\elasticsearch\Query;
-use yii\base\Exception;
 
 class Template extends BaseModel
 {
@@ -266,9 +265,9 @@ class Template extends BaseModel
                     Test::sqltest('setsearchKeywordRedis', $res, $query->getRedisKey());
                 }
             }
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             Test::sqltest('searchKeywordFalse', $e->getMessage(), $query->keyword);
-            throw new Exception($e->getMessage());
+            \Yii::error("Template Model @search Error: " . $e->getMessage(), __METHOD__);
         }
 
         return $return;
@@ -314,8 +313,8 @@ class Template extends BaseModel
                     $responseData['score'][$value['_id']] = isset($value['sort'][0]) ?? [];
                 }
             }
-        } catch (\Exception $e) {
-            \Yii::error("Template Model Error: " . $e->getMessage(), __METHOD__);
+        } catch (\Throwable $e) {
+            \Yii::error("Template Model @recommendSearch Error: " . $e->getMessage(), __METHOD__);
         }
 
         Tools::setRedis(self::$redisDb, $redisKey, $responseData);

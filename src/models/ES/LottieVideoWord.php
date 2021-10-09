@@ -6,7 +6,6 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
-use yii\base\Exception;
 
 class LottieVideoWord extends BaseModel
 {
@@ -31,7 +30,6 @@ class LottieVideoWord extends BaseModel
     /**
      * @param  \app\queries\ES\LottieVideoSearchQuery  $query
      * @return array
-     * @throws Exception
      */
     public function search(QueryBuilderInterface $query): array
     {
@@ -69,7 +67,7 @@ class LottieVideoWord extends BaseModel
                     $responseData['score'][$value['_id']] = $value['sort'][0] ?? [];
                 }
             }
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             \Yii::error("LottieVideoWord Model Error: " . $e->getMessage(), __METHOD__);
         }
 
