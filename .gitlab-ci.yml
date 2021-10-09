@@ -49,7 +49,7 @@ staging-install-job:
   script:
     # - cd ./src
     - echo "Start install php packages"
-    - export ENVIRONMENT="staging"
+    - ./deploy/scripts/modify-dot-env-staging.sh
     - ./composer install --ignore-platform-reqs --no-scripts --no-dev
     # Optimizes PSR0 and PSR4 packages to be loaded with classmaps too, good for production.
     - ./composer dump-autoload -o
