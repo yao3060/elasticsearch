@@ -102,3 +102,13 @@ spec:
                 secretKeyRef:
                   name: secrets
                   key: REDIS_SEARCH_PASSWORD
+            - name: ALIYUN_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: ALIYUN_ACCESS_KEY_ID
+            - name: ALIYUN_ACCESS_KEY_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: ALIYUN_ACCESS_KEY_SECRET
