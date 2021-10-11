@@ -70,7 +70,7 @@ class PptTemplate extends BaseModel
                 ->search([], ['track_scores' => true])['hits'];
             $data = [
                 'total' => $info['total'],
-                'hit' => $info['total'] ?? 0 > 10000 ? 10000 : $info['total'],
+                'hit' => ($info['total'] ?? 0)  > 10000 ? 10000 : $info['total'],
             ];
             foreach ($info['hits'] as $value) {
                 $data['ids'][] = $value['_id'];
