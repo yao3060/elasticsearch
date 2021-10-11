@@ -30,7 +30,7 @@ class AliDataVisualization
                 ->setOtherParams($this->otherParams)
                 ->buildUrl();
 
-            $signInUrl = getenv('ALI_VISUALIZATION_SIGN_IN_HOST')."/federation?Action=Login"
+            $signInUrl = getenv('ALIYUN_SIGN_IN_HOST')."/federation?Action=Login"
                 ."&LoginUrl=".urlencode("https://www.aliyun.com")
                 ."&Destination=".urlencode($slsUrl)
                 ."&SigninToken=".urlencode($this->getSignInToken());
@@ -57,8 +57,8 @@ class AliDataVisualization
     {
         // 只允许子用户使用角色
         AlibabaCloud::accessKeyClient(
-            getenv('ALI_VISUALIZATION_ACCESS_KEY_ID'),
-            getenv('ALI_VISUALIZATION_ACCESS_KEY_SECRET')
+            getenv('ALIYUN_ACCESS_KEY_ID'),
+            getenv('ALIYUN_ACCESS_KEY_SECRET')
         )
             ->regionId("cn-shanghai")
             ->asDefaultClient();
@@ -68,7 +68,7 @@ class AliDataVisualization
         $response = Sts::v20150401()
             ->assumeRole()
             //指定角色ARN
-            ->withRoleArn(getenv('ALI_VISUALIZATION_ROLE_ARON'))
+            ->withRoleArn(getenv('ALIYUN_ROLE_ARON'))
             //RoleSessionName即临时身份的会话名称，用于区分不同的临时身份
             ->withRoleSessionName($roleArnSession)
             //设置权限策略以进一步限制角色的权限（如果不进行设置默认拥有角色的所有权限），设置权限为角色拥有权限的子集
@@ -102,7 +102,7 @@ class AliDataVisualization
      */
     public function getSignInTokenUrl($accessKeyId, $accessKeySecret, $securityToken)
     {
-        $signInTokenUrl = getenv('ALI_VISUALIZATION_SIGN_IN_HOST')."/federation?Action=GetSigninToken"
+        $signInTokenUrl = getenv('ALIYUN_SIGN_IN_HOST')."/federation?Action=GetSigninToken"
             ."&AccessKeyId=".urlencode($accessKeyId)
             ."&AccessKeySecret=".urlencode($accessKeySecret)
             ."&SecurityToken=".urlencode($securityToken)
