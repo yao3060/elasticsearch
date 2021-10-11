@@ -58,7 +58,7 @@ class GifAsset extends BaseModel
                 ->limit($query->pageSizeSet())
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
-            $return['hit'] = $info['total'] ?? 0 > 10000 ? 10000 : $info['total'];
+            $return['hit'] = ($info['total'] ?? 0) > 10000 ? 10000 : $info['total'];
             foreach ($info['hits'] as $value) {
                 $return['ids'][] = $value['_id'];
                 $return['score'][$value['_id']] = $value['sort'][0];
