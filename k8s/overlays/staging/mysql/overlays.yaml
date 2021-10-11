@@ -19,7 +19,7 @@ spec:
     storage: 50Gi
   csi:
     volumeAttributes:
-      server: "3766a4a783-jsy8.cn-shanghai.nas.aliyuncs.com"
+      server: "31d62494e0-rth47.cn-shanghai.nas.aliyuncs.com"
       path: "/mnt/elasticsearch-staging-mysql-volume"
 ---
 apiVersion: v1
