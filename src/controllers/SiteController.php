@@ -2,12 +2,14 @@
 
 namespace app\controllers;
 
-use app\models\Backend\AssetUseTop;
+use app\services\ali\AliDataVisualization;
 use Yii;
+use yii\base\DynamicModel;
 use yii\filters\AccessControl;
 use app\components\Response;
 use app\helpers\StringHelper;
 use yii\filters\VerbFilter;
+use yii\web\Request;
 
 class SiteController extends BaseController
 {
@@ -43,12 +45,14 @@ class SiteController extends BaseController
         $exception = Yii::$app->errorHandler->exception;
 
         if ($exception !== null) {
-            return $this->response(new Response(
-                StringHelper::snake($exception->getName()),
-                $exception->getMessage(),
-                YII_DEBUG ? $exception->getTrace() : [],
-                $exception->statusCode
-            ));
+            return $this->response(
+                new Response(
+                    StringHelper::snake($exception->getName()),
+                    $exception->getMessage(),
+                    YII_DEBUG ? $exception->getTrace() : [],
+                    $exception->statusCode
+                )
+            );
         }
     }
 
@@ -66,18 +70,20 @@ class SiteController extends BaseController
             Yii::error($th->getTraceAsString());
         }
 
-        return $this->asJson([
-            'code' => 'welcome',
-            'message' => 'Welcome',
-            'data' => [
-                'is_prod' => is_prod(),
-                'is_local' => is_local(),
-                'env' => getenv('APP_ENV') ?? 'dev',
-                'version' => getenv('APP_VERSION') ?: '0.0.0',
-                'core_version' => Yii::getVersion(),
-                'profile' => Yii::$app->user->identity ?? '',
+        return $this->asJson(
+            [
+                'code' => 'welcome',
+                'message' => 'Welcome',
+                'data' => [
+                    'is_prod' => is_prod(),
+                    'is_local' => is_local(),
+                    'env' => getenv('APP_ENV') ?? 'dev',
+                    'version' => getenv('APP_VERSION') ?: '0.0.0',
+                    'core_version' => Yii::getVersion(),
+                    'profile' => Yii::$app->user->identity ?? '',
+                ]
             ]
-        ]);
+        );
     }
 
     /**
@@ -131,6 +137,52 @@ class SiteController extends BaseController
         for ($i = 0; $i <= $times; $i++) {
             $x += sqrt($times);
         }
-        return "Sum of $times time sqrt($times):$x" . PHP_EOL;
+        return "Sum of $times time sqrt($times):$x".PHP_EOL;
+    }
+
+    public function actionDashboard(Request $request)
+    {
+        try {
+            $projectName = $request->get("project_name", "");
+            $logStoreName = $request->get("log_store_name", "");
+            if (empty($projectName) || empty($logStoreName)) {
+                return $this->asJson(
+                    [
+                        'code' => 'validate_params_error',
+                        'message' => 'project_name and log_store_name are required'
+                    ]
+                );
+            }
+            $except = ['project_name', 'log_store_name'];
+            $otherParams = array_filter(
+                $request->getQueryParams(),
+                function ($key) use ($except) {
+                    return !in_array($key, $except);
+                },
+                ARRAY_FILTER_USE_KEY
+            );
+            $responseUrl = (new AliDataVisualization(
+                projectName: $projectName,
+                logStoreName: $logStoreName,
+                otherParams: $otherParams
+            ))->getSignInUrl();
+            if ($responseUrl['code'] == 'get_sign_url' && isset($responseUrl['url']) && $responseUrl['url']) {
+                Header("Location: ".$responseUrl['url']);
+                exit;
+            }
+            return $this->asJson(
+                [
+                    'code' => $responseUrl['code'],
+                    'message' => $responseUrl['message']
+                ]
+            );
+        } catch (\Throwable $e) {
+            return $this->asJson(
+                [
+                    'code' => 'error',
+                    'message' => "{$e->getMessage()}, File: {$e->getFile()}, Line: {$e->getLine()}"
+                ]
+            );
+        }
     }
 }
