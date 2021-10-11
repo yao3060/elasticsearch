@@ -42,9 +42,10 @@ class DesignerRecommendAssetTag extends BackendActiveRecord
 
     public static function getRecommendAssetNew($type, $vip_pic)
     {
-        $redis_key = "designer_recommend_left_asset_tag_info_v1:" . $type . "_" . $vip_pic;
+        //$redis_key = "designer_recommend_left_asset_tag_info_v1:" . $type . "_" . $vip_pic;
         //        $list = Tools::getRedis(9,$redis_key);
-        if (!$list || Tools::isReturnSource()) {
+        $list = '';
+        if (Tools::isReturnSource()) {
             $list = self::find()->alias('rat')
                 ->where(['rat.deleted' => 0])
                 ->andWhere(['rat.type' => $type])

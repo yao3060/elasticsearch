@@ -9,3 +9,6 @@ Thumbs.db
 .env
 .env.bak
 *.cache
+
+.scannerwork/*
+sonar-project.properties
