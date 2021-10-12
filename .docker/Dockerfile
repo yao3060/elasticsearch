@@ -1,6 +1,5 @@
 FROM nginx:1.19-alpine as nginx
 # copy NGINX configuration to image
-COPY ./.docker/nginx/etc/nginx/cert /etc/nginx/cert
 COPY ./.docker/nginx/etc/nginx/passwd /etc/nginx/passwd
 COPY ./.docker/nginx/etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
 COPY ./.docker/nginx/etc/nginx/snippets/cors /etc/nginx/snippets/cors
