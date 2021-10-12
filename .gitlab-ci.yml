@@ -111,7 +111,7 @@ staging-deploy-job:
     - echo $FULLSHA
     - sed -i "s/MYNEWTAG/${FULLSHA}/g" k8s/overlays/staging/kustomization.yaml
     - sed -i "s/APP_NEW_VERSION/${FULLSHA}/g" k8s/overlays/staging/kustomization.yaml
-    # - cat k8s/overlays/staging/secrets.txt
+    - cat k8s/overlays/staging/secrets.txt
     # - cat k8s/overlays/staging/kustomization.yaml
     - kubectl apply -k k8s/overlays/staging/
   # when: manual
@@ -131,7 +131,6 @@ prod-install-job:
     - echo "Start install php packages"
     - composer install --ignore-platform-reqs --no-dev --no-scripts
     - composer dump-autoload -o
-    - cd ../
 
 prod-build-job:
   stage: build
@@ -153,4 +152,29 @@ prod-build-job:
     - echo "ready to build and push to Aliyun CS"
     - ./deploy/scripts/deploy-to-aliyun-cs.sh nginx php
     - echo "built successfully"
+  # when: manual
+
+prod-deploy-job:
+  stage: deploy
+  environment:
+    name: production
+  tags:
+    - 818ps_web_dev
+  only:
+    - develop
+  script:
+    - mkdir -p /etc/deploy
+    - echo ${kube_config} | base64 -d > ${KUBECONFIG}
+    - kubectl cluster-info
+    - ./deploy/scripts/modify-dot-env-production.sh
+    - cp k8s/overlays/production/secrets.example.txt k8s/overlays/production/secrets.txt
+    - cp k8s/overlays/production/secrets.txt k8s/base/apps/secrets.txt
+    - cp k8s/overlays/production/secrets.txt k8s/base/db/secrets.txt
+    - sed -i "1 s|$|-${CI_COMMIT_SHA:0:8}|" VERSION
+    - export FULLSHA=$(cat VERSION)
+    - echo $FULLSHA
+    - sed -i "s/MYNEWTAG/${FULLSHA}/g" k8s/overlays/production/kustomization.yaml
+    - sed -i "s/APP_NEW_VERSION/${FULLSHA}/g" k8s/overlays/production/kustomization.yaml
+    - cat k8s/overlays/production/secrets.txt
+    - kubectl apply -k k8s/overlays/production/
   when: manual
