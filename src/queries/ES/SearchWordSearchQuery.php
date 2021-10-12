@@ -7,35 +7,40 @@ use app\interfaces\ES\QueryBuilderInterface;
 
 class SearchWordSearchQuery implements QueryBuilderInterface
 {
+    private $query = [];
+    //$type 类别 1模板2背景3元素
     function __construct(
         public $keyword = 0,
-        public int $page = 1,
-        public int $pageSize = 40,
-        public int $type = 1
+        public $page = 1,
+        public $pageSize = 40,
+        public $type = 1
     )
     {
     }
 
     public function query(): array
     {
-        $newQuery = $this->queryKeyword($this->keyword);
-        $newQuery['bool']['must'][]['match']['type'] = $this->type;
-        $newQuery['bool']['filter'][]['range']['results']['gte'] = 1;
-        return $newQuery;
+        $this->queryKeyword();
+        $this->query['bool']['must'][]['match']['type'] = $this->type;
+        $this->query['bool']['filter'][]['range']['results']['gte'] = 1;
+        return $this->query;
     }
-    public static function queryKeyword($keyword)
+    public function queryKeyword()
     {
-        if (mb_strlen($keyword) > 1) {
-            $query['bool']['must'][]['match']['keyword'] = [
-                'query' => $keyword,
-                "operator" => "and"
-            ];
-        } else {
-            $query['bool']['must'][]['prefix']['keyword'] = [
-                'value' => $keyword
-            ];
+        if ($this->keyword){
+            if (mb_strlen($this->keyword) > 1) {
+                $this->query['bool']['must'][]['match']['keyword'] = [
+                    'query' => $this->keyword,
+                    "operator" => "and"
+                ];
+            } else {
+                $this->query['bool']['must'][]['prefix']['keyword'] = [
+                    'value' => $this->keyword
+                ];
+            }
         }
-        return $query;
+
+        return $this;
     }
     public function pageSizeSet(){
         $pageSize = $this->pageSize;
@@ -45,7 +50,7 @@ class SearchWordSearchQuery implements QueryBuilderInterface
         return $pageSize;
     }
 
-    public static function sortDefault()
+    public function sortDefault()
     {
         $source = "doc['count'].value*500+doc['results'].value*1";
         $sort['_script'] = [
@@ -60,7 +65,6 @@ class SearchWordSearchQuery implements QueryBuilderInterface
     }
     public function getRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
         $redisKey = sprintf(
             'searchword200909:%s_%d_%d',
             $this->keyword,

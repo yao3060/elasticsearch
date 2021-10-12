@@ -20,6 +20,11 @@ spec:
       containers:
         - image: null
           name: backend-nginx
+          resources:
+            requests:
+              cpu: "50m"
+            limits:
+              cpu: "100m"
           ports:
             - containerPort: 80
           command:
@@ -49,19 +54,18 @@ spec:
         tier: backend-php
     spec:
       volumes:
-        #      - name: php-env
-        #        configMap:
-        #          name:  backend-php-env
         - name: yii-runtime
           persistentVolumeClaim:
             claimName: null
       containers:
         - image: null
           name: backend-php
+          resources:
+            requests:
+              cpu: "50m"
+            limits:
+              cpu: "100m"
           volumeMounts:
-            #        - name: php-env
-            #          mountPath: "/var/www/html/.env"
-            #          subPath: env
             - name: yii-runtime
               mountPath: /var/www/html/runtime
           envFrom:
@@ -98,3 +102,13 @@ spec:
                 secretKeyRef:
                   name: secrets
                   key: REDIS_SEARCH_PASSWORD
+            - name: ALIYUN_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: ALIYUN_ACCESS_KEY_ID
+            - name: ALIYUN_ACCESS_KEY_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: secrets
+                  key: ALIYUN_ACCESS_KEY_SECRET

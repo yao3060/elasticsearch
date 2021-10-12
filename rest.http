@@ -1,8 +1,227 @@
 @BASE_URL = http://localhost:8081
 
+### Test
+GET {{BASE_URL}}/?test=1 HTTP/1.1
+content-type: application/json
+Accept: application/json
+X-UserId: 1111
+X-Username: yyyy
+X-UserType: 1
+X-Roles: user
+X-FORWARDED-FOR: 1.1.1.1
+X-ORIGINAL-FORWARDED-FOR: 2.2.2.2
 
 ### Get Logs
 GET {{BASE_URL}}/v1/logs?name=hanmaker&email=email@email.com&age=11 HTTP/1.1
 content-type: application/json
-# username:password
-Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=
+Accept: application/json
+X-UserId: 1111
+X-Username: yyyy
+X-UserType: 1
+X-Roles: user
+X-FORWARDED-FOR: 1.1.1.1
+# X-ORIGINAL-FORWARDED-FOR: 1.1.1.1
+
+### get Assets
+GET {{BASE_URL}}/v1/assets?keyword=你好&page=3&page_size=30&scene_id=0&is_zb=1
+Content-Type: application/json
+Accept: application/json
+
+
+### 违禁词验证
+POST {{BASE_URL}}/v1/sensitive-words/validate
+Content-Type: application/json
+Accept: application/json
+
+{
+	"keyword": "党政"
+}
+
+
+### H5 违禁词验证
+POST {{BASE_URL}}/v1/h5-sensitive-words/validate
+Content-Type: application/json
+Accept: application/json
+
+{
+	"keyword": "党政"
+}
+
+
+### 背景视频搜索
+GET {{BASE_URL}}/v1/background-videos?keyword=0
+Content-Type: application/json
+Accept: application/json
+
+### 裁剪搜索
+GET {{BASE_URL}}/v1/containers?keyword=0
+Content-Type: application/json
+Accept: application/json
+
+### 设计师模板
+GET {{BASE_URL}}/v1/designer-templates?keyword=0
+Content-Type: application/json
+Accept: application/json
+X-UserId: 1111
+X-Username: yyyy
+X-UserType: 1
+X-Roles: user
+x_forward_for: 123.123.123.13
+
+### Gif 搜索
+GET {{BASE_URL}}/v1/gif-assets?keyword=你好
+Content-Type: application/json
+Accept: application/json
+
+### 组合字搜索
+GET {{BASE_URL}}/v1/groups?keyword=0&search=你好&search_all=1
+Content-Type: application/json
+Accept: application/json
+
+### 设计师动效
+GET {{BASE_URL}}/v1/lottie-videos?keyword=
+Content-Type: application/json
+Accept: application/json
+
+### 设计师动效搜索词
+GET {{BASE_URL}}/v1/lottie-video-words
+Content-Type: application/json
+Accept: application/json
+
+### 图片素材搜索
+GET {{BASE_URL}}/v1/pictures?keyword=早安
+Content-Type: application/json
+Accept: application/json
+
+#### 富文本元素
+GET {{BASE_URL}}/v1/rich-editor-assets?keyword=0&page=1
+Content-Type: application/json
+Accept: application/json
+
+### SVG
+GET {{BASE_URL}}/v1/svg?keyword=&page_size=2&kid2=0&page=2
+Content-Type: application/json
+Accept: application/json
+
+### 关键词搜索
+GET {{BASE_URL}}/v1/keywords?keyword=中秋&type=1&page_size=30
+Content-Type: application/json
+Accept: application/json
+User-Agent: YAOYY/1.0
+
+### seo词库相关推荐
+GET {{BASE_URL}}/v1/seo/keyword-assets?keyword=节日
+Content-Type: application/json
+Accept: application/json
+
+### PPT模板单页分类筛选
+GET {{BASE_URL}}/v1/ppt-templates?class_id=1
+Content-Type: application/json
+Accept: application/json
+
+### 视频元素搜索
+GET {{BASE_URL}}/v1/video-elements?keyword=可爱&class_id=188&scope_type=lottie
+Content-Type: application/json
+Accept: application/json
+
+### 片段视频
+GET {{BASE_URL}}/v1/video-templates?keyword=
+Content-Type: application/json
+Accept: application/json
+
+
+### 'GET  v1/seo/recommends' => 'es/seo-search-word/seo-search', // SEO推荐关键词
+GET {{BASE_URL}}/v1/seo/recommends?keyword=你好
+Content-Type: application/json
+Accept: application/json
+
+
+### 'GET  v1/seo/recommends' => 'es/seo-search-word/seo-search', // SEO推荐关键词
+GET {{BASE_URL}}/v1/seo/keywords?keyword=党员
+Content-Type: application/json
+Accept: application/json
+
+### 'GET  v1/seo/keyword-assets' => 'es/seo-search-word-asset/search', //seo词库相关推荐
+GET {{BASE_URL}}/v1/seo/keyword-assets?keyword=旅游logo
+Content-Type: application/json
+Accept: application/json
+
+### 'GET  v1/seo/link-word-seo' => 'es/seo-link-word/seo-search', //seo词库中 相关搜索词
+GET {{BASE_URL}}/v1/seo/link-word-seo?keyword=你好
+Content-Type: application/json
+Accept: application/json
+
+### 'GET  v1/seo/title-keywords' => 'es/seo-detail-keyword-for-title/search', //SEO标题中的关键词
+GET {{BASE_URL}}/v1/seo/title-keywords?keyword=美国
+Content-Type: application/json
+Accept: application/json
+
+### 'GET  v1/keywords' => 'es/search-word/search', //关键词搜索
+GET {{BASE_URL}}/v1/keywords?keyword=
+Content-Type: application/json
+Accept: application/json
+
+### 'GET  v1/assets/recommends' => 'es/asset/recommend-search',
+GET {{BASE_URL}}/v1/assets/recommends?keyword=你好&page=1&page_size=10
+Content-Type: application/json
+Accept: application/json
+
+### 'GET  v1/assets' => 'es/asset/search', //素材搜索
+GET {{BASE_URL}}/v1/assets?keyword=你好&page=1&page_size=10
+Content-Type: application/json
+Accept: application/json
+
+
+### 'GET  v1/backgrounds' => 'es/background/search', //背景搜索
+GET {{BASE_URL}}/v1/backgrounds?keyword=&page=1&page_size=30&is_zb=1&sort=0&use_count=0&kid=0&ratio_id=-1&class=0&is_bg=0
+Content-Type: application/json
+Accept: application/json
+
+### 'GET  v1/gif-assets' => 'es/gif-asset/search', //搜索
+GET {{BASE_URL}}/v1/gif-assets?keyword=你好&page=1&page_size=10
+Content-Type: application/json
+Accept: application/json
+
+### 'GET  v1/pictures' => 'es/picture/search', //图片素材搜索
+GET {{BASE_URL}}/v1/pictures?keyword=&page=1&kid=0&ratio_id=-1&page_size=30&is_zb=0&vip_pic=0
+Content-Type: application/json
+Accept: application/json
+
+### 'GET  v1/groups/recommends' => 'es/group-word/recommend-search',
+GET {{BASE_URL}}/v1/groups/recommends?keyword=你好&page=1&page_size=10
+Content-Type: application/json
+Accept: application/json
+
+### 'GET  v1/groups' => 'es/group-word/search', //组合字搜索
+GET {{BASE_URL}}/v1/groups?keyword=&search=
+Content-Type: application/json
+Accept: application/json
+
+###  'GET  v1/audiovisuals' => 'es/video-audio/search', //试听素材搜索
+GET {{BASE_URL}}/v1/audiovisuals?keyword=
+Content-Type: application/json
+Accept: application/json
+
+###  'GET  v1/video-elements' => 'es/video-element/search', //视频元素搜索
+GET {{BASE_URL}}/v1/video-elements?keyword=可爱&page_size=40&&class_id=188&scope_type=lottie
+Content-Type: application/json
+Accept: application/json
+
+### 'GET  v1/containers' => 'es/container/search', //裁剪搜索
+GET {{BASE_URL}}/v1/containers?keyword=
+Content-Type: application/json
+Accept: application/json
+
+### 'POST  v1/h5-sensitive-words/validate' => 'es/h5-sensitive-word/validate', //查询是否存在敏感词
+POST {{BASE_URL}}/v1/h5-sensitive-words/validate
+Content-Type: application/json
+Accept: application/json
+
+{
+  "keyword": "sdadadadad"
+}
+
+### 'GET  v1/ppt-templates' => 'es/ppt-template/search', //PPT模板单页分类筛选
+GET {{BASE_URL}}/v1/ppt-templates?class_id=10
+Content-Type: application/json
+Accept: application/json

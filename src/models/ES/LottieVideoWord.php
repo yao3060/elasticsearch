@@ -6,7 +6,6 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
-use yii\base\Exception;
 
 class LottieVideoWord extends BaseModel
 {
@@ -29,45 +28,51 @@ class LottieVideoWord extends BaseModel
     }
 
     /**
-     * @param \app\queries\ES\LottieVideoSearchQuery $query
+     * @param  \app\queries\ES\LottieVideoSearchQuery  $query
      * @return array
-     * @throws Exception
      */
-    public function search(QueryBuilderInterface $query) :array
+    public function search(QueryBuilderInterface $query): array
     {
-        $return = Tools::getRedis(self::$redisDb, $query->getRedisKey());
+        $redisKey = $query->getRedisKey();
+        \Yii::info("[LottieVideoWord:redisKey]:[$redisKey]", __METHOD__);
 
-        if (!$return || Tools::isReturnSource() || $query->prep) {
-            unset($return);
+        $return = Tools::getRedis(self::$redisDb, $redisKey);
 
-            $return['hit'] = 0;
-            $return['ids'] = [];
-            $return['score'] = [];
+        if (!empty($return) && isset($return['hit']) && $return['hit'] && Tools::isReturnSource(
+            ) === false && $query->prep != 1) {
+            \Yii::info("lottie video word search data source from redis", __METHOD__);
+            return $return;
+        }
 
-            try {
-                $info = self::find()
-                    ->source(['id'])
-                    ->query($query->query())
-                    ->orderBy($query->sort)
-                    ->offset($query->offset)
-                    ->limit($query->pageSize)
-                    ->createCommand()
-                    ->search([], ['track_scores' => true])['hits'];
-            } catch (\exception $e) {
-                throw new Exception($e->getMessage());
-            }
+        $responseData = [
+            'hit' => 0,
+            'ids' => [],
+            'score' => []
+        ];
 
+        try {
+            $info = self::find()
+                ->source(['id'])
+                ->query($query->query())
+                ->orderBy($query->sort)
+                ->offset($query->offset)
+                ->limit($query->pageSize)
+                ->createCommand()
+                ->search([], ['track_scores' => true])['hits'];
             if (isset($info['hits']) && sizeof($info['hits'])) {
                 $total = $info['total'] ?? 0;
-                $return['hit'] = $total > 10000 ? 10000 : $total;
+                $responseData['hit'] = $total > 10000 ? 10000 : $total;
                 foreach ($info['hits'] as $value) {
-                    $return['ids'][] = $value['_id'];
-                    $return['score'][$value['_id']] = $value['sort'][0];
+                    $responseData['ids'][] = $value['_id'];
+                    $responseData['score'][$value['_id']] = $value['sort'][0] ?? [];
                 }
             }
-
-//            Tools::setRedis(self::$redisDb, $query->getRedisKey(), $return, 86400);
+        } catch (\Throwable $e) {
+            \Yii::error("LottieVideoWord Model Error: " . $e->getMessage(), __METHOD__);
         }
-        return $return;
+
+        Tools::setRedis(self::$redisDb, $redisKey, $responseData, 86400);
+
+        return $responseData;
     }
 }

@@ -67,7 +67,11 @@ class DesignerTemplateTest extends Unit
             use: $use,
         ));
 
-        if (sizeof($search['ids'])) sort($search['ids']);
+        $searchIds = [];
+
+        if (isset($search['ids']) && sizeof($search['ids'])) {
+            $searchIds = $search['ids'];
+        }
 
         $response = (new Client())->get($produrl);
 
@@ -79,13 +83,16 @@ class DesignerTemplateTest extends Unit
             $ids = array_column($responseJson['msg'], 'id');
         }
 
-        $intersect = array_intersect($search['ids'], $ids);
+        $intersect = array_intersect($searchIds, $ids);
 
-        return count($intersect) === count($ids);
+        return [
+            'dev' => count($intersect),
+            'prod' => count($ids)
+        ];
     }
 
     protected function queryTemplateIds(
-        $keyword = 0,
+        $keyword = "",
         $page = 1,
         $kid1 = 0,
         $kid2 = 0,
@@ -204,7 +211,7 @@ class DesignerTemplateTest extends Unit
             produrl: getenv("UNIT_BASE_URL") . self::$urls['search_carry_keyword']
         );
 
-        $this->assertTrue($compareKeyword);
+        $this->assertEqualsCanonicalizing($compareKeyword['dev'], $compareKeyword['prod']);
     }
 
     /**
@@ -213,25 +220,45 @@ class DesignerTemplateTest extends Unit
      * @kid2 157
      * @es_type 3
      */
-    public function testSearchNormalEsTypeOfThree()
-    {
-        $compareNormal = $this->prepareData(
-            kid1: 156,
-            kid2: 157,
-            sortType: "default",
-            tagId: 0,
-            isZb: 1,
-            pageSize: 10000,
-            ratio: "",
-            classId: "0_0_0_0",
-            templateTypes: 4,
-            templInfo: [
-                "picId" => ""
-            ],
-            color: [],
-            produrl: getenv("UNIT_BASE_URL") . self::$urls['search_normal_es_type_of_three']
-        );
-
-        $this->assertTrue($compareNormal);
-    }
+//    public function testSearchNormalEsTypeOfThree()public function testSearchNormalEsTypeOfThree()
+////    {
+////        $compareNormal = $this->prepareData(
+////            kid1: 156,
+////            kid2: 157,
+////            sortType: "",
+////            tagId: 0,
+////            isZb: 0,
+////            pageSize: 10000,
+////            ratio: "",
+////            classId: "0",
+////            templateTypes: 4,
+////            templInfo: [
+////                "picId" => ""
+////            ],
+////            color: [],
+////            produrl: getenv("UNIT_BASE_URL") . self::$urls['search_normal_es_type_of_three']
+////        );
+////
+////        $this->assertEqualsCanonicalizing($compareNormal['dev'], $compareNormal['prod']);
+////    }
+//    {
+//        $compareNormal = $this->prepareData(
+//            kid1: 156,
+//            kid2: 157,
+//            sortType: "",
+//            tagId: 0,
+//            isZb: 0,
+//            pageSize: 10000,
+//            ratio: "",
+//            classId: "0",
+//            templateTypes: 4,
+//            templInfo: [
+//                "picId" => ""
+//            ],
+//            color: [],
+//            produrl: getenv("UNIT_BASE_URL") . self::$urls['search_normal_es_type_of_three']
+//        );
+//
+//        $this->assertEqualsCanonicalizing($compareNormal['dev'], $compareNormal['prod']);
+//    }
 }

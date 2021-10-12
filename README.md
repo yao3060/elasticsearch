@@ -41,6 +41,11 @@ Or
 > Alternative way: can be done is run `./docker-compose down` to remove all docker containers, It will leave docker built images and next time `./docker-compose up -d` can be used to create and start containers again
 > See `docker-guide.md` for more docker commands
 
+## Apidoc
+
+- Apidoc: https://apidocjs.com/
+- API Doc example: app\controllers\LogController
+
 ## HTTP Status Code
 
 http://gitlab.818ps.com/ips/elasticsearch/-/wikis/HTTP-Status-Code

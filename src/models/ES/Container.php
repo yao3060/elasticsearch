@@ -4,6 +4,7 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
+use yii\base\Exception;
 use Yii;
 
 /**
@@ -15,15 +16,18 @@ class Container extends BaseModel
     /**
      * @var int redis
      */
-    private $redisDb = 8;
+    const REDIS_DB = 8;
 
-    public static function index() {
+    public static function index()
+    {
         return 'container';
     }
-    public static function type() {
+    public static function type()
+    {
         return 'list';
     }
-    public function attributes() {
+    public function attributes()
+    {
         return ['id', 'title', 'description', 'created', 'kid_1', 'kid_2', 'kid_3', 'pr', 'man_pr', 'man_pr_add', 'width', 'height', 'ratio', 'scene_id'];
     }
     /**
@@ -33,12 +37,16 @@ class Container extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
-        $log = 'Container:redisKey:'.$query->getRedisKey();
-        yii::info($log,__METHOD__);
+        $return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
+        $log = 'Container:redisKey:' . $query->getRedisKey();
+        yii::info($log, __METHOD__);
         if ($return && isset($return['hit']) && $return['hit']) {
+            Yii::info('bypass redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
+        $return['hit'] = 0;
+        $return['ids'] = [];
+        $return['score'] = [];
         try {
             $info = self::find()
                 ->source(['id'])
@@ -48,61 +56,16 @@ class Container extends BaseModel
                 ->limit($query->pageSizeSet())
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
-        } catch (\exception $e) {
-            $info['hit'] = 0;
-            $info['ids'] = [];
-            $info['score'] = [];
+            $return['hit'] = ($info['total'] ?? 0)  > 10000 ? 10000 : $info['total'];
+            foreach ($info['hits'] as $value) {
+                $return['ids'][] = $value['_id'];
+                $return['score'][$value['_id']] = $value['sort'][0];
+            }
+            Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 126000 + rand(-3600, 3600));
+            return $return;
+        } catch (Exception $e) {
+            \Yii::error($e->getMessage(), __METHOD__);
+            return $return;
         }
-        $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
-        foreach ($info['hits'] as $value) {
-            $return['ids'][] = $value['_id'];
-            $return['score'][$value['_id']] = $value['sort'][0];
-        }
-        Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 126000 + rand(-3600, 3600));
-        return $return;
     }
-
-    //推荐搜索
-   /* public function recommendSearch(QueryBuilderInterface $query): array
-    {
-        if ($query->keyword) {
-            $newQuery = $this->queryKeyword($query->keyword, true);
-        }
-        $sort = $this->sortDefault();
-        try {
-            $info = self::find()
-                ->source(['id'])
-                ->query($newQuery)
-                ->orderBy($sort)
-                ->offset(($query->page - 1) * $query->pageSize)
-                ->limit($query->pageSize)
-                ->createCommand()
-                ->search([], ['track_scores' => true])['hits'];
-        } catch (\exception $e) {
-            $info['hit'] = 0;
-            $info['ids'] = [];
-            $info['score'] = [];
-        }
-        $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
-        foreach ($info['hits'] as $value) {
-            $return['ids'][] = $value['_id'];
-            $return['score'][$value['_id']] = $value['sort'][0];
-        }
-        return $return;
-    }*/
-    public static function sortDefault()
-    {
-        $source = "doc['pr'].value+(int)(_score*10)";
-        $sort['_script'] = [
-            'type' => 'number',
-            'script' => [
-                "lang" => "painless",
-                "source" => $source
-            ],
-            'order' => 'desc'
-        ];
-        return $sort;
-    }
-
-
 }

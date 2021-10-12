@@ -30,6 +30,7 @@ configMapGenerator:
       - APP_ENV=staging
       - APP_KEY=base64:gT5YBxoHuFZqzPGU9CO26koLyE6YQkkLK+cH9dKQD8g=
       - APP_DEBUG=true
+      - APP_VERSION=APP_NEW_VERSION
       - APP_TIMEZONE=Asia/Shanghai
       - APP_LOCALE=zh-CN
       - LOG_CHANNEL=errorlog
@@ -50,4 +51,7 @@ configMapGenerator:
       - ELASTIC_COLOR_HOST=192.168.4.211:9200
       - ELASTIC_KEYWORD_HOST=192.168.4.86:9200
       - ELASTIC_SECOND_HOST=192.168.4.194:9200
+      - ALIYUN_ROLE_ARON=acs:ram::1642661977201310:role/logs
+      - ALIYUN_SIGN_IN_HOST=https://signin.aliyun.com
+
 

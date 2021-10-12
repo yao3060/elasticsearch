@@ -3,7 +3,6 @@
 
 namespace app\queries\ES;
 
-use app\models\ES\SensitiveWord;
 
 class SensitiveWordSearchQuery extends BaseTemplateSearchQuery
 {
@@ -33,8 +32,6 @@ class SensitiveWordSearchQuery extends BaseTemplateSearchQuery
 
     public function getRedisKey()
     {
-        $redis_key = "is_ban_word:" . $this->keyword;
-
-        return $redis_key;
+        return "is_ban_word_v2:" . $this->keyword;
     }
 }

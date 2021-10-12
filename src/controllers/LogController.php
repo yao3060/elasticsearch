@@ -11,26 +11,11 @@ use app\helpers\StringHelper;
 
 class LogController extends BaseController
 {
-
-    /**
-     * @api {get} /v1/logs Request Logs
-     * @apiName GetLogs
-     * @apiGroup Logs
-     *
-     * @apiParamExample {json} Request-Example:
-     *  {
-     *      "name": "admin",
-     *      "email": "test@app.com",
-     *      "age": 100
-     *  }
-     */
     public function actionIndex(Request $request)
     {
         try {
-            $model = DynamicModel::validateData($request->getBodyParams(), [
+            $model = DynamicModel::validateData($request->get(), [
                 ['name', 'string'],
-                ['email', 'email'],
-                ['age', 'integer', 'min' => 10, 'max' => 20],
             ]);
             if ($model->hasErrors()) {
                 return  $this->response(new Response(
@@ -63,7 +48,7 @@ class LogController extends BaseController
         } catch (\Throwable $th) {
             $response = new Response();
             $response->status(500);
-            $response->code('a_readable_error_code');
+            $response->code('internal_server_error');
             $response->message($e->getMessage());
             $response->data(YII_DEBUG ? explode("\n", $th->getTraceAsString()) : []);
             return $this->response($response);
@@ -89,5 +74,21 @@ class LogController extends BaseController
         $this->response->headers->set('Pragma', 'no-cache');
 
         return $this->asJson($data);
+    }
+
+    public function register(Request $request)
+    {
+    }
+
+    public function login(Request $request)
+    {
+    }
+
+    public function getCases(Request $request)
+    {
+    }
+
+    public function createCases(Request $request)
+    {
     }
 }

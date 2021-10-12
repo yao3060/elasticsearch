@@ -19,12 +19,23 @@ use yii\web\Request;
 
 class SeoDetailKeywordForTitleController extends BaseController
 {
+    /**
+     * @api {get} /v1/seo/title-keywords Seo Detail Keyword For Title
+     * @apiName GetSeoDetailKeywordForTitle
+     * @apiGroup SeoDetailKeywordForTitle
+     *
+     * @apiParam (请求参数) {String} keyword 搜索关键词
+     *
+     * @apiSuccess (应答字段) {String} code 返回状态码
+     * @apiSuccess (应答字段) {String} message 返回消息
+     * @apiSuccess (应答字段) {Object[]} data 返回数据
+     */
     public function actionSearch(Request $request)
     {
         $data = $request->get();
         try {
             $model = DynamicModel::validateData($data, [
-                ['keyword', 'required']
+                ['keyword', 'string']
             ]);
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
@@ -33,7 +44,7 @@ class SeoDetailKeywordForTitleController extends BaseController
                     ->Search(new SeoDetailKeywordForTitleQuery(
                         $data['keyword']
                     ));
-                $response = new Response('get_Container_list', 'ContainerList', $data);
+                $response = new Response('get_seo_detail_keyword_for_title_list', 'Seo Detail Keyword For Title List', $data);
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(
@@ -42,13 +53,15 @@ class SeoDetailKeywordForTitleController extends BaseController
                 [],
                 422
             );
+            yii::error(str_replace('yii\\base\\DynamicModel::', '', $e->getMessage()), __METHOD__);
         } catch (\Throwable $th) {
             $response = new Response(
-                'a_readable_error_code',
+                'internal_server_error',
                 $th->getMessage(),
                 YII_DEBUG ? explode("\n", $th->getTraceAsString()) : [],
                 500
             );
+            yii::error($th->getMessage(), __METHOD__);
         }
         return $this->response($response);
     }
@@ -63,8 +76,8 @@ class SeoDetailKeywordForTitleController extends BaseController
             if ($model->hasErrors()) {
                 $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
             } else {
-                $data = (new VideoE())
-                    ->recommendSearch(new VideoESearchQuery(
+                $data = (new VideoElement())
+                    ->recommendSearch(new VideoElementsSearchQuery(
                         $data['keyword'],
                         $data['page'],
                         $data['pageSize']
@@ -80,7 +93,7 @@ class SeoDetailKeywordForTitleController extends BaseController
             );
         } catch (\Throwable $th) {
             $response = new Response(
-                'a_readable_error_code',
+                'internal_server_error',
                 $th->getMessage(),
                 YII_DEBUG ? explode("\n", $th->getTraceAsString()) : [],
                 500
@@ -88,5 +101,4 @@ class SeoDetailKeywordForTitleController extends BaseController
         }
         return $this->response($response);
     }*/
-
 }

@@ -8,56 +8,57 @@ use app\components\IpsAuthority;
 
 class GifAssetSearchQuery implements QueryBuilderInterface
 {
+    private $query=[];
+
     function __construct(
         public $keyword = 0,
-        public int $page = 1,
-        public int $pageSize = 40,
-        public string|array $classId = '0',
-        public int $isZb = 0,
-        public int $prep = 0,
-        public int $limitSize = 0,
+        public  $page = 1,
+        public  $pageSize = 40,
+        public  $classId = '0',
+        public  $isZb = 0,
+        public  $prep = 0,
+        public  $limitSize = 0,
     )
     {
     }
 
     public function query(): array
     {
-        $newQuery = array();
         if (IpsAuthority::check(DESIGNER_USER) || IpsAuthority::check(AVATAR_USER)) {
             $isZb = 1;
         }else{
             $isZb =0;
         }
         $this->classId = is_array($this->classId) ? $this->classId : [];
-        if ($this->keyword) {
-            $newQuery = $this->queryKeyword($this->keyword);
-        }
+        $this->queryKeyword();
         if ($this->classId) {
-            $newQuery['bool']['must'][]['terms']['class_id'] = $this->classId;
+            $this->query['bool']['must'][]['terms']['class_id'] = $this->classId;
         }
         if ($isZb) {
-            $newQuery['bool']['filter'][]['range']['is_zb']['gte'] = $isZb;
+            $this->query['bool']['filter'][]['range']['is_zb']['gte'] = $isZb;
         }
         if ($this->limitSize) {
-            $newQuery['bool']['filter'][]['range']['size_w380']['lt'] = 1024;
+            $this->query['bool']['filter'][]['range']['size_w380']['lt'] = 1024;
         }
-        return $newQuery;
+        return $this->query;
     }
-    public function queryKeyword($keyword, $is_or = false)
+    public function queryKeyword($is_or = false)
     {
-        $operator = $is_or ? 'or' : 'and';
-        $query['bool']['must'][]['multi_match'] = [
-            'query' => $keyword,
-            'fields' => ["title^5", "description^1"],
-            'type' => 'most_fields',
-            "operator" => $operator
-        ];
-        return $query;
+        if ($this->keyword) {
+            $operator = $is_or ? 'or' : 'and';
+            $this->query['bool']['must'][]['multi_match'] = [
+                'query' => $this->keyword,
+                'fields' => ["title^5", "description^1"],
+                'type' => 'most_fields',
+                "operator" => $operator
+            ];
+        }
+
+        return $this;
     }
 
     public function getRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
         //$redis_key = "ES_gif_asset: date('Y-m-d'):{$keyword}_{$page}_ ".implode('-', $class_id)." _{$pageSize}_{$is_zb}";
         $classId = is_array($this->classId) ? $this->classId : [];
         return sprintf(

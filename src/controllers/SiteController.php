@@ -2,11 +2,14 @@
 
 namespace app\controllers;
 
-use app\models\Backend\AssetUseTop;
+use app\services\ali\AliDataVisualization;
 use Yii;
+use yii\base\DynamicModel;
 use yii\filters\AccessControl;
-use yii\web\Response;
+use app\components\Response;
+use app\helpers\StringHelper;
 use yii\filters\VerbFilter;
+use yii\web\Request;
 
 class SiteController extends BaseController
 {
@@ -36,20 +39,21 @@ class SiteController extends BaseController
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function actions()
+    public function actionError()
     {
-        return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
-        ];
+        /** @var \yii\web\HttpException $exception */
+        $exception = Yii::$app->errorHandler->exception;
+
+        if ($exception !== null) {
+            return $this->response(
+                new Response(
+                    StringHelper::snake($exception->getName()),
+                    $exception->getMessage(),
+                    YII_DEBUG ? $exception->getTrace() : [],
+                    $exception->statusCode
+                )
+            );
+        }
     }
 
     /**
@@ -59,20 +63,27 @@ class SiteController extends BaseController
      */
     public function actionIndex()
     {
-        Yii::info('this is info.', __METHOD__);
-        Yii::warning('this is warning.', __METHOD__);
-        Yii::error('this is error.', __METHOD__);
+        try {
+            Yii::info('this is info.', __METHOD__);
+        } catch (\Throwable $th) {
+            Yii::error($th);
+            Yii::error($th->getTraceAsString());
+        }
 
-        return $this->asJson([
-            'code' => 'welcome',
-            'message' => 'Welcome',
-            'data' => [
-                'is_prod' => is_prod(),
-                'is_local' => is_local(),
-                'AssetUseTop' => AssetUseTop::getLatestBy('kid_1', 1),
-                'profile' => Yii::$app->user->identity,
+        return $this->asJson(
+            [
+                'code' => 'welcome',
+                'message' => 'Welcome',
+                'data' => [
+                    'is_prod' => is_prod(),
+                    'is_local' => is_local(),
+                    'env' => getenv('APP_ENV') ?? 'dev',
+                    'version' => getenv('APP_VERSION') ?: '0.0.0',
+                    'core_version' => Yii::getVersion(),
+                    'profile' => Yii::$app->user->identity ?? '',
+                ]
             ]
-        ]);
+        );
     }
 
     /**
@@ -102,7 +113,7 @@ class SiteController extends BaseController
      */
     public function actionContact()
     {
-        return 'this is a contact page';
+        return $this->asJson(['message' => 'this is a contact page']);
     }
 
     /**
@@ -112,7 +123,7 @@ class SiteController extends BaseController
      */
     public function actionAbout()
     {
-        return 'this is a about action';
+        return $this->asJson(['message' => 'this is a about action']);
     }
 
     public function actionHpa()
@@ -121,10 +132,57 @@ class SiteController extends BaseController
             return 'IS PROD. Exit.';
         }
 
-        $x = 0.0001;
-        for ($i = 0; $i <= 50000000; $i++) {
-            $x += sqrt($x);
+        $x = 0;
+        $times = 9000000;
+        for ($i = 0; $i <= $times; $i++) {
+            $x += sqrt($times);
         }
-        return "OK!";
+        return "Sum of $times time sqrt($times):$x".PHP_EOL;
+    }
+
+    public function actionDashboard(Request $request)
+    {
+        try {
+            $projectName = $request->get("project_name", "");
+            $logStoreName = $request->get("log_store_name", "");
+            if (empty($projectName) || empty($logStoreName)) {
+                return $this->asJson(
+                    [
+                        'code' => 'validate_params_error',
+                        'message' => 'project_name and log_store_name are required'
+                    ]
+                );
+            }
+            $except = ['project_name', 'log_store_name'];
+            $otherParams = array_filter(
+                $request->getQueryParams(),
+                function ($key) use ($except) {
+                    return !in_array($key, $except);
+                },
+                ARRAY_FILTER_USE_KEY
+            );
+            $responseUrl = (new AliDataVisualization(
+                projectName: $projectName,
+                logStoreName: $logStoreName,
+                otherParams: $otherParams
+            ))->getSignInUrl();
+            if ($responseUrl['code'] == 'get_sign_url' && isset($responseUrl['url']) && $responseUrl['url']) {
+                Header("Location: ".$responseUrl['url']);
+                exit;
+            }
+            return $this->asJson(
+                [
+                    'code' => $responseUrl['code'],
+                    'message' => $responseUrl['message']
+                ]
+            );
+        } catch (\Throwable $e) {
+            return $this->asJson(
+                [
+                    'code' => 'error',
+                    'message' => "{$e->getMessage()}, File: {$e->getFile()}, Line: {$e->getLine()}"
+                ]
+            );
+        }
     }
 }

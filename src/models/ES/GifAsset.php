@@ -4,6 +4,7 @@ namespace app\models\ES;
 
 use app\components\Tools;
 use app\interfaces\ES\QueryBuilderInterface;
+use yii\base\Exception;
 use Yii;
 
 /**
@@ -15,7 +16,7 @@ class GifAsset extends BaseModel
     /**
      * @var int redis
      */
-    private $redisDb = 8;
+    const REDIS_DB = 8;
 
     public static function index()
     {
@@ -31,21 +32,6 @@ class GifAsset extends BaseModel
     {
         return ['id', 'title', 'description', 'create_date', 'pr', 'width', 'height', 'class_id', 'is_zb', 'size_w380'];
     }
-
-    public static function sortDefault()
-    {
-        $source = "doc['pr'].value+(int)(_score*10)";
-        $sort['_script'] = [
-            'type' => 'number',
-            'script' => [
-                "lang" => "painless",
-                "source" => $source
-            ],
-            'order' => 'desc'
-        ];
-        return $sort;
-    }
-
     /**
      * @param \app\queries\ES\GifAssetSearchQuery $query
      * @return array 2021-09-17
@@ -53,12 +39,16 @@ class GifAsset extends BaseModel
      */
     public function search(QueryBuilderInterface $query): array
     {
-        $return = Tools::getRedis($this->redisDb, $query->getRedisKey());
-        $log = 'GifAsset:redisKey:'.$query->getRedisKey();
-        yii::info($log,__METHOD__);
+        $return = Tools::getRedis(self::REDIS_DB, $query->getRedisKey());
+        $log = 'GifAsset:redisKey:' . $query->getRedisKey();
+        yii::info($log, __METHOD__);
         if ($return) {
+            Yii::info('bypass redis, redis key:' . $query->getRedisKey(), __METHOD__);
             return $return;
         }
+        $return['hit'] = 0;
+        $return['ids'] = [];
+        $return['score'] = [];
         try {
             $info = self::find()
                 ->source(['id'])
@@ -68,17 +58,16 @@ class GifAsset extends BaseModel
                 ->limit($query->pageSizeSet())
                 ->createCommand()
                 ->search([], ['track_scores' => true])['hits'];
-        } catch (\exception $e) {
-            $info['hit'] = 0;
-            $info['ids'] = [];
-            $info['score'] = [];
+            $return['hit'] = ($info['total'] ?? 0) > 10000 ? 10000 : $info['total'];
+            foreach ($info['hits'] as $value) {
+                $return['ids'][] = $value['_id'];
+                $return['score'][$value['_id']] = $value['sort'][0];
+            }
+            Tools::setRedis(self::REDIS_DB, $query->getRedisKey(), $return, 86400);
+            return $return;
+        } catch (Exception $e) {
+            \Yii::error($e->getMessage(), __METHOD__);
+            return $return;
         }
-        $return['hit'] = $info['total'] > 10000 ? 10000 : $info['total'];
-        foreach ($info['hits'] as $value) {
-            $return['ids'][] = $value['_id'];
-            $return['score'][$value['_id']] = $value['sort'][0];
-        }
-        Tools::setRedis($this->redisDb, $query->getRedisKey(), $return, 86400);
-        return $return;
     }
 }

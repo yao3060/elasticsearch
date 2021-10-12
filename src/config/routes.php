@@ -10,29 +10,25 @@ return [
         'GET  v1/svg' => 'es/svg/index',
 
         //Y
-        'GET  v1/seo/recommends' => 'es/seo/seo-search', // SEO推荐关键词
+        'GET  v1/albums' => 'es/album/search', // 关键词专题搜索
+        'GET  v1/seo/keywords' => 'es/seo-search-word/search', // 是否是SEO关键词 ·is_seo_search_keyword·
+        'GET  v1/seo/recommends' => 'es/seo-search-word/seo-search', // SEO推荐关键词
         'GET  v1/seo/keyword-assets' => 'es/seo-search-word-asset/search', //seo词库相关推荐
         'GET  v1/seo/title-keywords' => 'es/seo-detail-keyword-for-title/search', //SEO标题中的关键词
-        'GET  v1/seo/keywords' => 'es/seo/search', //seo词库中 相关搜索词
-        'GET  v1/keywords' => 'es/search-word/search', //关键词搜索
+        'GET  v1/seo/link-word-seo' => 'es/seo-link-word/seo-search', //seo词库中 相关搜索词
 
+        'GET  v1/keywords' => 'es/search-word/search', //关键词搜索
         'GET  v1/assets/recommends' => 'es/asset/recommend-search',
         'GET  v1/assets' => 'es/asset/search', //素材搜索
-
         'GET  v1/backgrounds' => 'es/background/search', //背景搜索
         'GET  v1/gif-assets' => 'es/gif-asset/search', //搜索
         'GET  v1/pictures' => 'es/picture/search', //图片素材搜索
-
-        'GET  v1/groups/recommends' => 'es/group-words/recommend-search',
-        'GET  v1/groups' => 'es/group-words/search', //组合字搜索
-
+        'GET  v1/groups' => 'es/group-word/search', //组合字搜索
         'GET  v1/audiovisuals' => 'es/video-audio/search', //试听素材搜索
-        'GET  v1/video-elements' => 'es/video-e/search', //视频元素搜索
-
+        'GET  v1/video-elements' => 'es/video-element/search', //视频元素搜索
         'GET  v1/containers' => 'es/container/search', //裁剪搜索
-        'POST  v1/h5-sensitive-words' => 'es/h5-ban-words/h5-ban-search', //查询是否存在敏感词
-
-
+        'POST  v1/h5-sensitive-words/validate' => 'es/h5-sensitive-word/validate', //查询是否存在敏感词
+        'GET  v1/ppt-templates' => 'es/ppt-template/search', //PPT模板单页分类筛选
         //H
         'GET  v1/designer-templates' => 'es/designer-template/index', // 设计师模板
         'GET  v1/templates/recommends' => 'es/template/recommend-search', // 推荐模板搜索

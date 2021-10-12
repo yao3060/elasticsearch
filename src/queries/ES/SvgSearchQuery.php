@@ -3,34 +3,40 @@
 
 namespace app\queries\ES;
 
-use Yii;
-
 class SvgSearchQuery extends BaseTemplateSearchQuery
 {
     public function __construct(
         public $keyword = 0,
-        public array $kid2 = [],
+        public $kid2 = 0,
         public int $page = 1,
         public int $pageSize = 40,
         public string $sort = 'sort desc'
     ) {
+        $this->beforeAssignment();
+    }
+
+    /**
+     * prepare params
+     */
+    protected function beforeAssignment()
+    {
+        $this->keyword = empty($this->keyword) ? 0 : $this->keyword;
+    }
+
+
+    public function query(): array
+    {
+        $this->queryKeyword()->queryKid2();
+
+        return $this->query;
     }
 
     public function queryKid2()
     {
-        if (!empty($this->kid2)) {
-            $this->query['bool']['must'][]['terms']['kid_2'] = $this->kid2;
+        if ($this->kid2){
+            $this->query['bool']['must'][]['terms']['kid_2'] = [$this->kid2];
         }
-
         return $this;
-    }
-
-    public function query(): array
-    {
-        $this->queryKeyword();
-
-        Yii::info($this->query);
-        return $this->query;
     }
 
     /**
@@ -51,28 +57,21 @@ class SvgSearchQuery extends BaseTemplateSearchQuery
         return $this;
     }
 
-    /**
-     * prepare params
-     */
-    public function beforeAssignment()
-    {
-        $this->keyword = $this->keyword ?: 0;
-        $this->kid2 = $this->kid2 ?: [];
-        if (!is_array($this->kid2)) {
-            $this->kid2 = [$this->kid2];
-        }
-    }
+
+
 
     public function getRedisKey()
     {
-        $this->beforeAssignment();
-
+        $kid_2 = $this->kid2 ? $this->kid2 : [];
+        if (!is_array($kid_2)) {
+            $kid_2 = [$kid_2];
+        }
         return sprintf(
-            'ES_svg2:%s:%s_%d_%s_%d',
+            'ES_svg2:%s:%s_%d_%d_%d',
             date('Y-m-d'),
             $this->keyword,
             $this->page,
-            implode('-', $this->kid2),
+            implode('-', $kid_2) ,
             $this->pageSize
         );
     }

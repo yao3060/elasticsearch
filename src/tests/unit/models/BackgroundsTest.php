@@ -4,7 +4,7 @@ namespace tests\unit\models;
 
 use app\components\IpsAuthority;
 use app\models\ES\Background;
-use app\queries\ES\BackGroundSearchQuery;
+use app\queries\ES\BackgroundSearchQuery;
 use yii\helpers\ArrayHelper;
 
 class BackgroundsTest extends \Codeception\Test\Unit
@@ -33,9 +33,9 @@ class BackgroundsTest extends \Codeception\Test\Unit
     public function testSearchOne()
     {
         $items = (new Background())
-            ->search(new BackGroundSearchQuery(
-                keyword: '你好',
-                page: 1,
+            ->search(new BackgroundSearchQuery(
+                keyword: '国庆',
+                page: 3,
                 pageSize: 30,
                 sceneId: 0,
                 isZb: 1,
@@ -48,7 +48,7 @@ class BackgroundsTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            getenv('UNIT_BASE_URL') .'/api/get-asset-list?w=%E4%BD%A0%E5%A5%BD&p=1&type=background&k1=0&k2=0&k3=0&tagId=undefined&sceneId=0&styleId=0&ratioId=-1'
+            getenv('UNIT_BASE_URL') . '/api/get-asset-list?w=国庆&p=3&type=background&k1=0&k2=0&k3=0&tagId=undefined&sceneId=0&styleId=0&ratioId=-1'
         );
 
         $content = json_decode($response->getBody()->getContents());
@@ -62,7 +62,7 @@ class BackgroundsTest extends \Codeception\Test\Unit
     public function testSearchTwo()
     {
         $items = (new Background())
-            ->search(new BackGroundSearchQuery(
+            ->search(new BackgroundSearchQuery(
                 keyword: '再见',
                 page: 1,
                 pageSize: 30,
@@ -77,7 +77,7 @@ class BackgroundsTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            getenv('UNIT_BASE_URL') .'/api/get-asset-list?w=再见&p=1&type=background&k1=0&k2=0&k3=0&tagId=undefined&sceneId=0&styleId=0&ratioId=-1'
+            getenv('UNIT_BASE_URL') . '/api/get-asset-list?w=再见&p=1&type=background&k1=0&k2=0&k3=0&tagId=undefined&sceneId=0&styleId=0&ratioId=-1'
         );
 
         $content = json_decode($response->getBody()->getContents());
@@ -90,7 +90,7 @@ class BackgroundsTest extends \Codeception\Test\Unit
     public function testSearchThree()
     {
         $items = (new Background())
-            ->search(new BackGroundSearchQuery(
+            ->search(new BackgroundSearchQuery(
                 keyword: '我们',
                 page: 1,
                 pageSize: 30,
@@ -105,7 +105,7 @@ class BackgroundsTest extends \Codeception\Test\Unit
         /**@var \GuzzleHttp\Psr7\Response $response */
         $response = $this->http->request(
             'GET',
-            getenv('UNIT_BASE_URL') .'/api/get-asset-list?w=我们&p=1&type=background&k1=0&k2=0&k3=0&tagId=undefined&sceneId=0&styleId=0&ratioId=-1'
+            getenv('UNIT_BASE_URL') . '/api/get-asset-list?w=我们&p=1&type=background&k1=0&k2=0&k3=0&tagId=undefined&sceneId=0&styleId=0&ratioId=-1'
         );
 
         $content = json_decode($response->getBody()->getContents());
@@ -118,7 +118,7 @@ class BackgroundsTest extends \Codeception\Test\Unit
     public function testSearchFour()
     {
         $items = (new Background())
-            ->search(new BackGroundSearchQuery(
+            ->search(new BackgroundSearchQuery(
                 keyword: '中秋',
                 page: 1,
                 pageSize: 30,

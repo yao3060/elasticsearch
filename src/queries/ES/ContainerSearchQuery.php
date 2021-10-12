@@ -7,46 +7,42 @@ use app\interfaces\ES\QueryBuilderInterface;
 
 class ContainerSearchQuery implements QueryBuilderInterface
 {
+    private $query = [];
     function __construct(
         public $keyword = 0,
-        public int $page = 1,
-        public int $pageSize = 40,
-        public string|array $kid = '0',
-    )
-    {
+        public $page = 1,
+        public $pageSize = 40,
+        public $kid = '0',
+    ) {
     }
 
     public function query(): array
     {
-        if ($this->keyword) {
-            $newQuery = $this->queryKeyword($this->keyword);
-        }
+        $this->queryKeyword();
         if ($this->kid) {
-            $newQuery['bool']['must'][]['terms']['kid_2'] = $this->kid;
+            $this->query['bool']['must'][]['terms']['kid_2'] = $this->kid;
         }
-        if (isset($newQuery) && $newQuery){
-            return $newQuery;
-        }else{
-            return array();
-        }
-
+        return $this->query;
     }
-    public static function queryKeyword($keyword, $is_or = false)
+    public function queryKeyword($is_or = false)
     {
-        $operator = $is_or ? 'or' : 'and';
-        $query['bool']['must'][]['multi_match'] = [
-            'query' => $keyword,
-            'fields' => ["title^5", "description^1"],
-            'type' => 'most_fields',
-            "operator" => $operator
-        ];
-        return $query;
+        if ($this->keyword){
+            $operator = $is_or ? 'or' : 'and';
+            $this->query['bool']['must']['terms']['multi_match'] = [
+                'query' => $this->keyword,
+                'fields' => ["title^5", "description^1"],
+                'type' => 'most_fields',
+                "operator" => $operator
+            ];
+        }
+        return $this;
     }
-    public static function sortBy()
+    public function sortBy()
     {
         return 'man_pr_add desc';
     }
-    public function pageSizeSet(){
+    public function pageSizeSet()
+    {
         $pageSize = $this->pageSize;
         if ($this->page * $this->pageSize > 10000) {
             $pageSize = $this->page * $pageSize - 10000;
@@ -65,13 +61,16 @@ class ContainerSearchQuery implements QueryBuilderInterface
     }
     public function getRedisKey()
     {
-        // TODO: Implement getRedisKey() method.
         //$redis_key = "ES_container:" . ":{$keyword}_{$page}_" . implode('-', $kid) . "_{$pagesize}";
+        $kid = $this->kid ? $this->kid : [];
+        if (!is_array($kid)) {
+            $kid = [$kid];
+        }
         return sprintf(
             'ES_container:%s_%d_%s_%d',
             $this->keyword,
             $this->page,
-            $this->kid,
+            implode('-', $kid),
             $this->pageSize,
         );
     }

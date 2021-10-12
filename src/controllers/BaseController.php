@@ -21,7 +21,7 @@ class BaseController extends Controller
         // add login user
         $headers = Yii::$app->request->headers;
         if ($headers->get('X-UserId', 0)) {
-            $user =  [
+            $user = [
                 'id' => $headers->get('X-UserId', 0),
                 'username' => $headers->get('X-Username', ''),
                 'password' => '',
@@ -41,24 +41,28 @@ class BaseController extends Controller
     /**
      * common response function
      *
-     * @param ResponseInterface $response
+     * @param  ResponseInterface  $response
      * @return \yii\web\Response
      */
     public function response(ResponseInterface $response)
     {
-
         $this->response->setStatusCode($response->get('status'));
 
         if (count($response->headers)) {
-            array_walk($response->headers, function ($value, $key) {
-                $this->response->headers->set($key, $value);
-            });
+            array_walk(
+                $response->headers,
+                function ($value, $key) {
+                    $this->response->headers->set($key, $value);
+                }
+            );
         }
 
-        return $this->asJson([
-            'code' => $response->get('code'),
-            'message' => $response->get('message'),
-            'data' => $response->get('data')
-        ]);
+        return $this->asJson(
+            [
+                'code' => $response->get('code'),
+                'message' => $response->get('message'),
+                'data' => $response->get('data')
+            ]
+        );
     }
 }
