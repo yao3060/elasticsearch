@@ -38,6 +38,10 @@ after_script:
 #   script:
 #     - echo "do code_quality test"
 
+################################################################
+### Staging
+################################################################
+
 staging-install-job:
   stage: install
   environment:
@@ -116,6 +120,9 @@ staging-deploy-job:
     - kubectl apply -k k8s/overlays/staging/
   # when: manual
 
+################################################################
+### production
+################################################################
 
 prod-install-job:
   stage: install
@@ -161,7 +168,7 @@ prod-deploy-job:
   tags:
     - 818ps_web_dev
   only:
-    - develop
+    - production
   script:
     - mkdir -p /etc/deploy
     - echo ${kube_config} | base64 -d > ${KUBECONFIG}
