@@ -68,7 +68,7 @@ class RichEditorAsset extends BaseModel
             if (isset($info['hits']) && sizeof($info['hits'])) {
                 foreach ($info['hits'] as $value) {
                     $responseData['ids'][] = $value['_id'] ?? 0;
-                    $responseData['score'][$value['_id']] = $value['sort'][0] ?? [];
+                    $responseData['score'][$value['_id']] = $value['sort'][0] ?? 0;
                 }
             }
         } catch (\Throwable $e) {

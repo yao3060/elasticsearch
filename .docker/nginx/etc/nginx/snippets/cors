@@ -1,8 +1,7 @@
 set $allow_headers 'DNT,X-Auth-Token,X-Authorization,Origin,X-Socket-Id,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization';
 set $allow_origin '*';
 
-# TODO Add production domain in the below regex pattern
-if ( $http_origin ~* (https?:\/\/(.+\.)?(818ps|docker)\.(?:net|local)(:\d+)?) ) {
+if ( $http_origin ~* (https?:\/\/(.+\.)?(818ps|docker)\.(?:com|local)(:\d+)?) ) {
      set $allow_origin "$http_origin";
 }
 
