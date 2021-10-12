@@ -21,11 +21,9 @@ spec:
       containers:
         - image: registry-vpc.cn-shanghai.aliyuncs.com/818ps/elasticsearch_production_php:latest
           name: backend-php
-          resources:
-            limits:
-              cpu: 500m
-            requests:
-              cpu: 200m
+          env:
+          - name: aliyun_logs_elasticsearch-production-php-stdout
+            value: stdout
       volumes:
         - name: yii-runtime
           persistentVolumeClaim:
