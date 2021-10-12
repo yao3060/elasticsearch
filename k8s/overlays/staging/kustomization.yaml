@@ -51,4 +51,7 @@ configMapGenerator:
       - ELASTIC_COLOR_HOST=192.168.4.211:9200
       - ELASTIC_KEYWORD_HOST=192.168.4.86:9200
       - ELASTIC_SECOND_HOST=192.168.4.194:9200
+      - ALIYUN_ROLE_ARON=acs:ram::1642661977201310:role/logs
+      - ALIYUN_SIGN_IN_HOST=https://signin.aliyun.com
+
 

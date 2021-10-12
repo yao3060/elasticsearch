@@ -31,7 +31,7 @@ class UserTest extends \Codeception\Test\Unit
     /**
      * @depends testFindUserByUsername
      */
-    public function testValidateUser($user)
+    public function testValidateUser()
     {
         $user = User::findByUsername('admin');
         expect_that($user->validateAuthKey('test100key'));

@@ -148,7 +148,5 @@ class JsonStreamTarget extends Streamlog
             return round($memory / 1024, 2) . " KB";
         else
             return round($memory / 1048576, 2) . " MB";
-
-        return $memory . ' B';
     }
 }
