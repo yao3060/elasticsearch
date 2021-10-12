@@ -235,7 +235,7 @@ class Template extends BaseModel
                     ->query($query->query())
                     ->offset($query->offset)
                     ->limit($query->pageSize)
-                    ->createCommand($query->elasticsearchColor)
+                    ->createCommand(\Yii::$app->get('elasticsearch_color'))
                     ->search(['timeout' => '5s'], ['track_scores' => true])['hits'];
             } else {
                 $info = self::find()
@@ -254,7 +254,7 @@ class Template extends BaseModel
 
                 foreach ($info['hits'] as $value) {
                     $return['ids'][] = $value['_id'] ?? 0;
-                    $return['score'][$value['_id']] = $value['sort'][0] ?? [];
+                    $return['score'][$value['_id']] = $value['sort'][0] ?? 0;
                 }
             }
 
@@ -310,7 +310,7 @@ class Template extends BaseModel
                 $responseData['hit'] = $total > 10000 ? 10000 : $total;
                 foreach ($info['hits'] as $value) {
                     $responseData['ids'][] = $value['_id'] ?? 0;
-                    $responseData['score'][$value['_id']] = isset($value['sort'][0]) ?? [];
+                    $responseData['score'][$value['_id']] = isset($value['sort'][0]) ?? 0;
                 }
             }
         } catch (\Throwable $e) {
