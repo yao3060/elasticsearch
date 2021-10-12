@@ -51,6 +51,7 @@ class Svg extends BaseModel
                     $return['ids'][] = $value['_id'];
                     $return['score'][$value['_id']] = $value['sort'][0];
                 }
+                Tools::setRedis(self::REDIS_DB, $redisKey, $return, 86400);
             }
         } catch (\Throwable $e) {
             \Yii::error("Svg Model Error: " . $e->getMessage(), __METHOD__);

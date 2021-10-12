@@ -7,7 +7,7 @@ class SvgSearchQuery extends BaseTemplateSearchQuery
 {
     public function __construct(
         public $keyword = 0,
-        public int $kid2 = 0,
+        public $kid2 = 0,
         public int $page = 1,
         public int $pageSize = 40,
         public string $sort = 'sort desc'
@@ -33,7 +33,9 @@ class SvgSearchQuery extends BaseTemplateSearchQuery
 
     public function queryKid2()
     {
-        $this->query['bool']['must'][]['terms']['kid_2'] = [$this->kid2];
+        if ($this->kid2){
+            $this->query['bool']['must'][]['terms']['kid_2'] = [$this->kid2];
+        }
         return $this;
     }
 
@@ -60,12 +62,16 @@ class SvgSearchQuery extends BaseTemplateSearchQuery
 
     public function getRedisKey()
     {
+        $kid_2 = $this->kid2 ? $this->kid2 : [];
+        if (!is_array($kid_2)) {
+            $kid_2 = [$kid_2];
+        }
         return sprintf(
             'ES_svg2:%s:%s_%d_%d_%d',
             date('Y-m-d'),
             $this->keyword,
             $this->page,
-            $this->kid2,
+            implode('-', $kid_2) ,
             $this->pageSize
         );
     }
