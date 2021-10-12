@@ -168,7 +168,7 @@ prod-deploy-job:
   tags:
     - 818ps_web_dev
   only:
-    - production
+    - master
   script:
     - mkdir -p /etc/deploy
     - echo ${kube_config} | base64 -d > ${KUBECONFIG}
