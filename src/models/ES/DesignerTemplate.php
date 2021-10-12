@@ -281,7 +281,7 @@ class DesignerTemplate extends BaseModel
                 $responseData['hit'] = $total > 10000 ? 10000 : $total;
                 foreach ($info['hits'] as $value) {
                     $responseData['ids'][] = $value['_id'] ?? 0;
-                    $responseData['score'][$value['_id']] = $value['sort'][0] ?? [];
+                    $responseData['score'][$value['_id']] = $value['sort'][0] ?? 0;
                 }
             }
 

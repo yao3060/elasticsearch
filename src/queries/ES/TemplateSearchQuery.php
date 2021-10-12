@@ -26,11 +26,10 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
         public $color = [],
         public $width = 0,
         public $height = 0,
-        public $classIntersectionSearch = 0,
-        public $elasticsearchColor = ''
-    )
-    {
+        public $classIntersectionSearch = 0
+    ) {
         $this->beforeAssignment();
+        $this->queryOffset();
     }
 
     /**
@@ -62,13 +61,8 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
         $this->classId = str_replace(
             ['10_133_0_', '132_133_0_', '10_550_27_'],
             ['31_23_0_', '31_23_0_', '32_27_326_'],
-            $this->classId);
-
-    }
-
-    public function isFuzzy()
-    {
-        return $this->fuzzy == 1;
+            $this->classId
+        );
     }
 
     /**
@@ -83,22 +77,33 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
         }
 
         $implodeKeyArr = [
-            $this->keyword, $this->page, $this->kid1, $this->kid2, $this->sortType,
-            $this->tagId, $this->isZb, $this->pageSize,
-            $this->ratio, $this->classId, $this->size, $this->use
+            $this->keyword,
+            $this->page,
+            $this->kid1,
+            $this->kid2,
+            $this->sortType,
+            $this->tagId,
+            $this->isZb,
+            $this->pageSize,
+            $this->ratio,
+            $this->classId,
+            $this->size,
+            $this->use
         ];
 
-        $redisKey .= ":" . implode('_', $implodeKeyArr);
+        $redisKey .= ":".implode('_', $implodeKeyArr);
 
         if ($this->hasTemplateTypes() && is_array($this->templateTypes)) {
-            $redisKey .= '_' . implode('|', $this->templateTypes);
-        } else if ($this->templateTypes > 0) {
-            $redisKey .= "_" . $this->templateTypes;
+            $redisKey .= '_'.implode('|', $this->templateTypes);
+        } else {
+            if ($this->templateTypes > 0) {
+                $redisKey .= "_".$this->templateTypes;
+            }
         }
 
         if ($this->hasColor()) {
-            $redisKey .= '_' . implode(',', array_column($this->color, 'color')) .
-                '_' . implode(',', array_column($this->color, 'weight'));
+            $redisKey .= '_'.implode(',', array_column($this->color, 'color')).
+                '_'.implode(',', array_column($this->color, 'weight'));
         }
 
         if ($this->hasWidth()) {
@@ -116,6 +121,35 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
         return $redisKey;
     }
 
+    public function isFuzzy()
+    {
+        return $this->fuzzy == 1;
+    }
+
+    /**
+     * return query
+     */
+    public function query(): array
+    {
+
+
+        $this->queryKeyword()
+            ->queryKid1()
+            ->queryKid2()
+            ->queryRatio()
+            ->queryClassIds()
+            ->queryTemplateTypes()
+            ->queryTagId()
+            ->queryIsZb()
+            ->queryIosAlbumUser()
+            ->queryWidth()
+            ->queryHeight()
+            ->querySortType()
+            ->queryColor();
+
+        return $this->query;
+    }
+
     /**
      * query offset
      */
@@ -123,11 +157,12 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
     {
         if ($this->page * $this->pageSize > 10000) {
             $this->pageSize = $this->pageSize - ($this->page * $this->pageSize - 10000) % $this->pageSize;
-            $offset = 10000 - $this->pageSize;
+            $this->offset = 10000 - $this->pageSize;
         } else {
-            $offset = ($this->page - 1) * $this->pageSize;
+            $this->offset = ($this->page - 1) * $this->pageSize;
         }
-        return $offset;
+
+        return $this;
     }
 
     /**
@@ -159,25 +194,6 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
         return $this;
     }
 
-    public function queryTemplateTypes()
-    {
-        if (is_array($this->templateTypes) && count($this->templateTypes) > 1 && in_array(5, $this->templateTypes)) {
-            //有H5就添加长页H5(不改变key,除了单独搜索H5类型)
-            $this->templateTypes[] = 7;
-        }
-
-        if ($this->hasTemplateTypes() && is_array($this->templateTypes)) {
-            // 如果搜索全部类型模板则去掉该条件
-            if(count($this->templateTypes) < 7){
-                $this->query['bool']['must'][]['terms']['template_type'] = $this->templateTypes;
-            }
-        } else if ($this->templateTypes>0){
-            $this->query['bool']['must'][]['match']['template_type'] = $this->templateTypes;
-        }
-
-        return $this;
-    }
-
     public function queryTagId()
     {
         if ($this->hasTagId()) {
@@ -191,31 +207,71 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
         return $this;
     }
 
-    /**
-     * return query
-     */
-    public function query(): array
+    public function queryTemplateTypes()
     {
-        $this->offset = $this->queryOffset();
-
-        $this->queryKeyword()
-            ->queryKid1()
-            ->queryKid2()
-            ->queryRatio()
-            ->queryClassIds()
-            ->queryTemplateTypes()
-            ->queryTagId()
-            ->queryIsZb()
-            ->queryIosAlbumUser()
-            ->queryWidth()
-            ->queryHeight()
-            ->querySortType();
-
-        //颜色搜索
-        if ($this->hasColor()) {
-            return $this->formatColor(array_column($this->color, 'color'), array_column($this->color, 'weight'));
+        if (is_array($this->templateTypes) && count($this->templateTypes) > 1 && in_array(5, $this->templateTypes)) {
+            //有H5就添加长页H5(不改变key,除了单独搜索H5类型)
+            $this->templateTypes[] = 7;
         }
 
-        return $this->query;
+        if ($this->hasTemplateTypes() && is_array($this->templateTypes)) {
+            // 如果搜索全部类型模板则去掉该条件
+            if (count($this->templateTypes) < 7) {
+                $this->query['bool']['must'][]['terms']['template_type'] = $this->templateTypes;
+            }
+        } else {
+            if ($this->templateTypes > 0) {
+                $this->query['bool']['must'][]['match']['template_type'] = $this->templateTypes;
+            }
+        }
+
+        return $this;
+    }
+
+    public function queryColor()
+    {
+        if ($this->hasColor()) {
+            list($colorRange, $colorParams) = $this->formatColor(
+                array_column($this->color, 'color'),
+                array_column($this->color, 'weight')
+            );
+
+            $this->query['bool']['filter'][]['range']['r'] = [
+                'from' => $colorRange[0]['from'],
+                'to' => $colorRange[0]['to']
+            ];
+            $this->query['bool']['filter'][]['range']['g'] = [
+                'from' => $colorRange[1]['from'],
+                'to' => $colorRange[1]['to']
+            ];
+            $this->query['bool']['filter'][]['range']['b'] = [
+                'from' => $colorRange[2]['from'],
+                'to' => $colorRange[2]['to']
+            ];
+
+            $query = [
+                'function_score' => [
+                    'query' => $this->query,
+                    'functions' => [
+                        [
+                            'script_score' => [
+                                'script' => [
+                                    'inline' => 'colorsort',
+                                    'lang' => 'native',
+                                    'params' => [
+                                        'center' => $colorParams,
+                                        'distance' => 200   //图像相似度,可以根据具体搜索词进行调节
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ];
+
+            $this->query = $query;
+        }
+
+        return $this;
     }
 }

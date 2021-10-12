@@ -83,8 +83,7 @@ class TemplateController extends BaseController
                 color: $validateAttributes['color'] ?? [],
                 width: $validateAttributes['width'] ?? 0,
                 height: $validateAttributes['height'] ?? 0,
-                classIntersectionSearch: $validateAttributes['class_intersection_search'] ?? 0,
-                elasticsearchColor: $validateAttributes['elasticsearch_color'] ?? ''
+                classIntersectionSearch: $validateAttributes['class_intersection_search'] ?? 0
             ));
 
             $response = new Response('es_template_search', 'ESTemplate Search', $search);
