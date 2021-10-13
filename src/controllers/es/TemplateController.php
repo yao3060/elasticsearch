@@ -8,7 +8,6 @@ use app\helpers\StringHelper;
 use app\models\ES\Template;
 use app\queries\ES\TemplateRecommendSearchQuery;
 use app\queries\ES\TemplateSearchQuery;
-use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
 use yii\web\Request;
 

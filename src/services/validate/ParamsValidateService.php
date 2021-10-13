@@ -50,6 +50,14 @@ class ParamsValidateService extends Component
     }
 
     /**
+     * 获取验证通过的属性
+     */
+    public function getAttributes()
+    {
+        return $this->model->getAttributes();
+    }
+
+    /**
      * 获取第一条验证错误消息内容
      * @return mixed
      */

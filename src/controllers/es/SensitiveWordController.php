@@ -45,8 +45,10 @@ class SensitiveWordController extends BaseController
                 ));
             }
 
+            $validateAttributes = $paramsValidate->getAttributes();
+
             $search = (new SensitiveWord())->search(new SensitiveWordSearchQuery(
-                keyword: $params['keyword'] ?? '',
+                keyword: $validateAttributes['keyword'] ?? '',
             ));
 
             $response = new Response('sensitive_word_validate', 'Sensitive Word Validate', $search);

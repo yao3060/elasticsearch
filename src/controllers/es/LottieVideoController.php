@@ -8,7 +8,6 @@ use app\controllers\BaseController;
 use app\helpers\StringHelper;
 use app\models\ES\LottieVideo;
 use app\queries\ES\LottieVideoSearchQuery;
-use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
 use yii\web\Request;
 
@@ -36,34 +35,16 @@ class LottieVideoController extends BaseController
     public function actionSearch(Request $request)
     {
         try {
-            // TODO: @hulifeng 如果 keyword 的默认值是 0，也不必验证了，直接在下面给默认值 0 即可
-            $validate = DynamicModel::validateData(
-                $request->getQueryParams(),
-                [
-                    [['keyword'], 'string']
-                ]
-            );
 
-            if ($validate->hasErrors()) {
-                return $this->response(
-                    new Response(
-                        'validate params error',
-                        'Validate Params Error',
-                        $validate->errors,
-                        422
-                    )
-                );
-            }
-
-            $validateAttributes = $validate->getAttributes();
+            $queries = $request->getQueryParams();
 
             $search = (new LottieVideo())->search(
                 new LottieVideoSearchQuery(
-                    keyword: $validateAttributes['keyword'] ?? 0,
-                    classId: $validateAttributes['class_id'] ?? [],
-                    page: $validateAttributes['page'] ?? 1,
-                    pageSize: $validateAttributes['page_size'] ?? 40,
-                    prep: $validateAttributes['prep'] ?? 0
+                    keyword: $queries['keyword'] ?? 0,
+                    classId: $queries['class_id'] ?? [],
+                    page: $queries['page'] ?? 1,
+                    pageSize: $queries['page_size'] ?? 40,
+                    prep: $queries['prep'] ?? 0
                 )
             );
 

@@ -9,7 +9,6 @@ use app\controllers\BaseController;
 use app\helpers\StringHelper;
 use app\models\ES\LottieVideoWord;
 use app\queries\ES\LottieVideoWordSearchQuery;
-use yii\base\DynamicModel;
 use yii\base\UnknownPropertyException;
 use yii\web\Request;
 
@@ -36,25 +35,13 @@ class LottieVideoWordController extends BaseController
     {
         try {
 
-            $validate = DynamicModel::validateData($request->getQueryParams(), []);
-
-            if ($validate->hasErrors()) {
-                if ($validate->hasErrors()) {
-                    return $this->response(new Response(
-                        'validate params error',
-                        'Validate Params Error',
-                        $validate->errors,
-                        422));
-                }
-            }
-
-            $validateAttributes = $validate->getAttributes();
+            $queries = $request->getQueryParams();
 
             $search = (new LottieVideoWord())->search(new LottieVideoWordSearchQuery(
-                keyword: $validateAttributes['keyword'] ?? 0,
-                page: $validateAttributes['page'] ?? 1,
-                pageSize: $validateAttributes['page_size'] ?? 40,
-                prep: $validateAttributes['prep'] ?? 0
+                keyword: $queries['keyword'] ?? 0,
+                page: $queries['page'] ?? 1,
+                pageSize: $queries['page_size'] ?? 40,
+                prep: $queries['prep'] ?? 0
             ));
 
             $response = new Response('lottie_video_word_search', 'Lottie Video Word Search', $search);
