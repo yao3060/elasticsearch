@@ -6,10 +6,8 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\controllers\BaseController;
-use app\helpers\StringHelper;
 use app\models\ES\BackgroundVideo;
 use app\queries\ES\BackgroundVideoQuery;
-use yii\base\UnknownPropertyException;
 use yii\web\Request;
 
 class BackgroundVideoController extends BaseController
@@ -50,13 +48,6 @@ class BackgroundVideoController extends BaseController
             );
 
             $response = new Response('background_video_search', 'Background Video Search', $search);
-        } catch (UnknownPropertyException $unknownException) {
-            $response = new Response(
-                StringHelper::snake($unknownException->getName()),
-                StringHelper::replaceModelName($unknownException->getMessage()),
-                [],
-                422
-            );
         } catch (\Throwable $throwable) {
             $response = new Response(
                 'Internal Server Error',

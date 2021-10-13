@@ -5,10 +5,8 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\controllers\BaseController;
-use app\helpers\StringHelper;
 use app\models\ES\LottieVideo;
 use app\queries\ES\LottieVideoSearchQuery;
-use yii\base\UnknownPropertyException;
 use yii\web\Request;
 
 class LottieVideoController extends BaseController
@@ -50,13 +48,6 @@ class LottieVideoController extends BaseController
             );
 
             $response = new Response('lottie_video_search', 'Lottie Video Search', $search);
-        } catch (UnknownPropertyException $unknownException) {
-            $response = new Response(
-                StringHelper::snake($unknownException->getName()),
-                StringHelper::replaceModelName($unknownException->getMessage()),
-                [],
-                422
-            );
         } catch (\Throwable $throwable) {
             $response = new Response(
                 'Internal Server Error',

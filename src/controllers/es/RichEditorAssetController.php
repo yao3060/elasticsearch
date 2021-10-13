@@ -5,10 +5,8 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\controllers\BaseController;
-use app\helpers\StringHelper;
 use app\models\ES\RichEditorAsset;
 use app\queries\ES\RichEditorAssetSearchQuery;
-use yii\base\UnknownPropertyException;
 use yii\web\Request;
 
 class RichEditorAssetController extends BaseController
@@ -46,14 +44,6 @@ class RichEditorAssetController extends BaseController
             ));
 
             return $this->response(new Response('rich_editor_asset_search', 'Rich Editor Asset Search',  $search));
-        } catch (UnknownPropertyException $unknownException) {
-
-            $response = new Response(
-                StringHelper::snake($unknownException->getName()),
-                StringHelper::replaceModelName($unknownException->getMessage()),
-                [],
-                422
-            );
         } catch (\Throwable $throwable) {
 
             $response = new Response(

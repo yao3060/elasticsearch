@@ -4,11 +4,9 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\controllers\BaseController;
-use app\helpers\StringHelper;
 use app\models\ES\DesignerTemplate;
 use app\queries\ES\DesignerTemplateSearchQuery;
 use yii\web\Request;
-use yii\base\UnknownPropertyException;
 
 class DesignerTemplateController extends BaseController
 {
@@ -96,14 +94,6 @@ class DesignerTemplateController extends BaseController
             );
 
             $response = new Response('design_template_index', 'DesignTemplateIndex', $items);
-
-        } catch (UnknownPropertyException $unknownException) {
-
-            $response = new Response(
-                StringHelper::snake($unknownException->getName()),
-                StringHelper::replaceModelName($unknownException->getMessage()),
-                [],
-                422);
 
         } catch (\Throwable $throwable) {
 
