@@ -28,9 +28,8 @@ class AlbumSearchQuery implements QueryBuilderInterface
             $this->query['bool']['must'][]['terms']['type'] = $this->type;
         }
         if ($this->classId) {
-            // FIXME: @yanghangpu rename $class_id to $classIds
-            $class_id = explode('_', $this->classId);
-            foreach ($class_id as $key) {
+            $classIds = explode('_', $this->classId);
+            foreach ($classIds as $key) {
                 if ($key > 0) {
                     $this->query['bool']['must'][]['terms']['class_id'] = [$key];
                 }
