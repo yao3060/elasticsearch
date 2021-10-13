@@ -39,26 +39,18 @@ class ContainerController extends BaseController
     {
         $data = $request->get();
         try {
-            // FIXME: @yanghangpu 这个验证逻辑基本上没有用，或者不需要，第51行给 keyword 默认值为空即可
-            $model = DynamicModel::validateData($data, [
-                ['keyword', 'string']
-            ]);
-            if ($model->hasErrors()) {
-                $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
-            } else {
-                $data = (new Container())
-                    ->search(new ContainerSearchQuery(
-                        $data['keyword'],
-                        $data['page'] ?? 1,
-                        $data['page_size'] ?? 40,
-                        $data['kid'] ?? 0,
-                    ));
-                $response = new Response(
-                    'get_container_list',
-                    'ContainerList',
-                    $data
-                );
-            }
+            $data = (new Container())
+                ->search(new ContainerSearchQuery(
+                    $data['keyword'] ?? 0,
+                    $data['page'] ?? 1,
+                    $data['page_size'] ?? 40,
+                    $data['kid'] ?? 0,
+                ));
+            $response = new Response(
+                'get_container_list',
+                'ContainerList',
+                $data
+            );
         } catch (UnknownPropertyException $e) {
             $response = new Response(
                 StringHelper::snake($e->getName()),

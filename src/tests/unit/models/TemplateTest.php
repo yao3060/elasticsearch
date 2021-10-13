@@ -78,7 +78,7 @@ class TemplateTest extends Unit
             width: $width,
             height: $height,
             classIntersectionSearch: $classIntersectionSearch,
-            elasticsearchColor: $elasticsearchColor
+            //elasticsearchColor: $elasticsearchColor
         ));
 
         $searchIds = $search['ids'] ?? [];

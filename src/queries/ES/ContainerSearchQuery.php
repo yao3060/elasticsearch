@@ -26,17 +26,14 @@ class ContainerSearchQuery implements QueryBuilderInterface
         }
         return $this->query;
     }
-
-    // FIXME: @yangshangpu  这儿不需要参数 $is_or
-    public function queryKeyword($is_or = false)
+    public function queryKeyword()
     {
         if ($this->keyword) {
-            $operator = $is_or ? 'or' : 'and';
             $this->query['bool']['must']['terms']['multi_match'] = [
                 'query' => $this->keyword,
                 'fields' => ["title^5", "description^1"],
                 'type' => 'most_fields',
-                "operator" => $operator
+                "operator" => 'and'
             ];
         }
         return $this;

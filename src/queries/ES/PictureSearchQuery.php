@@ -17,28 +17,21 @@ class PictureSearchQuery implements QueryBuilderInterface
         public $isZb = 1,
         public $kid = [],
         public $vipPic = 0,
-        public $ratioId = 0
+        public $ratioId = -1
     ) {
     }
 
     public function query(): array
     {
-        $sceneId = is_array($this->sceneId) ? $this->sceneId : [];
-
-
         $this->queryKeyword();
-
-        // FIXME: @yanghangpu '-1' 是 string, 不是 integer， try: (int)$this->ratioId > -1
-        $ratioId = isset($this->ratioId) ? $this->ratioId : '-1';
-        if ($ratioId > -1) {
-            $this->query['bool']['must'][]['match']['ratio'] = $ratioId;
+        if ($this->ratioId > -1) {
+            $this->query['bool']['must'][]['match']['ratio'] =$this->ratioId;
         }
-
         // $kid = is_array($this->kid) ? $this->kid : [];
         if (is_array($this->kid) && !empty($this->kid)) {
             $this->query['bool']['must'][]['terms']['kid_2'] = $this->kid;
         }
-
+        $sceneId = is_array($this->sceneId) ? $this->sceneId : [];
         if ($sceneId) {
             $this->query['bool']['must'][]['terms']['scene_id'] = $sceneId;
         }

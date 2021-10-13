@@ -44,27 +44,18 @@ class PictureController extends BaseController
 
         $data = $request->get();
         try {
-            // TODO: @yangshangpu 一样的，如果 keyword 默认值是 0 的话，
-            // 也不需要验证了，直接在下面给 0 即可
-            $model = DynamicModel::validateData($data, [
-                ['keyword', 'string']
-            ]);
-            if ($model->hasErrors()) {
-                $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
-            } else {
-                $data = (new Picture())
-                    ->search(new PictureSearchQuery(
-                        $data['keyword'] ?? 0,
-                        $data['page'] ?? 1,
-                        $data['page_size'] ?? 40,
-                        $data['scene_id'] ?? 0,
-                        $data['is_zb'] ?? 1,
-                        $data['kid'] ?? 0,
-                        $data['vip_pic'] ?? 0,
-                        $data['ratio_id'] ?? 0
-                    ));
-                $response = new Response('get_picture_list', 'PictureList', $data);
-            }
+            $data = (new Picture())
+                ->search(new PictureSearchQuery(
+                    $data['keyword'] ?? 0,
+                    $data['page'] ?? 1,
+                    $data['page_size'] ?? 40,
+                    $data['scene_id'] ?? 0,
+                    $data['is_zb'] ?? 1,
+                    $data['kid'] ?? 0,
+                    $data['vip_pic'] ?? 0,
+                    $data['ratio_id'] ?? 0
+                ));
+            $response = new Response('get_picture_list', 'PictureList', $data);
         } catch (UnknownPropertyException $e) {
             $response = new Response(
                 StringHelper::snake($e->getName()),

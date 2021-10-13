@@ -23,18 +23,17 @@ class PptTemplateSearchQuery implements QueryBuilderInterface
         ksort($this->c2);
         ksort($this->c3);
         $this->query['bool']['must'][]['terms']['c_id'] = [$this->c1];
-        // TODO: @yanghangpu 变量名用 camelCase， 如： $class_id => $classId
         if ($this->c2) {
-            foreach ($this->c2 as $class_id) {
-                if (intval($class_id) > 0) {
-                    $this->query['bool']['must'][]['terms']['c_id'] = [$class_id];
+            foreach ($this->c2 as $classId) {
+                if (intval($classId) > 0) {
+                    $this->query['bool']['must'][]['terms']['c_id'] = [$classId];
                 }
             }
         }
         if ($this->c3) {
-            foreach ($this->c3 as $class_id) {
-                if (intval($class_id) > 0) {
-                    $this->query['bool']['must'][]['terms']['c_id'] = [$class_id];
+            foreach ($this->c3 as $classId) {
+                if (intval($classId) > 0) {
+                    $this->query['bool']['must'][]['terms']['c_id'] = [$classId];
                 }
             }
         }
