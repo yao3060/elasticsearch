@@ -22,18 +22,11 @@ class SeoLinkWordController extends BaseController
     {
         $data = $request->get();
         try {
-            $model = DynamicModel::validateData($data, [
-                ['keyword', 'required']
-            ]);
-            if ($model->hasErrors()) {
-                $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
-            } else {
-                $data = (new SeoLinkWord())
-                    ->search(new SeoLinkWordSearchQuery(
-                        $data['keyword'],
-                    ));
-                $response = new Response('get_seo_link_word_list', 'SeoLinkWordList', $data);
-            }
+            $data = (new SeoLinkWord())
+                ->search(new SeoLinkWordSearchQuery(
+                    $data['keyword'] ?? 0,
+                ));
+            $response = new Response('get_seo_link_word_list', 'SeoLinkWordList', $data);
         } catch (UnknownPropertyException $e) {
             $response = new Response(
                 StringHelper::snake($e->getName()),

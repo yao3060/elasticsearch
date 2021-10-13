@@ -42,24 +42,17 @@ class AssetController extends BaseController
     {
         $data = $request->get();
         try {
-            $model = DynamicModel::validateData($data, [
-                ['keyword', 'string']
-            ]);
-            if ($model->hasErrors()) {
-                $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
-            } else {
-                $data = (new Asset())
-                    ->search(new AssetSearchQuery(
-                        $data['keyword'],
-                        $data['page'] ?? 1,
-                        $data['page_size'] ?? 40,
-                        $data['scene_id'] ?? 0,
-                        $data['is_zb'] ?? 0,
-                        $data['sort'] ?? 0,
-                        $data['use_count'] ?? 0
-                    ));
-                $response = new Response('get_asset_list', 'AssetList', $data);
-            }
+            $data = (new Asset())
+                ->search(new AssetSearchQuery(
+                    $data['keyword'] ?? 0,
+                    $data['page'] ?? 1,
+                    $data['page_size'] ?? 40,
+                    $data['scene_id'] ?? 0,
+                    $data['is_zb'] ?? 0,
+                    $data['sort'] ?? 0,
+                    $data['use_count'] ?? 0
+                ));
+            $response = new Response('get_asset_list', 'AssetList', $data);
         } catch (UnknownPropertyException $e) {
             $response = new Response(
                 StringHelper::snake($e->getName()),

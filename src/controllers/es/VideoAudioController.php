@@ -43,25 +43,18 @@ class VideoAudioController extends BaseController
     {
         $data = $request->get();
         try {
-            $model = DynamicModel::validateData($data, [
-                ['keyword', 'string']
-            ]);
-            if ($model->hasErrors()) {
-                $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
-            } else {
-                $data = (new VideoAudio())
-                    ->search(new VideoAudioSearchQuery(
-                        $data['keyword'],
-                        $data['page'] ?? 1,
-                        $data['page_size'] ?? 40,
-                        $data['parents_id'] ?? 0,
-                        $data['class_id'] ?? 0,
-                        $data['prep'] ?? 0,
-                        $data['is_designer'] ?? 0,
-                        $data['is_vip'] ?? 0
-                    ));
-                $response = new Response('get_videoAudio_list', 'VideoAudioList', $data);
-            }
+            $data = (new VideoAudio())
+                ->search(new VideoAudioSearchQuery(
+                    $data['keyword'],
+                    $data['page'] ?? 1,
+                    $data['page_size'] ?? 40,
+                    $data['parents_id'] ?? 0,
+                    $data['class_id'] ?? 0,
+                    $data['prep'] ?? 0,
+                    $data['is_designer'] ?? 0,
+                    $data['is_vip'] ?? 0
+                ));
+            $response = new Response('get_videoAudio_list', 'VideoAudioList', $data);
         } catch (UnknownPropertyException $e) {
             $response = new Response(
                 StringHelper::snake($e->getName()),

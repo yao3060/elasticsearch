@@ -40,21 +40,9 @@ class GroupWordController extends BaseController
     {
         $data = $request->get();
         try {
-            $model = DynamicModel::validateData($data, [
-                ['keyword', 'string'],
-                ['search', 'string']
-            ]);
-            if ($model->hasErrors()) {
-                $response = new Response(
-                    'unprocessable_entity',
-                    'Unprocessable Entity',
-                    $model->errors,
-                    422
-                );
-            } else {
                 $data = (new GroupWord())
                     ->search(new GroupWordSearchQuery(
-                        $data['keyword'],
+                        $data['keyword'] ?? 0,
                         $data['page'] ?? 1,
                         $data['page_size'] ?? 40,
                         $data['search'] ?? 0,
@@ -65,7 +53,6 @@ class GroupWordController extends BaseController
                     'GroupWordsList',
                     $data
                 );
-            }
         } catch (UnknownPropertyException $e) {
             $response = new Response(
                 StringHelper::snake($e->getName()),
