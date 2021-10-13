@@ -6,12 +6,10 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\controllers\BaseController;
-use app\helpers\StringHelper;
 use app\models\ES\SensitiveWord;
 use app\queries\ES\SensitiveWordSearchQuery;
 use app\services\validate\ParamsValidateService;
 use yii\web\Request;
-use yii\web\UnauthorizedHttpException;
 
 class SensitiveWordController extends BaseController
 {
@@ -53,13 +51,6 @@ class SensitiveWordController extends BaseController
             ));
 
             $response = new Response('sensitive_word_validate', 'Sensitive Word Validate', $search);
-
-        } catch (UnauthorizedHttpException $unknownException) {
-
-            $response = new Response(
-                StringHelper::snake($unknownException->getName()),
-                StringHelper::replaceModelName($unknownException->getMessage()),
-                [], 422);
 
         } catch (\Throwable $throwable) {
 

@@ -42,29 +42,17 @@ class GifAssetController extends BaseController
     {
         $data = $request->get();
         try {
-            $model = DynamicModel::validateData($data, [
-                ['keyword', 'required']
-            ]);
-            if ($model->hasErrors()) {
-                $response = new Response(
-                    'unprocessable_entity',
-                    'Unprocessable Entity',
-                    $model->errors,
-                    422
-                );
-            } else {
-                $data = (new GifAsset())
-                    ->search(new GifAssetSearchQuery(
-                        $data['keyword'],
-                        $data['page'] ?? 1,
-                        $data['page_size'] ?? 40,
-                        $data['class_id'] ?? 0,
-                        $data['is_zb'] ?? 0,
-                        $data['prep'] ?? 0,
-                        $data['limit_size'] ?? 0,
-                    ));
-                $response = new Response('get_gif_asset_list', 'GifAssetList', $data);
-            }
+            $data = (new GifAsset())
+                ->search(new GifAssetSearchQuery(
+                    $data['keyword'] ?? 0,
+                    $data['page'] ?? 1,
+                    $data['page_size'] ?? 40,
+                    $data['class_id'] ?? 0,
+                    $data['is_zb'] ?? 0,
+                    $data['prep'] ?? 0,
+                    $data['limit_size'] ?? 0,
+                ));
+            $response = new Response('get_gif_asset_list', 'GifAssetList', $data);
         } catch (UnknownPropertyException $e) {
             $response = new Response(
                 StringHelper::snake($e->getName()),

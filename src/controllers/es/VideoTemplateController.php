@@ -6,10 +6,8 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\controllers\BaseController;
-use app\helpers\StringHelper;
 use app\models\ES\VideoTemplate;
 use app\queries\ES\VideoTemplateSearchQuery;
-use yii\base\UnknownPropertyException;
 use yii\web\Request;
 
 /**
@@ -49,14 +47,6 @@ class VideoTemplateController extends BaseController
             ));
 
             return $this->response(new Response('video_template_search', 'Video Template Search', $search));
-
-        } catch (UnknownPropertyException $unknownException) {
-
-            $response = new Response(
-                StringHelper::snake($unknownException->getName()),
-                StringHelper::replaceModelName($unknownException->getMessage()),
-                [],
-                422);
 
         } catch (\Throwable $throwable) {
 

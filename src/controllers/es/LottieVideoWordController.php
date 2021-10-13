@@ -6,10 +6,8 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\controllers\BaseController;
-use app\helpers\StringHelper;
 use app\models\ES\LottieVideoWord;
 use app\queries\ES\LottieVideoWordSearchQuery;
-use yii\base\UnknownPropertyException;
 use yii\web\Request;
 
 class LottieVideoWordController extends BaseController
@@ -46,14 +44,6 @@ class LottieVideoWordController extends BaseController
             ));
 
             $response = new Response('lottie_video_word_search', 'Lottie Video Word Search', $search);
-
-        } catch (UnknownPropertyException $unknownException) {
-
-            $response = new Response(
-                StringHelper::snake($unknownException->getName()),
-                StringHelper::replaceModelName($unknownException->getMessage()),
-                [],
-                422);
 
         } catch (\Throwable $throwable) {
 

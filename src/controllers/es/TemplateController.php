@@ -4,11 +4,9 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\controllers\BaseController;
-use app\helpers\StringHelper;
 use app\models\ES\Template;
 use app\queries\ES\TemplateRecommendSearchQuery;
 use app\queries\ES\TemplateSearchQuery;
-use yii\base\UnknownPropertyException;
 use yii\web\Request;
 
 class TemplateController extends BaseController
@@ -76,14 +74,6 @@ class TemplateController extends BaseController
 
             $response = new Response('es_template_search', 'ESTemplate Search', $search);
 
-        } catch (UnknownPropertyException $unknownException) {
-
-            $response = new Response(
-                StringHelper::snake($unknownException->getName()),
-                StringHelper::replaceModelName($unknownException->getMessage()),
-                [],
-                422);
-
         } catch (\Throwable $throwable) {
 
             $response = new Response(
@@ -133,14 +123,6 @@ class TemplateController extends BaseController
                 'es_template_commend_search',
                 'ESTemplate Commend Search',
                 $recommendSearch);
-
-        } catch (UnknownPropertyException $unknownException) {
-
-            $response = new Response(
-                StringHelper::snake($unknownException->getName()),
-                StringHelper::replaceModelName($unknownException->getMessage()),
-                [],
-                422);
 
         } catch (\Throwable $throwable) {
 
