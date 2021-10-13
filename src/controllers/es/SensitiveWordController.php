@@ -19,6 +19,7 @@ class SensitiveWordController extends BaseController
      * @api {post} /v1/sensitive-words/validate Validate Sensitive Word
      * @apiName SensitiveWordValidate
      * @apiGroup SensitiveWord
+     * @apiDescription 敏感词验证（原 ips_backend 项目模型：ESBanWords）
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词
      *

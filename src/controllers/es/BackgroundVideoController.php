@@ -18,6 +18,7 @@ class BackgroundVideoController extends BaseController
      * @api {get} /v1/background-videos Get Background Video
      * @apiName GetBackgroundVideo
      * @apiGroup BackgroundVideo
+     * @apiDescription 背景视频搜索（原 ips_backend 项目模型：ESBgVideo）
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词
      * @apiParam (请求参数) {Number} [page] 页码

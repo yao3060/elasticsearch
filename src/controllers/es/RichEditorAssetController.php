@@ -17,6 +17,7 @@ class RichEditorAssetController extends BaseController
      * @api {get} /v1/rich-editor-assets Get Rich Editor Asset Video
      * @apiName GetRichEditorAssetVideo
      * @apiGroup RichEditorAssetVideo
+     * @apiDescription 富文本元素搜索（原 ips_backend 项目模型：ESRtAsset）
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词
      * @apiParam (请求参数) {Number} [page] 页码

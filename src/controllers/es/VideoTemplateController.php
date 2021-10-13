@@ -16,6 +16,7 @@ use yii\web\Request;
  * @api {get} /v1/video-templates Get Video Template
  * @apiName GetBackgroundVideo
  * @apiGroup VideoTemplate
+ * @apiDescription 片段视频搜索（原 ips_backend 项目模型：ESTemplateExcerpt）
  *
  * @apiParam (请求参数) {String} keyword 搜索关键词
  * @apiParam (请求参数) {Number} [page] 页码

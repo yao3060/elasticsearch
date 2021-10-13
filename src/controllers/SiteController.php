@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\services\ali\AliDataVisualization;
+use app\services\validate\ParamsValidateService;
 use Yii;
 use yii\base\DynamicModel;
 use yii\filters\AccessControl;
@@ -143,19 +144,27 @@ class SiteController extends BaseController
     public function actionDashboard(Request $request)
     {
         try {
-            $projectName = $request->get("project_name", "");
-            $logStoreName = $request->get("log_store_name", "");
-            if (empty($projectName) || empty($logStoreName)) {
+            $queries = $request->getQueryParams();
+            $paramValidate = new ParamsValidateService();
+            $validate = $paramValidate->validate($queries, [
+                [['project_name', 'log_store_name'], 'required'],
+                ['project_name', 'string'],
+                ['log_store_name', 'string']
+            ]);
+            if ($validate == false) {
                 return $this->asJson(
                     [
                         'code' => 'validate_params_error',
-                        'message' => 'project_name and log_store_name are required'
+                        'message' => $paramValidate->getFirstErrorSummary()
                     ]
                 );
             }
+            $validateAttributes = $paramValidate->getAttributes();
+            $projectName = $validateAttributes['project_name'];
+            $logStoreName = $validateAttributes['log_store_name'];
             $except = ['project_name', 'log_store_name'];
             $otherParams = array_filter(
-                $request->getQueryParams(),
+                $validateAttributes,
                 function ($key) use ($except) {
                     return !in_array($key, $except);
                 },

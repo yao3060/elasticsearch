@@ -18,6 +18,7 @@ class LottieVideoWordController extends BaseController
      * @api {get} /v1/lottie-video-words Get Lottie Video Word
      * @apiName GetLottieVideoWord
      * @apiGroup LottieVideoWord
+     * @apiDescription 设计师动效搜索词搜索（原 ips_backend 项目模型：ESVideoLottieWord）
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词
      * @apiParam (请求参数) {Number} [page] 页码
