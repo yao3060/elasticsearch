@@ -17,6 +17,7 @@ class LottieVideoController extends BaseController
      * @api {get} /v1/lottie-videos Get Lottie Video
      * @apiName GetLottieVideo
      * @apiGroup LottieVideo
+     * @apiDescription 设计师动效搜索（原 ips_backend 项目模型：ESVideoLottie）
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词
      * @apiParam (请求参数) {Number} [page] 页码

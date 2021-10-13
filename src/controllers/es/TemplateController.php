@@ -17,6 +17,7 @@ class TemplateController extends BaseController
      * @api {get} /v1/templates Get Template
      * @apiName GetTemplate
      * @apiGroup Template
+     * @apiDescription 模板搜索（原 ips_backend 项目模型：ESTemplate）
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词
      * @apiParam (请求参数) {Number} [page] 页码
@@ -100,6 +101,7 @@ class TemplateController extends BaseController
      * @api {get} /v1/templates/recommends Get Recommend Template
      * @apiName GetRecommendTemplate
      * @apiGroup Template
+     * @apiDescription 推荐模板搜索（原 ips_backend 项目模型：ESTemplate）
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词
      * @apiParam (请求参数) {Number} [page] 页码
