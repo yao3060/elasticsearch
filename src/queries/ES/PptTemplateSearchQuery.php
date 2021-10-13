@@ -15,8 +15,7 @@ class PptTemplateSearchQuery implements QueryBuilderInterface
         public  $pageSize = 50,
         public  $c2 = [],
         public  $c3 = [],
-    )
-    {
+    ) {
     }
 
     public function query(): array
@@ -24,6 +23,7 @@ class PptTemplateSearchQuery implements QueryBuilderInterface
         ksort($this->c2);
         ksort($this->c3);
         $this->query['bool']['must'][]['terms']['c_id'] = [$this->c1];
+        // TODO: @yanghangpu 变量名用 camelCase， 如： $class_id => $classId
         if ($this->c2) {
             foreach ($this->c2 as $class_id) {
                 if (intval($class_id) > 0) {
@@ -51,7 +51,8 @@ class PptTemplateSearchQuery implements QueryBuilderInterface
             $this->page
         );
     }
-    public function pageSizeSet(){
+    public function pageSizeSet()
+    {
         $pageSize = $this->pageSize;
         if ($this->page * $this->pageSize > 10000) {
             $pageSize = $this->page * $pageSize - 10000;

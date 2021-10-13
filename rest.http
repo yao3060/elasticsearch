@@ -54,7 +54,7 @@ Content-Type: application/json
 Accept: application/json
 
 ### 裁剪搜索
-GET {{BASE_URL}}/v1/containers?keyword=0
+GET {{BASE_URL}}/v1/containers?keyword=
 Content-Type: application/json
 Accept: application/json
 
@@ -208,7 +208,7 @@ Content-Type: application/json
 Accept: application/json
 
 ### 'GET  v1/containers' => 'es/container/search', //裁剪搜索
-GET {{BASE_URL}}/v1/containers?keyword=
+GET {{BASE_URL}}/v1/containers?keyword=0
 Content-Type: application/json
 Accept: application/json
 

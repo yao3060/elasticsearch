@@ -36,6 +36,7 @@ class LottieVideoController extends BaseController
     public function actionSearch(Request $request)
     {
         try {
+            // TODO: @hulifeng 如果 keyword 的默认值是 0，也不必验证了，直接在下面给默认值 0 即可
             $validate = DynamicModel::validateData(
                 $request->getQueryParams(),
                 [

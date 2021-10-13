@@ -39,6 +39,7 @@ class ContainerController extends BaseController
     {
         $data = $request->get();
         try {
+            // FIXME: @yanghangpu 这个验证逻辑基本上没有用，或者不需要，第51行给 keyword 默认值为空即可
             $model = DynamicModel::validateData($data, [
                 ['keyword', 'string']
             ]);
@@ -52,7 +53,11 @@ class ContainerController extends BaseController
                         $data['page_size'] ?? 40,
                         $data['kid'] ?? 0,
                     ));
-                $response = new Response('get_container_list', 'ContainerList', $data);
+                $response = new Response(
+                    'get_container_list',
+                    'ContainerList',
+                    $data
+                );
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(

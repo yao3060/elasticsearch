@@ -1,4 +1,5 @@
 <?php
+
 namespace app\controllers\es;
 
 
@@ -34,7 +35,7 @@ class RichEditorAssetController extends BaseController
     public function actionSearch(Request $request)
     {
         try {
-
+            // TODO: @hulifeng 这个验证不需要的话就去掉吧
             $validate = DynamicModel::validateData($request->getQueryParams(), [
                 ["keyword", "string"]
             ]);
@@ -44,7 +45,8 @@ class RichEditorAssetController extends BaseController
                     'validate params error',
                     'Validate Params Error',
                     $validate->errors,
-                    422));
+                    422
+                ));
             }
 
             $validateAttributes = $validate->getAttributes();
@@ -58,23 +60,22 @@ class RichEditorAssetController extends BaseController
             ));
 
             return $this->response(new Response('rich_editor_asset_search', 'Rich Editor Asset Search',  $search));
-
         } catch (UnknownPropertyException $unknownException) {
 
             $response = new Response(
                 StringHelper::snake($unknownException->getName()),
                 StringHelper::replaceModelName($unknownException->getMessage()),
                 [],
-                422);
-
+                422
+            );
         } catch (\Throwable $throwable) {
 
             $response = new Response(
                 'Internal Server Error',
                 $throwable->getMessage(),
                 YII_DEBUG ? explode("\n", $throwable->getTraceAsString()) : [],
-                500);
-
+                500
+            );
         }
 
         return $this->response($response);

@@ -46,7 +46,12 @@ class GifAssetController extends BaseController
                 ['keyword', 'required']
             ]);
             if ($model->hasErrors()) {
-                $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
+                $response = new Response(
+                    'unprocessable_entity',
+                    'Unprocessable Entity',
+                    $model->errors,
+                    422
+                );
             } else {
                 $data = (new GifAsset())
                     ->search(new GifAssetSearchQuery(

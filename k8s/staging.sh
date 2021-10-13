@@ -9,10 +9,6 @@ cp overlays/staging/secrets.txt base/db/secrets.txt
 
 echo "Get develop branch git sha from remote:"
 
-# GITSHA=$(git rev-parse HEAD)
-# GIT_REMOTE=$(git config --get remote.origin.url)
-# GITSHA=$(git ls-remote ${GIT_REMOTE} refs/heads/develop | awk '{ print $1}')
-# FULLSHA="0.0.0-${GITSHA:0:8}"
 FULLSHA="latest"
 
 RED='\033[0;31m'
@@ -33,7 +29,7 @@ fi
 
 # test config file
 # kubectl kustomize overlays/staging/
-./kubectl apply -k overlays/staging/
+./kubectl_staging apply -k overlays/staging/
 
 echo "Set image tags back to 'MYNEWTAG'"
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then

@@ -18,15 +18,19 @@ class ContainerSearchQuery implements QueryBuilderInterface
 
     public function query(): array
     {
+        // var_dump($this->keyword);
+        // die;
         $this->queryKeyword();
         if ($this->kid) {
             $this->query['bool']['must'][]['terms']['kid_2'] = $this->kid;
         }
         return $this->query;
     }
+
+    // FIXME: @yangshangpu  这儿不需要参数 $is_or
     public function queryKeyword($is_or = false)
     {
-        if ($this->keyword){
+        if ($this->keyword) {
             $operator = $is_or ? 'or' : 'and';
             $this->query['bool']['must']['terms']['multi_match'] = [
                 'query' => $this->keyword,

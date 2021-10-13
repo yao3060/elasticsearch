@@ -18,8 +18,7 @@ class AlbumSearchQuery implements QueryBuilderInterface
         public $sortType = 'default',
         public $update = 0,
         public $fuzzy = 0,
-    )
-    {
+    ) {
     }
 
     public function query(): array
@@ -29,6 +28,7 @@ class AlbumSearchQuery implements QueryBuilderInterface
             $this->query['bool']['must'][]['terms']['type'] = $this->type;
         }
         if ($this->classId) {
+            // FIXME: @yanghangpu rename $class_id to $classIds
             $class_id = explode('_', $this->classId);
             foreach ($class_id as $key) {
                 if ($key > 0) {
@@ -38,8 +38,9 @@ class AlbumSearchQuery implements QueryBuilderInterface
         }
         return $this->query;
     }
-    public function queryKeyword() {
-        if($this->keyword) {
+    public function queryKeyword()
+    {
+        if ($this->keyword) {
             $operator = $this->fuzzy ? 'or' : 'and';
             $this->query['bool']['must'][]['multi_match'] = [
                 'query' => $this->keyword,
@@ -64,7 +65,7 @@ class AlbumSearchQuery implements QueryBuilderInterface
             $this->pageSize,
             $this->page
         );
-        if ($this->fuzzy == 1){
+        if ($this->fuzzy == 1) {
             $redisKey .= ":fuzzy";
         }
         return $redisKey;
