@@ -44,6 +44,8 @@ class PictureController extends BaseController
 
         $data = $request->get();
         try {
+            // TODO: @yangshangpu 一样的，如果 keyword 默认值是 0 的话，
+            // 也不需要验证了，直接在下面给 0 即可
             $model = DynamicModel::validateData($data, [
                 ['keyword', 'string']
             ]);

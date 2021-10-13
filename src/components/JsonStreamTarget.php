@@ -40,6 +40,8 @@ class JsonStreamTarget extends Streamlog
         $logData['category'] = $category;
         $logData['message'] = $this->extractMessageContentData($text);
 
+        $logData['request_id'] = $_SERVER['HTTP_X_REQUEST_ID'] ?? '--';
+
         // Format the data as a JSON string and return it.
         return Json::encode($logData);
     }

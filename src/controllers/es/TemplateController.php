@@ -50,40 +50,28 @@ class TemplateController extends BaseController
     public function actionSearch(Request $request)
     {
         try {
-            $template = new Template();
+            $queries = $request->getQueryParams();
 
-            $validate = DynamicModel::validateData($request->getQueryParams(), $template->rules());
-
-            if ($validate->hasErrors()) {
-                return $this->response(new Response(
-                    'validate params error',
-                    'Validate Params Error',
-                    $validate->errors,
-                    422));
-            }
-
-            $validateAttributes = $validate->getAttributes();
-
-            $search = $template->search(new TemplateSearchQuery(
-                keyword: $validateAttributes['keyword'] ?? null,
-                page: $validateAttributes['page'] ?? 1,
-                kid1: $validateAttributes['kid1'] ?? 0,
-                kid2: $validateAttributes['kid2'] ?? 0,
-                sortType: $validateAttributes['sort_type'] ?? 'default',
-                tagId: $validateAttributes['tag_id'] ?? 0,
-                isZb: $validateAttributes['is_zb'] ?? 1,
-                pageSize: $validateAttributes['page_size'] ?? 35,
-                ratio: $validateAttributes['ratio'] ?? null,
-                classId: $validateAttributes['class_id'] ?? 0,
-                update: $validateAttributes['update'] ?? 0,
-                size: $validateAttributes['size'] ?? 0,
-                fuzzy: $validateAttributes['fuzzy'] ?? 0,
-                templateTypes: $validateAttributes['template_type'] ?? [1, 2],
-                use: $validateAttributes['use'] ?? 0,
-                color: $validateAttributes['color'] ?? [],
-                width: $validateAttributes['width'] ?? 0,
-                height: $validateAttributes['height'] ?? 0,
-                classIntersectionSearch: $validateAttributes['class_intersection_search'] ?? 0
+            $search = (new Template())->search(new TemplateSearchQuery(
+                keyword: $queries['keyword'] ?? null,
+                page: $queries['page'] ?? 1,
+                kid1: $queries['kid1'] ?? 0,
+                kid2: $queries['kid2'] ?? 0,
+                sortType: $queries['sort_type'] ?? 'default',
+                tagId: $queries['tag_id'] ?? 0,
+                isZb: $queries['is_zb'] ?? 1,
+                pageSize: $queries['page_size'] ?? 35,
+                ratio: $queries['ratio'] ?? null,
+                classId: $queries['class_id'] ?? 0,
+                update: $queries['update'] ?? 0,
+                size: $queries['size'] ?? 0,
+                fuzzy: $queries['fuzzy'] ?? 0,
+                templateTypes: $queries['template_type'] ?? [1, 2],
+                use: $queries['use'] ?? 0,
+                color: $queries['color'] ?? [],
+                width: $queries['width'] ?? 0,
+                height: $queries['height'] ?? 0,
+                classIntersectionSearch: $queries['class_intersection_search'] ?? 0
             ));
 
             $response = new Response('es_template_search', 'ESTemplate Search', $search);
@@ -130,27 +118,14 @@ class TemplateController extends BaseController
     public function actionRecommendSearch(Request $request)
     {
         try {
+            $queryRecommend = $request->getQueryParams();
 
-            $template = new Template();
-
-            $validate = DynamicModel::validateData($request->getQueryParams(), $template->recommendRules());
-
-            if ($validate->hasErrors()) {
-                return $this->response(new Response(
-                    'validate_param_errors',
-                    'Validate Param Errors',
-                    $validate->errors,
-                    422));
-            }
-
-            $attributes = $validate->getAttributes();
-
-            $recommendSearch = $template->recommendSearch(new TemplateRecommendSearchQuery(
-                keyword: $attributes['keyword'] ?? 0,
-                page: $attributes['page'] ?? 1,
-                pageSize: $attributes['page_size'] ?? 40,
-                templateType: $attributes['template_type'] ?? null,
-                ratio: $attributes['ratio'] ?? null
+            $recommendSearch = (new Template())->recommendSearch(new TemplateRecommendSearchQuery(
+                keyword: $queryRecommend['keyword'] ?? 0,
+                page: $queryRecommend['page'] ?? 1,
+                pageSize: $queryRecommend['page_size'] ?? 40,
+                templateType: $queryRecommend['template_type'] ?? null,
+                ratio: $queryRecommend['ratio'] ?? null
             ));
 
             $response = new Response(

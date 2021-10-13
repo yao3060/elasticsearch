@@ -310,7 +310,7 @@ class Template extends BaseModel
                 $responseData['hit'] = $total > 10000 ? 10000 : $total;
                 foreach ($info['hits'] as $value) {
                     $responseData['ids'][] = $value['_id'] ?? 0;
-                    $responseData['score'][$value['_id']] = isset($value['sort'][0]) ?? 0;
+                    $responseData['score'][$value['_id']] = $value['sort'][0] ?? 0;
                 }
             }
         } catch (\Throwable $e) {
@@ -320,19 +320,5 @@ class Template extends BaseModel
         Tools::setRedis(self::$redisDb, $redisKey, $responseData);
 
         return $responseData;
-    }
-
-    public function rules()
-    {
-        return [
-            [['keyword'], 'string'],
-        ];
-    }
-
-    public function recommendRules()
-    {
-        return [
-            [['keyword'], 'string']
-        ];
     }
 }

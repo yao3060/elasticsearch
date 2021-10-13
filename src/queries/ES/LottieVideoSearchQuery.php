@@ -57,10 +57,10 @@ class LottieVideoSearchQuery extends BaseTemplateSearchQuery
 
     public function getRedisKey()
     {
-        $redisKey = "ES_video:lottie:".date('Y-m-d').":{$this->keyword}_{$this->page}_ ".implode(
-                '-',
-                $this->classId
-            )." _{$this->pageSize}";
+        $redisKey = "ES_video:lottie:" . date('Y-m-d') . ":{$this->keyword}_{$this->page}_ " . implode(
+            '-',
+            $this->classId
+        ) . " _{$this->pageSize}";
 
         return $redisKey;
     }

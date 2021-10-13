@@ -8,6 +8,7 @@ use app\interfaces\ES\QueryBuilderInterface;
 class PictureSearchQuery implements QueryBuilderInterface
 {
     private $query = [];
+
     function __construct(
         public $keyword = 0,
         public $page = 1,
@@ -17,30 +18,37 @@ class PictureSearchQuery implements QueryBuilderInterface
         public $kid = [],
         public $vipPic = 0,
         public $ratioId = 0
-    )
-    {
+    ) {
     }
 
     public function query(): array
     {
         $sceneId = is_array($this->sceneId) ? $this->sceneId : [];
-        $kid = is_array($this->kid) ? $this->kid : [];
-        $ratioId = isset($this->ratioId) ? $this->ratioId : '-1';
+
+
         $this->queryKeyword();
+
+        // FIXME: @yanghangpu '-1' 是 string, 不是 integer， try: (int)$this->ratioId > -1
+        $ratioId = isset($this->ratioId) ? $this->ratioId : '-1';
         if ($ratioId > -1) {
             $this->query['bool']['must'][]['match']['ratio'] = $ratioId;
         }
-        if ($kid) {
-            $this->query['bool']['must'][]['terms']['kid_2'] = $kid;
+
+        // $kid = is_array($this->kid) ? $this->kid : [];
+        if (is_array($this->kid) && !empty($this->kid)) {
+            $this->query['bool']['must'][]['terms']['kid_2'] = $this->kid;
         }
+
         if ($sceneId) {
             $this->query['bool']['must'][]['terms']['scene_id'] = $sceneId;
         }
+
         if ($this->isZb) {
             $this->query['bool']['filter'][]['range']['is_zb']['gte'] = $this->isZb;
         }
         return $this->query;
     }
+
     public function queryKeyword($is_or = false)
     {
         if ($this->keyword) {
@@ -74,7 +82,8 @@ class PictureSearchQuery implements QueryBuilderInterface
         );
         return $redisKey;
     }
-    public function pageSizeSet(){
+    public function pageSizeSet()
+    {
         $pageSize = $this->pageSize;
         if ($this->page * $this->pageSize > 10000) {
             $pageSize = $this->page * $pageSize - 10000;

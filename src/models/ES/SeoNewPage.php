@@ -41,11 +41,7 @@ class SeoNewPage extends BaseModel
             return $return;
         }
 
-        $responseData = [
-            'hit' => 0,
-            'ids' => [],
-            'score' => []
-        ];
+        $responseData = [];
 
         try {
             $info = self::find()

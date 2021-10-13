@@ -38,6 +38,7 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
     public function beforeAssignment()
     {
         $this->sortType = $this->sortType ?: 'default';
+        // FIXME: @hulifeng 这儿还需要看看，你不能 strlen(null)
         $this->keyword = strlen($this->keyword) > 0 ? $this->keyword : null; // 防止为空
         $this->kid1 = $this->kid1 ? $this->kid1 : 0;
         $this->kid2 = $this->kid2 ? $this->kid2 : 0;
@@ -91,19 +92,19 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
             $this->use
         ];
 
-        $redisKey .= ":".implode('_', $implodeKeyArr);
+        $redisKey .= ":" . implode('_', $implodeKeyArr);
 
         if ($this->hasTemplateTypes() && is_array($this->templateTypes)) {
-            $redisKey .= '_'.implode('|', $this->templateTypes);
+            $redisKey .= '_' . implode('|', $this->templateTypes);
         } else {
             if ($this->templateTypes > 0) {
-                $redisKey .= "_".$this->templateTypes;
+                $redisKey .= "_" . $this->templateTypes;
             }
         }
 
         if ($this->hasColor()) {
-            $redisKey .= '_'.implode(',', array_column($this->color, 'color')).
-                '_'.implode(',', array_column($this->color, 'weight'));
+            $redisKey .= '_' . implode(',', array_column($this->color, 'color')) .
+                '_' . implode(',', array_column($this->color, 'weight'));
         }
 
         if ($this->hasWidth()) {

@@ -45,7 +45,12 @@ class GroupWordController extends BaseController
                 ['search', 'string']
             ]);
             if ($model->hasErrors()) {
-                $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
+                $response = new Response(
+                    'unprocessable_entity',
+                    'Unprocessable Entity',
+                    $model->errors,
+                    422
+                );
             } else {
                 $data = (new GroupWord())
                     ->search(new GroupWordSearchQuery(
@@ -55,7 +60,11 @@ class GroupWordController extends BaseController
                         $data['search'] ?? 0,
                         $data['search_all'] ?? 0
                     ));
-                $response = new Response('get_group_words_list', 'GroupWordsList', $data);
+                $response = new Response(
+                    'get_group_words_list',
+                    'GroupWordsList',
+                    $data
+                );
             }
         } catch (UnknownPropertyException $e) {
             $response = new Response(
