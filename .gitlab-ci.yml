@@ -30,6 +30,8 @@ include:
 
 code_quality:
   stage: test
+  variables:
+    CODE_QUALITY_IMAGE: "registry.cn-shanghai.aliyuncs.com/yao3060/codequality:latest"
   rules:
     # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#using-with-merge-request-pipelines
     # Run this job in merge request pipelines
