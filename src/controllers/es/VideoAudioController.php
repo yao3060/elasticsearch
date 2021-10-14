@@ -19,8 +19,8 @@ use yii\web\Request;
 class VideoAudioController extends BaseController
 {
     /**
-     * @api {get} /v1/audiovisuals GetVideoAudioSearch
-     * @apiName GetVideoAudioSearch
+     * @api {get} /v1/audiovisuals 试听素材搜索
+     * @apiName 试听素材搜索
      * @apiGroup VideoAudio
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词

@@ -12,8 +12,8 @@ use yii\web\Request;
 class TemplateController extends BaseController
 {
     /**
-     * @api {get} /v1/templates Get Template
-     * @apiName GetTemplate
+     * @api {get} /v1/templates 模板搜索
+     * @apiName 模板搜索
      * @apiGroup Template
      * @apiDescription 模板搜索（原 ips_backend 项目模型：ESTemplate）
      *

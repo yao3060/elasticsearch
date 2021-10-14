@@ -13,8 +13,8 @@ use yii\web\Request;
 class LottieVideoWordController extends BaseController
 {
     /**
-     * @api {get} /v1/lottie-video-words Get Lottie Video Word
-     * @apiName GetLottieVideoWord
+     * @api {get} /v1/lottie-video-words 设计师动效搜索词
+     * @apiName 设计师动效搜索词
      * @apiGroup LottieVideoWord
      * @apiDescription 设计师动效搜索词搜索（原 ips_backend 项目模型：ESVideoLottieWord）
      *

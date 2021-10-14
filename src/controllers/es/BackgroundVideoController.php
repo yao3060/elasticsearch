@@ -13,8 +13,8 @@ use yii\web\Request;
 class BackgroundVideoController extends BaseController
 {
     /**
-     * @api {get} /v1/background-videos Get Background Video
-     * @apiName GetBackgroundVideo
+     * @api {get} /v1/background-videos 背景视频搜索
+     * @apiName 背景视频搜索
      * @apiGroup BackgroundVideo
      * @apiDescription 背景视频搜索（原 ips_backend 项目模型：ESBgVideo）
      *

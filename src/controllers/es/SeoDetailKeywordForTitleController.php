@@ -20,8 +20,8 @@ use yii\web\Request;
 class SeoDetailKeywordForTitleController extends BaseController
 {
     /**
-     * @api {get} /v1/seo/title-keywords Seo Detail Keyword For Title
-     * @apiName GetSeoDetailKeywordForTitle
+     * @api {get} /v1/seo/title-keywords SEO标题中的关键词
+     * @apiName SEO标题中的关键词
      * @apiGroup SeoDetailKeywordForTitle
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词

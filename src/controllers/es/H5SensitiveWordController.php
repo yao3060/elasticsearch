@@ -19,8 +19,8 @@ use yii\web\Request;
 class H5SensitiveWordController extends BaseController
 {
     /**
-     * @api {post} /v1/h5-sensitive-words/validate GetH5SensitiveWordValidate
-     * @apiName GetH5SensitiveWordValidate
+     * @api {post} /v1/h5-sensitive-words/validate 查询是否存在敏感词
+     * @apiName 查询是否存在敏感词
      * @apiGroup H5SensitiveWord
      * @apiParam (请求参数) {String} keyword 搜索关键词
      *

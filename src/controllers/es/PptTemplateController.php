@@ -19,8 +19,8 @@ use yii\web\Request;
 class PptTemplateController extends BaseController
 {
     /**
-     * @api {get} /v1/ppt-templates GetPptTemplateSearch
-     * @apiName GetPptTemplateSearch
+     * @api {get} /v1/ppt-templates PPT模板单页分类筛选
+     * @apiName PPT模板单页分类筛选
      * @apiGroup PptTemplate
      *
      * @apiParam (请求参数) {String} class_id 一级类目
