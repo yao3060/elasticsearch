@@ -12,8 +12,8 @@ class DesignerTemplateController extends BaseController
 {
 
     /**
-     * @api {get} /v1/designer-templates Get Designer Template
-     * @apiName GetDesignerTemplate
+     * @api {get} /v1/designer-templates 设计师模板搜索
+     * @apiName 设计师模板搜索
      * @apiGroup DesignerTemplate
      * @apiDescription 设计师模板，二次设计。（原 ips_backend 项目模型：ESTemplateSecond）
      *

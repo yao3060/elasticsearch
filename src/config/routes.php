@@ -15,13 +15,13 @@ return [
         'GET  v1/seo/recommends' => 'es/seo-search-word/seo-search', // SEO推荐关键词
         'GET  v1/seo/keyword-assets' => 'es/seo-search-word-asset/search', //seo词库相关推荐
         'GET  v1/seo/title-keywords' => 'es/seo-detail-keyword-for-title/search', //SEO标题中的关键词
-        'GET  v1/seo/link-word-seo' => 'es/seo-link-word/seo-search', //seo词库中 相关搜索词
+        'GET  v1/seo/link-word-seo' => 'es/seo-link-word/seo-search', //seo词库中链接相关搜索词
 
         'GET  v1/keywords' => 'es/search-word/search', //关键词搜索
         'GET  v1/assets/recommends' => 'es/asset/recommend-search',
         'GET  v1/assets' => 'es/asset/search', //素材搜索
         'GET  v1/backgrounds' => 'es/background/search', //背景搜索
-        'GET  v1/gif-assets' => 'es/gif-asset/search', //搜索
+        'GET  v1/gif-assets' => 'es/gif-asset/search', //gif搜索
         'GET  v1/pictures' => 'es/picture/search', //图片素材搜索
         'GET  v1/groups' => 'es/group-word/search', //组合字搜索
         'GET  v1/audiovisuals' => 'es/video-audio/search', //试听素材搜索

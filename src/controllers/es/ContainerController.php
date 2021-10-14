@@ -19,8 +19,8 @@ use yii\web\Request;
 class ContainerController extends BaseController
 {
     /**
-     * @api {get} /v1/containers GetContainerSearch
-     * @apiName GetContainer
+     * @api {get} /v1/containers 裁剪搜索
+     * @apiName 裁剪搜索
      * @apiGroup Container
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词

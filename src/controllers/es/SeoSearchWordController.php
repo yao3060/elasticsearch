@@ -19,8 +19,8 @@ use yii\web\Request;
 class SeoSearchWordController extends BaseController
 {
     /**
-     * @api {get} /v1/seo/keywords GetSeoSearchWord
-     * @apiName GetSeoSearchWord
+     * @api {get} /v1/seo/keywords SEO关键词搜索
+     * @apiName SEO关键词搜索
      * @apiGroup SeoSearchWord
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词

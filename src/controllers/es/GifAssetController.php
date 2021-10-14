@@ -19,8 +19,8 @@ use yii\web\Request;
 class GifAssetController extends BaseController
 {
     /**
-     * @api {get} /v1/gif-assets GetGifAssetSearch
-     * @apiName GetGifAsset
+     * @api {get} /v1/gif-assets gif搜索
+     * @apiName gif搜索
      * @apiGroup GifAsset
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词
