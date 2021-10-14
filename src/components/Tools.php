@@ -47,7 +47,7 @@ class Tools
      */
     public static function isReturnSourceVisitor($prep = 0)
     {
-        if (($prep == 1 || (isset($_GET['prep']) && $_GET['prep'] == 1))) {
+        if ($prep == 1 || (isset($_GET['prep']) && $_GET['prep'] == 1)) {
             return true;
         }
 
@@ -57,7 +57,7 @@ class Tools
     /**
      * set redis value
      */
-    public static function setRedis($db = 2, $key, $value, $time = 86400)
+    public static function setRedis($db = 2, $key, $value, $time = 86400): bool
     {
         if (!is_prod()) {
             return false;
