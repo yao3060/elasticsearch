@@ -60,7 +60,7 @@ class Tools
     public static function setRedis($db = 2, $key, $value, $time = 86400)
     {
         if (!is_prod()) {
-            return;
+            return false;
         }
 
         if (is_array($value) || is_object($value)) {
