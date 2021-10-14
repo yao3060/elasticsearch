@@ -34,18 +34,11 @@ class SeoDetailKeywordForTitleController extends BaseController
     {
         $data = $request->get();
         try {
-            $model = DynamicModel::validateData($data, [
-                ['keyword', 'string']
-            ]);
-            if ($model->hasErrors()) {
-                $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
-            } else {
-                $data = (new SeoDetailKeywordForTitle())
-                    ->Search(new SeoDetailKeywordForTitleQuery(
-                        $data['keyword']
-                    ));
-                $response = new Response('get_seo_detail_keyword_for_title_list', 'Seo Detail Keyword For Title List', $data);
-            }
+            $data = (new SeoDetailKeywordForTitle())
+                ->Search(new SeoDetailKeywordForTitleQuery(
+                    $data['keyword'] ?? 0
+                ));
+            $response = new Response('get_seo_detail_keyword_for_title_list', 'Seo Detail Keyword For Title List', $data);
         } catch (UnknownPropertyException $e) {
             $response = new Response(
                 StringHelper::snake($e->getName()),

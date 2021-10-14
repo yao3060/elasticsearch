@@ -6,12 +6,10 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\controllers\BaseController;
-use app\helpers\StringHelper;
 use app\models\ES\SensitiveWord;
 use app\queries\ES\SensitiveWordSearchQuery;
-use yii\base\DynamicModel;
+use app\services\validate\ParamsValidateService;
 use yii\web\Request;
-use yii\web\UnauthorizedHttpException;
 
 class SensitiveWordController extends BaseController
 {
@@ -19,6 +17,7 @@ class SensitiveWordController extends BaseController
      * @api {post} /v1/sensitive-words/validate Validate Sensitive Word
      * @apiName SensitiveWordValidate
      * @apiGroup SensitiveWord
+     * @apiDescription 敏感词验证（原 ips_backend 项目模型：ESBanWords）
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词
      *
@@ -31,30 +30,27 @@ class SensitiveWordController extends BaseController
     {
         try {
 
-            $validate = DynamicModel::validateData($request->post(), SensitiveWord::validateRules());
+            $params = $request->post();
 
-            if ($validate->hasErrors()) {
+            $paramsValidate = new ParamsValidateService();
+
+            $validate = $paramsValidate->validate($params, SensitiveWord::validateRules());
+
+            if ($validate === false) {
                 return $this->response(new Response(
                     'validate_params_error',
                     'Validate Params Error',
-                    $validate->errors, 422
+                    $paramsValidate->getErrorSummary(true), 422
                 ));
             }
 
-            $validateAttributes = $validate->getAttributes();
+            $validateAttributes = $paramsValidate->getAttributes();
 
             $search = (new SensitiveWord())->search(new SensitiveWordSearchQuery(
                 keyword: $validateAttributes['keyword'] ?? '',
             ));
 
             $response = new Response('sensitive_word_validate', 'Sensitive Word Validate', $search);
-
-        } catch (UnauthorizedHttpException $unknownException) {
-
-            $response = new Response(
-                StringHelper::snake($unknownException->getName()),
-                StringHelper::replaceModelName($unknownException->getMessage()),
-                [], 422);
 
         } catch (\Throwable $throwable) {
 

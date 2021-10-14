@@ -43,21 +43,14 @@ class SearchWordController extends BaseController
     {
         $data = $request->get();
         try {
-            $model = DynamicModel::validateData($data, [
-                ['keyword', 'string']
-            ]);
-            if ($model->hasErrors()) {
-                $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
-            } else {
-                $data = (new SearchWord())
-                    ->search(new SearchWordSearchQuery(
-                        $data['keyword'],
-                        $data['page'] ?? 1,
-                        $data['page_size'] ?? 40,
-                        $data['type'] ?? 1
-                    ));
-                $response = new Response('get_search_word_list', 'SearchWordsList', $data);
-            }
+            $data = (new SearchWord())
+                ->search(new SearchWordSearchQuery(
+                    $data['keyword'] ?? 0,
+                    $data['page'] ?? 1,
+                    $data['page_size'] ?? 40,
+                    $data['type'] ?? 1
+                ));
+            $response = new Response('get_search_word_list', 'SearchWordsList', $data);
         } catch (UnknownPropertyException $e) {
             $response = new Response(
                 StringHelper::snake($e->getName()),

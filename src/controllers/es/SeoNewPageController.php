@@ -5,11 +5,9 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\controllers\BaseController;
-use app\helpers\StringHelper;
 use app\models\ES\SeoNewPage;
 use app\queries\ES\SeoNewPageSeoSearchQuery;
 use yii\base\DynamicModel;
-use yii\base\UnknownPropertyException;
 use yii\web\Request;
 
 class SeoNewPageController extends BaseController
@@ -44,13 +42,6 @@ class SeoNewPageController extends BaseController
             );
 
             $response = new Response('seo_new_page_list', 'SeoNewPageList', $search);
-        } catch (UnknownPropertyException $unknownException) {
-            $response = new Response(
-                StringHelper::snake($unknownException->getName()),
-                StringHelper::replaceModelName($unknownException->getMessage()),
-                [],
-                422
-            );
         } catch (\Throwable $throwable) {
             $response = new Response(
                 'Internal Server Error',

@@ -4,11 +4,9 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\controllers\BaseController;
-use app\helpers\StringHelper;
 use app\models\ES\DesignerTemplate;
 use app\queries\ES\DesignerTemplateSearchQuery;
 use yii\web\Request;
-use yii\base\UnknownPropertyException;
 
 class DesignerTemplateController extends BaseController
 {
@@ -17,6 +15,7 @@ class DesignerTemplateController extends BaseController
      * @api {get} /v1/designer-templates Get Designer Template
      * @apiName GetDesignerTemplate
      * @apiGroup DesignerTemplate
+     * @apiDescription 设计师模板，二次设计。（原 ips_backend 项目模型：ESTemplateSecond）
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词
      * @apiParam (请求参数) {Number} [page] 页码
@@ -95,14 +94,6 @@ class DesignerTemplateController extends BaseController
             );
 
             $response = new Response('design_template_index', 'DesignTemplateIndex', $items);
-
-        } catch (UnknownPropertyException $unknownException) {
-
-            $response = new Response(
-                StringHelper::snake($unknownException->getName()),
-                StringHelper::replaceModelName($unknownException->getMessage()),
-                [],
-                422);
 
         } catch (\Throwable $throwable) {
 

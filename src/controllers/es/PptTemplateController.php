@@ -41,22 +41,15 @@ class PptTemplateController extends BaseController
     {
         $data = $request->get();
         try {
-            $model = DynamicModel::validateData($data, [
-                ['class_id', 'required']
-            ]);
-            if ($model->hasErrors()) {
-                $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
-            } else {
-                $data = (new PptTemplate())
-                    ->search(new PptTemplateSearchQuery(
-                        $data['class_id'],
-                        $data['page'] ?? 1,
-                        $data['page_size'] ?? 50,
-                        $data['class_level2_ids'] ?? [],
-                        $data['class_level3_ids'] ?? []
-                    ));
-                $response = new Response('get_template_single_page_list', 'TemplateSinglePageList', $data);
-            }
+            $data = (new PptTemplate())
+                ->search(new PptTemplateSearchQuery(
+                    $data['class_id'] ?? 0,
+                    $data['page'] ?? 1,
+                    $data['page_size'] ?? 50,
+                    $data['class_level2_ids'] ?? [],
+                    $data['class_level3_ids'] ?? []
+                ));
+            $response = new Response('get_template_single_page_list', 'TemplateSinglePageList', $data);
         } catch (UnknownPropertyException $e) {
             $response = new Response(
                 StringHelper::snake($e->getName()),

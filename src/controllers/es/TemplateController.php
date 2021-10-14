@@ -4,12 +4,9 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\controllers\BaseController;
-use app\helpers\StringHelper;
 use app\models\ES\Template;
 use app\queries\ES\TemplateRecommendSearchQuery;
 use app\queries\ES\TemplateSearchQuery;
-use yii\base\DynamicModel;
-use yii\base\UnknownPropertyException;
 use yii\web\Request;
 
 class TemplateController extends BaseController
@@ -18,6 +15,7 @@ class TemplateController extends BaseController
      * @api {get} /v1/templates Get Template
      * @apiName GetTemplate
      * @apiGroup Template
+     * @apiDescription 模板搜索（原 ips_backend 项目模型：ESTemplate）
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词
      * @apiParam (请求参数) {Number} [page] 页码
@@ -76,14 +74,6 @@ class TemplateController extends BaseController
 
             $response = new Response('es_template_search', 'ESTemplate Search', $search);
 
-        } catch (UnknownPropertyException $unknownException) {
-
-            $response = new Response(
-                StringHelper::snake($unknownException->getName()),
-                StringHelper::replaceModelName($unknownException->getMessage()),
-                [],
-                422);
-
         } catch (\Throwable $throwable) {
 
             $response = new Response(
@@ -101,6 +91,7 @@ class TemplateController extends BaseController
      * @api {get} /v1/templates/recommends Get Recommend Template
      * @apiName GetRecommendTemplate
      * @apiGroup Template
+     * @apiDescription 推荐模板搜索（原 ips_backend 项目模型：ESTemplate）
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词
      * @apiParam (请求参数) {Number} [page] 页码
@@ -132,14 +123,6 @@ class TemplateController extends BaseController
                 'es_template_commend_search',
                 'ESTemplate Commend Search',
                 $recommendSearch);
-
-        } catch (UnknownPropertyException $unknownException) {
-
-            $response = new Response(
-                StringHelper::snake($unknownException->getName()),
-                StringHelper::replaceModelName($unknownException->getMessage()),
-                [],
-                422);
 
         } catch (\Throwable $throwable) {
 

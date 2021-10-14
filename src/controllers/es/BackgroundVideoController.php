@@ -6,11 +6,8 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\controllers\BaseController;
-use app\helpers\StringHelper;
 use app\models\ES\BackgroundVideo;
 use app\queries\ES\BackgroundVideoQuery;
-use yii\base\DynamicModel;
-use yii\base\UnknownPropertyException;
 use yii\web\Request;
 
 class BackgroundVideoController extends BaseController
@@ -19,6 +16,7 @@ class BackgroundVideoController extends BaseController
      * @api {get} /v1/background-videos Get Background Video
      * @apiName GetBackgroundVideo
      * @apiGroup BackgroundVideo
+     * @apiDescription 背景视频搜索（原 ips_backend 项目模型：ESBgVideo）
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词
      * @apiParam (请求参数) {Number} [page] 页码
@@ -36,32 +34,20 @@ class BackgroundVideoController extends BaseController
     public function actionSearch(Request $request)
     {
         try {
-            $validate = DynamicModel::validateData($request->getQueryParams(), BackgroundVideo::validateRules());
 
-            if ($validate->hasErrors()) {
-                return new Response('validate param errors', 'Validate Param Errors', [], 422);
-            };
-
-            $validateAttributes = $validate->getAttributes();
+            $queries = $request->getQueryParams();
 
             $search = (new BackgroundVideo())->search(
                 new BackgroundVideoQuery(
-                    keyword: $validateAttributes['keyword'] ?? 0,
-                    classId: $validateAttributes['class_id'] ?? [],
-                    page: $validateAttributes['page'] ?? 1,
-                    pageSize: $validateAttributes['page_size'] ?? 40,
-                    ratio: $validateAttributes['ratio'] ?? 0
+                    keyword: $queries['keyword'] ?? 0,
+                    classId: $queries['class_id'] ?? [],
+                    page: $queries['page'] ?? 1,
+                    pageSize: $queries['page_size'] ?? 40,
+                    ratio: $queries['ratio'] ?? 0
                 )
             );
 
             $response = new Response('background_video_search', 'Background Video Search', $search);
-        } catch (UnknownPropertyException $unknownException) {
-            $response = new Response(
-                StringHelper::snake($unknownException->getName()),
-                StringHelper::replaceModelName($unknownException->getMessage()),
-                [],
-                422
-            );
         } catch (\Throwable $throwable) {
             $response = new Response(
                 'Internal Server Error',

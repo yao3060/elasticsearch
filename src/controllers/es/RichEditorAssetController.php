@@ -5,11 +5,8 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\controllers\BaseController;
-use app\helpers\StringHelper;
 use app\models\ES\RichEditorAsset;
 use app\queries\ES\RichEditorAssetSearchQuery;
-use yii\base\DynamicModel;
-use yii\base\UnknownPropertyException;
 use yii\web\Request;
 
 class RichEditorAssetController extends BaseController
@@ -18,6 +15,7 @@ class RichEditorAssetController extends BaseController
      * @api {get} /v1/rich-editor-assets Get Rich Editor Asset Video
      * @apiName GetRichEditorAssetVideo
      * @apiGroup RichEditorAssetVideo
+     * @apiDescription 富文本元素搜索（原 ips_backend 项目模型：ESRtAsset）
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词
      * @apiParam (请求参数) {Number} [page] 页码
@@ -35,39 +33,17 @@ class RichEditorAssetController extends BaseController
     public function actionSearch(Request $request)
     {
         try {
-            // TODO: @hulifeng 这个验证不需要的话就去掉吧
-            $validate = DynamicModel::validateData($request->getQueryParams(), [
-                ["keyword", "string"]
-            ]);
-
-            if ($validate->hasErrors()) {
-                return $this->response(new Response(
-                    'validate params error',
-                    'Validate Params Error',
-                    $validate->errors,
-                    422
-                ));
-            }
-
-            $validateAttributes = $validate->getAttributes();
+            $queries = $request->getQueryParams();
 
             $search = (new RichEditorAsset())->search(new RichEditorAssetSearchQuery(
-                keyword: $validateAttributes['keyword'] ?? 0,
-                classId: $validateAttributes['class_id'] ?? [],
-                page: $validateAttributes['page'] ?? 1,
-                pageSize: $validateAttributes['page_size'] ?? 40,
-                ratio: $validateAttributes['ratio'] ?? 0
+                keyword: $queries['keyword'] ?? 0,
+                classId: $queries['class_id'] ?? [],
+                page: $queries['page'] ?? 1,
+                pageSize: $queries['page_size'] ?? 40,
+                ratio: $queries['ratio'] ?? 0
             ));
 
             return $this->response(new Response('rich_editor_asset_search', 'Rich Editor Asset Search',  $search));
-        } catch (UnknownPropertyException $unknownException) {
-
-            $response = new Response(
-                StringHelper::snake($unknownException->getName()),
-                StringHelper::replaceModelName($unknownException->getMessage()),
-                [],
-                422
-            );
         } catch (\Throwable $throwable) {
 
             $response = new Response(

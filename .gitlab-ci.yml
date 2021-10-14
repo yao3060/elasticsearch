@@ -116,8 +116,7 @@ staging-deploy-job:
     - sed -i "s/MYNEWTAG/${FULLSHA}/g" k8s/overlays/staging/kustomization.yaml
     - sed -i "s/APP_NEW_VERSION/${FULLSHA}/g" k8s/overlays/staging/kustomization.yaml
     - cat k8s/overlays/staging/secrets.txt
-    # - cat k8s/overlays/staging/kustomization.yaml
-    - kubectl apply -k k8s/overlays/staging/
+    - kubectl apply -k k8s/overlays/staging/ --record
   # when: manual
 
 ################################################################

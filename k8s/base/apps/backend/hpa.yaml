@@ -8,7 +8,7 @@ spec:
     kind: Deployment
     name: backend-nginx
   minReplicas: 2
-  maxReplicas: 10
+  maxReplicas: 20
   metrics:
   - type: Resource
     resource:
@@ -27,7 +27,7 @@ spec:
     kind: Deployment
     name: backend-php
   minReplicas: 2
-  maxReplicas: 50
+  maxReplicas: 100
   metrics:
   - type: Resource
     resource:

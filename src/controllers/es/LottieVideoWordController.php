@@ -6,11 +6,8 @@ namespace app\controllers\es;
 
 use app\components\Response;
 use app\controllers\BaseController;
-use app\helpers\StringHelper;
 use app\models\ES\LottieVideoWord;
 use app\queries\ES\LottieVideoWordSearchQuery;
-use yii\base\DynamicModel;
-use yii\base\UnknownPropertyException;
 use yii\web\Request;
 
 class LottieVideoWordController extends BaseController
@@ -19,6 +16,7 @@ class LottieVideoWordController extends BaseController
      * @api {get} /v1/lottie-video-words Get Lottie Video Word
      * @apiName GetLottieVideoWord
      * @apiGroup LottieVideoWord
+     * @apiDescription 设计师动效搜索词搜索（原 ips_backend 项目模型：ESVideoLottieWord）
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词
      * @apiParam (请求参数) {Number} [page] 页码
@@ -36,36 +34,16 @@ class LottieVideoWordController extends BaseController
     {
         try {
 
-            $validate = DynamicModel::validateData($request->getQueryParams(), []);
-
-            if ($validate->hasErrors()) {
-                if ($validate->hasErrors()) {
-                    return $this->response(new Response(
-                        'validate params error',
-                        'Validate Params Error',
-                        $validate->errors,
-                        422));
-                }
-            }
-
-            $validateAttributes = $validate->getAttributes();
+            $queries = $request->getQueryParams();
 
             $search = (new LottieVideoWord())->search(new LottieVideoWordSearchQuery(
-                keyword: $validateAttributes['keyword'] ?? 0,
-                page: $validateAttributes['page'] ?? 1,
-                pageSize: $validateAttributes['page_size'] ?? 40,
-                prep: $validateAttributes['prep'] ?? 0
+                keyword: $queries['keyword'] ?? 0,
+                page: $queries['page'] ?? 1,
+                pageSize: $queries['page_size'] ?? 40,
+                prep: $queries['prep'] ?? 0
             ));
 
             $response = new Response('lottie_video_word_search', 'Lottie Video Word Search', $search);
-
-        } catch (UnknownPropertyException $unknownException) {
-
-            $response = new Response(
-                StringHelper::snake($unknownException->getName()),
-                StringHelper::replaceModelName($unknownException->getMessage()),
-                [],
-                422);
 
         } catch (\Throwable $throwable) {
 
