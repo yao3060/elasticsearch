@@ -131,7 +131,7 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
      */
     public function queryHeight()
     {
-        if (!empty($this->width)) {
+        if (!empty($this->height)) {
             $this->query['bool']['filter'][]['match']['height'] = $this->height;
         }
 
