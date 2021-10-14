@@ -9,12 +9,8 @@ cache:
     - src/vendor
     - src/web/apidocs
 
-# include:
-#   - template: Code-Quality.gitlab-ci.yml
-
-
 stages:
-  # - test # runner is outdated, please upgrade your runner
+  - test
   - install
   - build-apidoc
   - build
@@ -29,14 +25,21 @@ after_script:
   - source .env
   # - ./deploy/scripts/clean-docker-network.sh  "${PROJECT}_${ENVIRONMENT}_default"
 
-###########################################################################
+include:
+  - template: Code-Quality.gitlab-ci.yml
 
-# code_quality:
-#   stage: test
-#   artifacts:
-#     paths: [gl-code-quality-report.json]
-#   script:
-#     - echo "do code_quality test"
+code_quality:
+  stage: test
+  rules:
+    # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#using-with-merge-request-pipelines
+    # Run this job in merge request pipelines
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    # Run this job in pipelines on the test branch (but not in other branch pipelines)
+    # - if: '$CI_COMMIT_BRANCH == "test"'
+  tags:
+    - 818ps_web_dev
+  # artifacts:
+    # paths: [gl-code-quality-report.json]
 
 ################################################################
 ### Staging
@@ -145,7 +148,7 @@ prod-build-job:
   tags:
     - 818ps_web_dev
   only:
-    - master
+    - testing
   script:
     # - ./deploy/scripts/enable-docker-compose-network.sh
     - ./deploy/scripts/update-resource-mirror.sh
