@@ -9,12 +9,8 @@ cache:
     - src/vendor
     - src/web/apidocs
 
-# include:
-#   - template: Code-Quality.gitlab-ci.yml
-
-
 stages:
-  # - test # runner is outdated, please upgrade your runner
+  - test
   - install
   - build-apidoc
   - build
@@ -29,14 +25,15 @@ after_script:
   - source .env
   # - ./deploy/scripts/clean-docker-network.sh  "${PROJECT}_${ENVIRONMENT}_default"
 
-###########################################################################
+include:
+  - template: Code-Quality.gitlab-ci.yml
 
-# code_quality:
-#   stage: test
-#   artifacts:
-#     paths: [gl-code-quality-report.json]
-#   script:
-#     - echo "do code_quality test"
+code_quality:
+  stage: test
+  artifacts:
+    paths: [gl-code-quality-report.json]
+  script:
+   - echo "run code_quality test"
 
 ################################################################
 ### Staging
