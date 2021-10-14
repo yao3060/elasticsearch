@@ -26,20 +26,36 @@ after_script:
   # - ./deploy/scripts/clean-docker-network.sh  "${PROJECT}_${ENVIRONMENT}_default"
 
 include:
+  # https://gitlab.com/gitlab-org/gitlab-foss/-/blob/master/lib/gitlab/ci/templates/Jobs/Code-Quality.gitlab-ci.yml
   - template: Code-Quality.gitlab-ci.yml
+
+empty-report:
+  stage: test
+  only:
+    - test
+  tags:
+    - 818ps_web_dev
+  script:
+    - echo '[]' > gl-code-quality-report.json
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+    expire_in: 1 week
 
 code_quality:
   stage: test
+  variables:
+    CODE_QUALITY_IMAGE: "registry.cn-shanghai.aliyuncs.com/yao3060/codequality:latest"
   rules:
     # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#using-with-merge-request-pipelines
     # Run this job in merge request pipelines
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    # - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
     # Run this job in pipelines on the test branch (but not in other branch pipelines)
-    # - if: '$CI_COMMIT_BRANCH == "test"'
+    - if: '$CI_COMMIT_BRANCH == "test"'
   tags:
     - 818ps_web_dev
-  # artifacts:
-    # paths: [gl-code-quality-report.json]
+  artifacts:
+    paths: [gl-code-quality-report.json]
 
 ################################################################
 ### Staging
