@@ -12,8 +12,8 @@ use yii\web\Request;
 class RichEditorAssetController extends BaseController
 {
     /**
-     * @api {get} /v1/rich-editor-assets Get Rich Editor Asset Video
-     * @apiName GetRichEditorAssetVideo
+     * @api {get} /v1/rich-editor-assets 富文本元素搜索
+     * @apiName 富文本元素搜索
      * @apiGroup RichEditorAssetVideo
      * @apiDescription 富文本元素搜索（原 ips_backend 项目模型：ESRtAsset）
      *

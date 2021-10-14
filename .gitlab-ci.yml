@@ -10,7 +10,6 @@ cache:
     - src/web/apidocs
 
 stages:
-  - test
   - install
   - build-apidoc
   - build
@@ -24,22 +23,6 @@ before_script:
 after_script:
   - source .env
   # - ./deploy/scripts/clean-docker-network.sh  "${PROJECT}_${ENVIRONMENT}_default"
-
-include:
-  - template: Code-Quality.gitlab-ci.yml
-
-code_quality:
-  stage: test
-  rules:
-    # https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#using-with-merge-request-pipelines
-    # Run this job in merge request pipelines
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-    # Run this job in pipelines on the test branch (but not in other branch pipelines)
-    # - if: '$CI_COMMIT_BRANCH == "test"'
-  tags:
-    - 818ps_web_dev
-  # artifacts:
-    # paths: [gl-code-quality-report.json]
 
 ################################################################
 ### Staging

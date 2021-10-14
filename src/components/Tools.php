@@ -47,7 +47,7 @@ class Tools
      */
     public static function isReturnSourceVisitor($prep = 0)
     {
-        if (($prep == 1 || (isset($_GET['prep']) && $_GET['prep'] == 1))) {
+        if ($prep == 1 || (isset($_GET['prep']) && $_GET['prep'] == 1)) {
             return true;
         }
 
@@ -57,15 +57,13 @@ class Tools
     /**
      * set redis value
      */
-    public static function setRedis($db = 2, $key, $value, $time = 86400)
+    public static function setRedis($db = 2, $key, $value, $time = 86400): bool
     {
-        if (!is_prod()) {
-            return;
-        }
 
         if (is_array($value) || is_object($value)) {
             $value = serialize($value);
         }
+
         $redis = 'redis' . $db;
         return Yii::$app->$redis->set(
             $key,
@@ -80,9 +78,6 @@ class Tools
      */
     public static function getRedis($db = 2, $key)
     {
-        if (!is_prod()) {
-            return null;
-        }
 
         $redis = 'redis' . $db;
         $info = Yii::$app->$redis->get($key);

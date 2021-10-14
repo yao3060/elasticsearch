@@ -19,8 +19,8 @@ use yii\web\Request;
 class BackgroundController extends BaseController
 {
     /**
-     * @api {get} /v1/backgrounds Get BackgroundSearch
-     * @apiName GetBackground
+     * @api {get} /v1/backgrounds 背景搜索
+     * @apiName 背景搜索
      * @apiGroup Background
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词

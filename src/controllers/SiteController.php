@@ -164,7 +164,7 @@ class SiteController extends BaseController
             $logStoreName = $validateAttributes['log_store_name'];
             $except = ['project_name', 'log_store_name'];
             $otherParams = array_filter(
-                $validateAttributes,
+                $request->getQueryParams(),
                 function ($key) use ($except) {
                     return !in_array($key, $except);
                 },
