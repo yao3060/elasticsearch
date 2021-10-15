@@ -85,13 +85,12 @@ class SensitiveWord extends BaseModel
 
         $validateSensitiveWord = Tools::getRedis(6, $redisKey);
 
-        if (!empty($validateSensitiveWord) && isset($validateSensitiveWord['hit']) && $validateSensitiveWord['hit']
-            && Tools::isReturnSource() === false) {
+        if (!empty($validateSensitiveWord) && Tools::isReturnSource() === false) {
             \Yii::info("sensitive word search data source from redis", __METHOD__);
             return $validateSensitiveWord;
         }
 
-        $validateSensitiveWord['flag'] = false;
+        $validateSensitiveWord = [];
 
         try {
             $find = self::find()
