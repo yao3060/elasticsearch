@@ -29,10 +29,11 @@ class JsonStreamTarget extends Streamlog
         // Begin assembling the data that we will JSON-encode for the log.
         $logData['timestamp'] = $this->getTime($timestamp);
 
-        $logData['user_id'] =  Yii::$app->user?->id ?? '-';
-        $logData['username'] =  Yii::$app->user?->identity?->username ?? '-';
+        $logData['user_id'] = Yii::$app->user?->id ?? '-';
+        $logData['username'] = Yii::$app->user?->identity?->username ?? '-';
 
-        $logData['ip'] = $_SERVER['HTTP_X_ORIGINAL_FORWARDED_FOR'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? Yii::$app->getRequest()?->getUserIP();
+        $logData['ip'] = $_SERVER['HTTP_X_ORIGINAL_FORWARDED_FOR'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? Yii::$app->getRequest(
+            )?->getUserIP();
         $logData['url'] = Yii::$app->getRequest()?->url;
         $logData['http_method'] = Yii::$app->getRequest()?->method;
         $logData['memory'] = $this->memoryUsage($memory);
@@ -58,7 +59,6 @@ class JsonStreamTarget extends Streamlog
         $result = null;
 
         if ($this->isJsonString($prefix)) {
-
             // If it has key-value data, as evidenced by the raw prefix string
             // being a JSON object (not JSON array), use it.
             if (substr($prefix, 0, 1) === '{') {
@@ -94,7 +94,6 @@ class JsonStreamTarget extends Streamlog
         $result = null;
 
         if ($text instanceof \Exception) {
-
             // Handle log messages that are exceptions a little more
             // intelligently.
             //
@@ -113,12 +112,10 @@ class JsonStreamTarget extends Streamlog
                 $result['statusCode'] = $text->statusCode;
             }
         } elseif ($this->isMultilineString($text)) {
-
             // Split multiline strings (such as a stack trace) into an array
             // for easier reading in the log.
             $result = explode("\n", $text);
         } else {
-
             // Use anything else as-is.
             $result = $text;
         }
@@ -144,11 +141,12 @@ class JsonStreamTarget extends Streamlog
 
     protected function memoryUsage($memory)
     {
-        if ($memory < 1024)
+        if ($memory < 1024) {
             return $memory . " B";
-        elseif ($memory < 1048576)
+        } elseif ($memory < 1048576) {
             return round($memory / 1024, 2) . " KB";
-        else
+        } else {
             return round($memory / 1048576, 2) . " MB";
+        }
     }
 }

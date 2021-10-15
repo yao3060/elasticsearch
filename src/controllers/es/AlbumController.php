@@ -19,8 +19,8 @@ use yii\web\Request;
 class AlbumController extends BaseController
 {
     /**
-     * @api {get} /v1/albums Get Album
-     * @apiName GetAlbum
+     * @api {get} /v1/albums 关键词专题搜索
+     * @apiName 关键词专题搜索
      * @apiGroup Album
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词

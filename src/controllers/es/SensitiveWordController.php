@@ -14,8 +14,8 @@ use yii\web\Request;
 class SensitiveWordController extends BaseController
 {
     /**
-     * @api {post} /v1/sensitive-words/validate Validate Sensitive Word
-     * @apiName SensitiveWordValidate
+     * @api {post} /v1/sensitive-words/validate 违禁词验证
+     * @apiName 违禁词验证
      * @apiGroup SensitiveWord
      * @apiDescription 敏感词验证（原 ips_backend 项目模型：ESBanWords）
      *

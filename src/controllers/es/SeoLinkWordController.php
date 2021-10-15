@@ -47,8 +47,8 @@ class SeoLinkWordController extends BaseController
         return $this->response($response);
     }
     /**
-     * @api {get} /v1/seo/link-word-seo GetSeoLinkWordSearch
-     * @apiName GetSeoLinkWordSearch
+     * @api {get} /v1/seo/link-word-seo seo词库中链接相关搜索词
+     * @apiName seo词库中链接相关搜索词
      * @apiGroup SeoLinkWord
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词

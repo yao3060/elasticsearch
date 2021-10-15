@@ -19,8 +19,8 @@ use yii\web\Request;
 class VideoElementController extends BaseController
 {
     /**
-     * @api {get} /v1/video-elements GetVideoElementSearch
-     * @apiName GetVideoElementSearch
+     * @api {get} /v1/video-elements 视频元素搜索
+     * @apiName 视频元素搜索
      * @apiGroup VideoElement
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词

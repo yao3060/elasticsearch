@@ -19,8 +19,8 @@ use yii\web\Request;
 class GroupWordController extends BaseController
 {
     /**
-     * @api {get} /v1/groups GetGroupWordSearch
-     * @apiName GetGroupWord
+     * @api {get} /v1/groups 组合字搜索
+     * @apiName 组合字搜索
      * @apiGroup GroupWord
      * @apiParam (备注)search和keyword为0时，searchAll要等1
      * @apiParam (请求参数) {String} keyword 搜索关键词

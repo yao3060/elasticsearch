@@ -1,8 +1,8 @@
 <?php
-$class = 'yii\elasticsearch\Connection';
+
 return [
     'elasticsearch' => [
-        'class' => $class,
+        'class' => 'yii\elasticsearch\Connection',
         'nodes' => [
             ['http_address' => getenv('ELASTIC_HOST')],
         ],
@@ -11,19 +11,19 @@ return [
         'dslVersion' => 5, // default is 5
     ],
     'elasticsearch_color' => [
-        'class' => $class,
+        'class' => 'yii\elasticsearch\Connection',
         'nodes' => [
             ['http_address' => getenv('ELASTIC_COLOR_HOST')],
         ],
     ],
     'elasticsearch_second' => [
-        'class' => $class,
+        'class' => 'yii\elasticsearch\Connection',
         'nodes' => [
             ['http_address' => getenv('ELASTIC_SECOND_HOST')],
         ],
     ],
     'elasticsearch_search_keyword' => [
-        'class' => $class,
+        'class' => 'yii\elasticsearch\Connection',
         'nodes' => [
             ['http_address' => getenv('ELASTIC_KEYWORD_HOST')],
         ],
