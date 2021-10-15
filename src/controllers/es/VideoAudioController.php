@@ -7,11 +7,8 @@
 namespace app\controllers\es;
 
 use app\components\Response;
-use app\helpers\StringHelper;
 use app\models\ES\VideoAudio;
 use app\queries\ES\VideoAudioSearchQuery;
-use yii\base\DynamicModel;
-use yii\base\UnknownPropertyException;
 use app\controllers\BaseController;
 use Yii;
 use yii\web\Request;
@@ -55,14 +52,6 @@ class VideoAudioController extends BaseController
                     $data['is_vip'] ?? 0
                 ));
             $response = new Response('get_videoAudio_list', 'VideoAudioList', $data);
-        } catch (UnknownPropertyException $e) {
-            $response = new Response(
-                StringHelper::snake($e->getName()),
-                str_replace('yii\\base\\DynamicModel::', '', $e->getMessage()),
-                [],
-                422
-            );
-            yii::error(str_replace('yii\\base\\DynamicModel::', '', $e->getMessage()), __METHOD__);
         } catch (\Throwable $th) {
             $response = new Response(
                 'internal_server_error',
