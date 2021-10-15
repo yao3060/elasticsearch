@@ -53,6 +53,8 @@ class TemplateSearchQuery extends BaseTemplateSearchQuery
         $this->use = $this->use ? $this->use : 0;
         $this->width = $this->width ? $this->width : 0;
         $this->height = $this->height ? $this->height : 0;
+        $this->page = (int) $this->page;
+        $this->pageSize = (int) $this->pageSize;
 
         if ($this->keyword == null && !$this->tagId && $this->ratio <= 0 && ($this->classId == '0_0_0_0' || $this->classId == '0_0_0')) {
             //用于排序的class_id但不影响过滤项 影响全局排序的特殊class_id为-1
