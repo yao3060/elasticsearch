@@ -18,7 +18,8 @@ class VideoAudioSearchQuery implements QueryBuilderInterface
         public $isDesigner = 0,
         public $isVip = 0
     ) {
-
+        $this->page = (int) $this->page;
+        $this->pageSize = (int) $this->pageSize;
     }
 
     public function query(): array
