@@ -90,7 +90,9 @@ class SensitiveWord extends BaseModel
             return $validateSensitiveWord;
         }
 
-        $validateSensitiveWord = [];
+        $validateSensitiveWord = [
+            'flag' => false
+        ];
 
         try {
             $find = self::find()
