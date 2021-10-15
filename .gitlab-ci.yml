@@ -131,7 +131,7 @@ prod-build-job:
   tags:
     - 818ps_web_dev
   only:
-    - testing
+    - master
   script:
     # - ./deploy/scripts/enable-docker-compose-network.sh
     - ./deploy/scripts/update-resource-mirror.sh
