@@ -85,13 +85,14 @@ class SensitiveWord extends BaseModel
 
         $validateSensitiveWord = Tools::getRedis(6, $redisKey);
 
-        if (!empty($validateSensitiveWord) && isset($validateSensitiveWord['hit']) && $validateSensitiveWord['hit']
-            && Tools::isReturnSource() === false) {
+        if (!empty($validateSensitiveWord) && Tools::isReturnSource() === false) {
             \Yii::info("sensitive word search data source from redis", __METHOD__);
             return $validateSensitiveWord;
         }
 
-        $validateSensitiveWord['flag'] = false;
+        $validateSensitiveWord = [
+            'flag' => false
+        ];
 
         try {
             $find = self::find()
@@ -100,7 +101,6 @@ class SensitiveWord extends BaseModel
                 ->createCommand()
                 ->search()['hits'];
             if (isset($find['total']) && $find['total'] <= 0) {
-                Tools::setRedis(6, $query->getRedisKey(), $validateSensitiveWord, 86400 * 7);
                 $validateSensitiveWord['flag'] = false;
             }
             if (isset($find['hits']) && $find['hits']) {
@@ -111,7 +111,8 @@ class SensitiveWord extends BaseModel
                     }
                 }
             }
-            Tools::setRedis(6, $query->getRedisKey(), $validateSensitiveWord, 86400 * 7);
+            if (!empty($validateSensitiveWord))
+                Tools::setRedis(6, $query->getRedisKey(), $validateSensitiveWord, 86400 * 7);
         } catch (\Throwable $exception) {
             \Yii::error("SensitiveWord Model Error: " . $exception->getMessage(), __METHOD__);
         }
