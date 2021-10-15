@@ -19,8 +19,8 @@ use yii\web\Request;
 class PictureController extends BaseController
 {
     /**
-     * @api {get} /v1/pictures GetPictureSearch
-     * @apiName GetPictureSearch
+     * @api {get} /v1/pictures 图片素材搜索
+     * @apiName 图片素材搜索
      * @apiGroup PictureSearch
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词

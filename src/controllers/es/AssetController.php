@@ -19,8 +19,8 @@ use yii\web\Request;
 class AssetController extends BaseController
 {
     /**
-     * @api {get} /v1/assets Get Asset
-     * @apiName GetAsset
+     * @api {get} /v1/assets 素材搜索
+     * @apiName 素材搜索
      * @apiGroup Asset
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词

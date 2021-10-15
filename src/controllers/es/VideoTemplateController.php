@@ -11,8 +11,8 @@ use app\queries\ES\VideoTemplateSearchQuery;
 use yii\web\Request;
 
 /**
- * @api {get} /v1/video-templates Get Video Template
- * @apiName GetBackgroundVideo
+ * @api {get} /v1/video-templates 片段视频搜索
+ * @apiName 片段视频搜索
  * @apiGroup VideoTemplate
  * @apiDescription 片段视频搜索（原 ips_backend 项目模型：ESTemplateExcerpt）
  *

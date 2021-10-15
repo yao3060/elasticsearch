@@ -9,6 +9,9 @@ use app\models\ES\Template;
 
 abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
 {
+    const keywordBriefFields = ["title^16", "description^2", "hide_description^2", "brief^2", "info^1"];
+    const keywordFields = ["title^16", "description^2", "hide_description^2", "info^1"];
+
     protected $query = [];
 
     public function sortByTime()
@@ -42,8 +45,7 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
     public function sortDefault($keyword, $classId = [], $indexName = null)
     {
         $indexName = !empty($indexName) ? $indexName : Template::getEsTableName();
-        //        $source = "doc['pr'].value-doc['man_pr'].value+doc['man_pr_add'].value";
-        if ($classId && is_array($classId) == false) {
+        if ($classId && !is_array($classId)) {
             $classId = explode('_', $classId);
         }
 
@@ -69,14 +71,6 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
                     $source .= "+doc['hot_keyword.{$keyword}'].value";
                 }
             }
-
-            // 根据展示点击率调整pr
-            //            $optimize_keyword = array_keys($mapping[$indexName']['mappings']['list']['properties']['keyword_show_edit']['properties']);
-            //            $optimize_keyword = explode('!!!', implode('!!!', $optimize_keyword));//强制转换为string类型
-            //            if (in_array((string)$keyword, $optimize_keyword)) {
-            //                $source .= "+doc['keyword_show_edit.{$keyword}'].value";
-            //            }
-
         } elseif ($classId && count($classId) >= 1) {
             //标签的人工pr
             $choose_class_id = 0;
@@ -99,7 +93,6 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
                     }
                 }
             }
-
         }
 
         $sort['_script'] = [
@@ -215,17 +208,37 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
         return substr($str, 0, strlen($str) - 1);
     }
 
+    public function __call($method, $args)
+    {
+        $hasMethod = explode('has', $method);
+
+        if (isset($hasMethod[1]) && $hasMethod[1]) {
+            $property = $hasMethod[1] ?? '';
+
+            if (!empty($property)) {
+                $property = lcfirst($property);
+
+                // validate property exists
+                if (property_exists($this, $property) && !empty($this->{$property})) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
     protected function queryKeyword()
     {
         if (!empty($this->keyword)) {
             $operator = isset($this->fuzzy) && $this->fuzzy ? 'or' : 'and';
-            $fields = ["title^16", "description^2", "hide_description^2", "brief^2", "info^1"];
+            $fields = self::keywordBriefFields;
             if ($operator == 'or') {
                 $this->keyword = str_replace(['图片'], '', $this->keyword);
-                $fields = ["title^16", "description^2", "hide_description^2", "info^1"];
+                $fields = self::keywordFields;
             }
             if (in_array($this->keyword, ['LOGO', 'logo'])) {
-                $fields = ["title^16", "description^2", "hide_description^2", "info^1"];
+                $fields = self::keywordFields;
             }
             $this->query['bool']['must'][]['multi_match'] = [
                 'query' => $this->keyword,
@@ -325,11 +338,10 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
     protected function queryTemplateTypes()
     {
         // 只有数组才 count
-        if (is_array($this->templateTypes)) {
-            if (count($this->templateTypes) > 1 && in_array(5, $this->templateTypes)) {
-                //有H5就添加长页H5(不改变key,除了单独搜索H5类型)
-                $this->templateTypes[] = 7;
-            }
+        if (is_array($this->templateTypes) && (count($this->templateTypes) > 1
+                && in_array(5, $this->templateTypes))) {
+            //有H5就添加长页H5(不改变key,除了单独搜索H5类型)
+            $this->templateTypes[] = 7;
         }
 
         if (is_array($this->templateTypes) && !empty($this->templateTypes)) {
@@ -354,28 +366,5 @@ abstract class BaseTemplateSearchQuery implements QueryBuilderInterface
             $this->query['bool']['must'][]['match']['settlement_level'] = $this->settlementLevel;
         }
         return $this;
-    }
-
-    public function __call($method, $args)
-    {
-        $hasMethod = explode('has', $method);
-
-        if (isset($hasMethod[1]) && $hasMethod[1]) {
-
-            $property = $hasMethod[1] ?? '';
-
-            if (!empty($property)) {
-
-                $property = lcfirst($property);
-
-                // validate property exists
-                if (property_exists($this, $property) && !empty($this->{$property})) {
-                    return true;
-                }
-
-            }
-
-            return false;
-        }
     }
 }

@@ -12,8 +12,8 @@ use yii\web\Request;
 class LottieVideoController extends BaseController
 {
     /**
-     * @api {get} /v1/lottie-videos Get Lottie Video
-     * @apiName GetLottieVideo
+     * @api {get} /v1/lottie-videos 设计师动效搜索
+     * @apiName 设计师动效搜索
      * @apiGroup LottieVideo
      * @apiDescription 设计师动效搜索（原 ips_backend 项目模型：ESVideoLottie）
      *

@@ -20,8 +20,8 @@ use yii\web\Request;
 class SeoSearchWordAssetController extends BaseController
 {
     /**
-     * @api {get} /v1/seo/keyword-assets Seo Search Word Asset
-     * @apiName GetSeoWordAsset
+     * @api {get} /v1/seo/keyword-assets seo词库相关推荐
+     * @apiName seo词库相关推荐
      * @apiGroup SeoWordAsset
      *
      * @apiParam (请求参数) {String} keyword 搜索关键词
