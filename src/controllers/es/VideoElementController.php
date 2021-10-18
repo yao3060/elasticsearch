@@ -7,11 +7,8 @@
 namespace app\controllers\es;
 
 use app\components\Response;
-use app\helpers\StringHelper;
 use app\models\ES\VideoElement;
 use app\queries\ES\VideoElementSearchQuery;
-use yii\base\DynamicModel;
-use yii\base\UnknownPropertyException;
 use app\controllers\BaseController;
 use Yii;
 use yii\web\Request;
@@ -42,32 +39,19 @@ class VideoElementController extends BaseController
     {
         $data = $request->get();
         try {
-            $model = DynamicModel::validateData($data, [
-                ['keyword', 'required']
-            ]);
-            if ($model->hasErrors()) {
-                $response = new Response('unprocessable_entity', 'Unprocessable Entity', $model->errors, 422);
-            } else {
-                $data = (new VideoElement())
-                    ->search(new VideoElementSearchQuery(
-                        $data['keyword'],
+            $data = (new VideoElement())
+                ->search(
+                    new VideoElementSearchQuery(
+                        $data['keyword'] ?? '',
                         $data['page'] ?? 1,
                         $data['page_size'] ?? 40,
                         $data['class_id'] ?? 0,
                         $data['ratio'] ?? 0,
                         $data['scope_type'] ?? 0,
                         $data['owner'] ?? 0,
-                    ));
-                $response = new Response('get_video_element_list', 'VideoElementList', $data,200);
-            }
-        } catch (UnknownPropertyException $e) {
-            $response = new Response(
-                StringHelper::snake($e->getName()),
-                str_replace('yii\\base\\DynamicModel::', '', $e->getMessage()),
-                [],
-                422
-            );
-            yii::error(str_replace('yii\\base\\DynamicModel::', '', $e->getMessage()), __METHOD__);
+                    )
+                );
+            $response = new Response('get_video_element_list', 'VideoElementList', $data, 200);
         } catch (\Throwable $th) {
             $response = new Response(
                 'internal_server_error',
