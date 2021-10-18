@@ -42,8 +42,7 @@ class JsonStreamTarget extends Streamlog
 
         $logData['request_id'] = $_SERVER['HTTP_X_REQUEST_ID'] ?? '-';
 
-        // TODO: Add track_id from ips_backend
-        // $logData['track_id'] = $_SERVER['HTTP_X_REQUEST_ID'] ?? '-';
+        $logData['tgs_track_id'] = $_SERVER['HTTP_X_TGS_TRACK_ID'] ?? '-';
 
         // Format the data as a JSON string and return it.
         return Json::encode($logData);
