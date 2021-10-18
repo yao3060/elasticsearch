@@ -29,11 +29,10 @@ class JsonStreamTarget extends Streamlog
         // Begin assembling the data that we will JSON-encode for the log.
         $logData['timestamp'] = $this->getTime($timestamp);
 
-        $logData['user_id'] = Yii::$app->user?->id ?? '-';
+        $logData['user_id'] = Yii::$app->user?->id ?? 0;
         $logData['username'] = Yii::$app->user?->identity?->username ?? '-';
 
-        $logData['ip'] = $_SERVER['HTTP_X_ORIGINAL_FORWARDED_FOR'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? Yii::$app->getRequest(
-            )?->getUserIP();
+        $logData['ip'] = $_SERVER['HTTP_X_ORIGINAL_FORWARDED_FOR'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? Yii::$app->getRequest()?->getUserIP();
         $logData['url'] = Yii::$app->getRequest()?->url;
         $logData['http_method'] = Yii::$app->getRequest()?->method;
         $logData['memory'] = $this->memoryUsage($memory);
@@ -41,7 +40,9 @@ class JsonStreamTarget extends Streamlog
         $logData['category'] = $category;
         $logData['message'] = $this->extractMessageContentData($text);
 
-        $logData['request_id'] = $_SERVER['HTTP_X_REQUEST_ID'] ?? '--';
+        $logData['request_id'] = $_SERVER['HTTP_X_REQUEST_ID'] ?? '-';
+
+        $logData['tgs_track_id'] = $_SERVER['HTTP_X_TGS_TRACK_ID'] ?? '-';
 
         // Format the data as a JSON string and return it.
         return Json::encode($logData);
