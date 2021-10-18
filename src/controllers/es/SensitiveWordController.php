@@ -32,6 +32,8 @@ class SensitiveWordController extends BaseController
 
             $params = $request->post();
 
+            \Yii::info("post params: " . http_build_query($params), __METHOD__);
+
             $paramsValidate = new ParamsValidateService();
 
             $validate = $paramsValidate->validate($params, SensitiveWord::validateRules());
