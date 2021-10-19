@@ -11,11 +11,11 @@ class GroupWordSearchQuery implements QueryBuilderInterface
     private $query = [];
 
     function __construct(
-        public  $keyword = 0,
-        public  $page = 1,
-        public  $pageSize = 40,
-        public  $search = '0',
-        public  $searchAll = '0',
+        public $keyword = 0,
+        public $page = 1,
+        public $pageSize = 40,
+        public $search = '0',
+        public $searchAll = '0',
     ) {
     }
 
@@ -33,7 +33,7 @@ class GroupWordSearchQuery implements QueryBuilderInterface
             }
             $this->query['bool']['should'][] = $shouldMatch;
         } elseif ($this->keyword) {
-            $this->queryKeyword();
+            $this->queryKeyword(false, true);
         }
         if (!empty($this->search)) {
             $this->query['bool']['must'][]['multi_match'] = [
@@ -45,31 +45,36 @@ class GroupWordSearchQuery implements QueryBuilderInterface
         }
         return $this->query;
     }
-    public function queryKeyword($is_or = false)
+
+    public function queryKeyword($is_or = false, $auth = false)
     {
         $operator = $is_or ? 'or' : 'and';
         $this->query['bool']['must'][]['multi_match'] = [
             'query' => $this->keyword,
-            'fields' => ["title^5", "description^1"],
+            'fields' => ["keyword^1"],
             'type' => 'most_fields',
             "operator" => $operator
         ];
+        if ($auth) {
+            $this->query['bool']['must'][]['term'] = ['auth' => 0];
+        }
         return $this;
     }
 
     public function getRedisKey()
     {
-        $redisKey = "ES_group_word:" . date('Y-m-d') .
-            ":{$this->keyword}_{$this->page}_" .
+        $redisKey = "ES_group_word:".date('Y-m-d').
+            ":{$this->keyword}_{$this->page}_".
             "_{$this->pageSize}";
         if (!empty($this->search)) {
-            $redisKey .= '_' . $this->search;
+            $redisKey .= '_'.$this->search;
         }
         if (!empty($this->searchAll)) {
-            $redisKey .= '_' . $this->searchAll . '_v1';
+            $redisKey .= '_'.$this->searchAll.'_v1';
         }
         return $redisKey;
     }
+
     public function pageSizeSet()
     {
         $pageSize = $this->pageSize;
@@ -83,6 +88,7 @@ class GroupWordSearchQuery implements QueryBuilderInterface
     {
         return 'sort desc';
     }
+
     public function queryOffset()
     {
         if ($this->page * $this->pageSize > 10000) {

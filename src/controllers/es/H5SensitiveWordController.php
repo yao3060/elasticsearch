@@ -33,7 +33,7 @@ class H5SensitiveWordController extends BaseController
     public function actionValidate(Request $request)
     {
         $data = $request->post();
-        \Yii::info("post params: " . http_build_query($data), __METHOD__);
+        \Yii::info("Post Params: " . json_encode($data, JSON_UNESCAPED_UNICODE), __METHOD__);
         try {
             $model = DynamicModel::validateData($data, [
                 ['keyword', 'required']
