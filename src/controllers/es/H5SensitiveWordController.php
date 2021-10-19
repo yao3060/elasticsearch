@@ -7,6 +7,7 @@
 namespace app\controllers\es;
 
 use app\components\Response;
+use app\components\Tools;
 use app\helpers\StringHelper;
 use app\models\ES\H5SensitiveWord;
 use app\queries\ES\H5SensitiveWordSearchQuery;
@@ -33,7 +34,7 @@ class H5SensitiveWordController extends BaseController
     public function actionValidate(Request $request)
     {
         $data = $request->post();
-        \Yii::info("post params: " . http_build_query($data), __METHOD__);
+        \Yii::info("Post Params: " . Tools::buildQuery($data), __METHOD__);
         try {
             $model = DynamicModel::validateData($data, [
                 ['keyword', 'required']

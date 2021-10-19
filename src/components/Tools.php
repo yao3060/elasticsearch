@@ -127,4 +127,27 @@ class Tools
         }
         return $ip;
     }
+
+    /**
+     * request params to key => value format
+     * @param $params http request params
+     */
+    public static function buildQuery($params)
+    {
+        $cursor = 0;
+        $output = "";
+
+        if (!is_array($params)) return $params;
+
+        foreach ($params as $key => $param) {
+            if ($cursor + 1 == count($params)) {
+                $output .= $key . "=" . $param;
+            } else {
+                $output .= $key . "=" . $param . "&";
+                $cursor++;
+            }
+        }
+
+        return $output;
+    }
 }
