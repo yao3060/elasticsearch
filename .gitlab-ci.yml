@@ -25,7 +25,7 @@ after_script:
   # - ./deploy/scripts/clean-docker-network.sh  "${PROJECT}_${ENVIRONMENT}_default"
 
 ################################################################
-### Staging
+### Staging ###
 ################################################################
 
 staging-install-job:
