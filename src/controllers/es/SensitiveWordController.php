@@ -5,7 +5,6 @@ namespace app\controllers\es;
 
 
 use app\components\Response;
-use app\components\Tools;
 use app\controllers\BaseController;
 use app\models\ES\SensitiveWord;
 use app\queries\ES\SensitiveWordSearchQuery;
@@ -33,7 +32,7 @@ class SensitiveWordController extends BaseController
 
             $params = $request->post();
 
-            \Yii::info("Post Params: " . Tools::buildQuery($params), __METHOD__);
+            \Yii::info("Post Params: " . json_encode($params, JSON_UNESCAPED_UNICODE), __METHOD__);
 
             $paramsValidate = new ParamsValidateService();
 
