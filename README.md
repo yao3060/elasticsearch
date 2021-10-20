@@ -49,3 +49,11 @@ Or
 ## HTTP Status Code
 
 http://gitlab.818ps.com/ips/elasticsearch/-/wikis/HTTP-Status-Code
+
+## SonarScanner
+
+```shell
+sonar-scanner \
+	-Dsonar.host.url=http://sonarqube.818ps.com \
+ 	-Dsonar.login=43fd8a8ae575cda84a855a952d7e706341ee3cd0
+```

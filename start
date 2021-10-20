@@ -17,6 +17,8 @@ fi
 
 source .env
 
+docker network create --driver bridge base_share_network || true
+
 SKIP_INSTALL=0
 NO_DEV=
 while [[ $# -gt 0 ]]; do
